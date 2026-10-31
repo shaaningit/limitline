@@ -37,7 +37,7 @@ What age-group triathletes use today, and what's wrong with it:
 - GPS files contain home and work locations. **The LIMITLINE app never receives raw files** (exceptions: the consented pre-pilot collection in The Assignment, and the screenshot evidence in the fallback gate): the athlete's browser (on a phone or a computer) reads each .fit/.gpx file on that device and sends only the numbers we need: activity start time, sport, best efforts, elevation gain per km, average power, and a fingerprint (hash) of the file to detect duplicates. Heart rate isn't stored, because v1 doesn't use it. No GPS tracks or raw files are stored. Founder outlier review uses only those stored numbers. If an attempt looks wrong, the founder asks the athlete directly.
 - **Verification is trust-based in v1.** The numbers are computed in the athlete's browser, so a determined athlete could edit them or the file. The checks below *discourage* casual cheating but can't stop deliberate cheating. That's acceptable for a 10-person pilot of people the founder knows by name.
 - **Getting files onto the device:** exporting original files is easiest from a computer. Garmin Connect's and Strava's export options are mainly on their websites, and Strava's bulk export arrives as an emailed .zip. So the first history upload will often happen on a computer, with weekly attempts from either device. `/plan-eng-review` should confirm the easiest weekly path for phone users.
-- **Supported uploads:** pick several .fit or .gpx files at once, compressed .fit.gz files, or a Strava bulk-export .zip (unpacked in the browser).
+- **Supported uploads:** pick several .fit, .gpx or .fit.gz files at once, or a whole unzipped folder, using the browser's built-in pickers. Strava bulk-export .zip upload is deferred (eng review D6).
 - **Privacy & visibility:**
   - The Run and Bike boards are visible **only to signed-in pilot members**, never at a public URL.
   - Names show as first name plus last initial ("Priya R."). Any athlete can **hide from the boards** and still get challenges and draw entries.
@@ -75,10 +75,18 @@ Core loop (wireframe: `docs/designs/limitline-mvp-sketch.png` (source: `docs/des
 1. **Sign up** with an email magic link, a one-click login link with no password to forget. Set your time zone.
 2. **Upload 6-8 weeks** of run and bike files. They're read in your browser on your own device (see Constraints), and the app finds your limit for each v1 metric (below).
 3. **Weekly challenge:** your limit plus a small step (starting at about +2-3%), with a "why this number" line so the bar feels fair.
-4. **Upload the attempt.** It gets an automatic pass or fail with the margin shown.
+4. **Upload the attempt.** The browser measures it and sends only the numbers; the **server** decides pass or fail with the margin shown (eng review D9).
 5. **Share card** on a pass ("+3.4% beyond my limit"), sized for Instagram stories.
 6. **Two Limit boards, Run and Bike,** each ranked by % beyond each athlete's own limit, so a beginner can top them.
 7. **Admin page** listing each week's passers, with a reward draw and a "mark as given" button.
+
+### Eng review amendments (binding; supersede conflicting text in this doc)
+Decided in `/plan-eng-review` on 2026-10-29 to 2026-10-31 (see Decision ledger at the end):
+- **Quests and embers (D11, D12):** no single weekly challenge. Athletes complete quests (run 5 km, run 10 km, bike 20-min power, and pool swim 400 m and 1500 m per D14; open-water swims excluded) as often as they like. Every valid activity that completes a quest earns base embers; beating that quest's limit earns **double**. Each activity earns once.
+- **Activity links, checked by the founder (D13):** athletes paste a Strava activity link. The founder opens it, checks it, and types the numbers into the admin page. The server decides completion, pass and embers (D9). Each Strava activity ID counts once. Activities must be visible to the founder (Followers with the founder following, or Everyone). **There is no file upload, file engine or Garmin parser in v1**, so the Constraints and tools text about reading files in the browser, supported uploads, the fallback gate and file collection is superseded.
+- **Limits:** set from the founder's reading of each athlete's last 6-8 weeks on Strava. Each new activity is compared with the limit as it stood just before it; a pass raises the limit.
+- **Embers shop (D15):** athletes spend embers on items the founder stocks (brand codes if a brand joins, otherwise founder-sourced prizes); the founder hands them out and marks them given. **This replaces the weekly random draw** in "Who gets rewarded".
+- **Boards (D16):** three members-only boards (Run: 5 km and 10 km together; Bike; Swim: 400 m and 1500 m together), ranked by each athlete's best % beyond own limit this week; reset every Monday in the pilot's time zone (the founder's).
 
 ### v1 rules (what makes it fair)
 These settle what the first draft left open. `/plan-eng-review` may refine them.
@@ -175,11 +183,13 @@ The "human 2-3 weeks / CC 1-2 days" build estimate covers the core loop, share c
 
 ## The Assignment
 Before any code is written, **this week:**
-1. **Find 10 real athletes.** Message or visit 3 local tri, bike or run shops or clubs. Get 10 named solo age-group triathletes to agree to a 4-week pilot and send you 6-8 weeks of run or bike files exported from their watch or Strava. Write down their names.
+1. **Find 10 real athletes.** Message or visit 3 local tri, bike or run shops or clubs. Get 10 named solo age-group triathletes to agree to a 4-week pilot and send you 6-8 weeks of run or bike files. Write down their names.
+   - **How they export (same day):** on a computer, open each workout's page on the Strava or Garmin Connect website and use **"Export Original"**. For 8 weeks that's roughly 15-40 files [estimated].
+   - **Backup only:** Strava's "download all my data" archive can take hours to 10 days to arrive. Ask anyone who prefers it to request it on day 1.
 2. **Pitch one small brand.** Make the tiny ask to 3 small brands or shops: "Donate 10 discount codes or one product for athletes who beat their own limit in a 10-person pilot, and get named as the partner plus the results."
 
 **Handling their files safely** (they show where people live and work):
-- Privacy zones in Strava or Garmin Connect only hide routes from other viewers. **They don't remove points from exported files.** Ask each athlete to **crop the start and end** of each activity before exporting, using Strava's crop tool, and to re-check the export. Otherwise, tell them plainly that you'll see full tracks, protected only by the private folder and the deletion deadline.
+- Privacy zones in Strava or Garmin Connect hide routes from other viewers, but **they may not remove points from exported files** (no source confirms either way). Ask athletes to open one export and check before sending. Ask each athlete to **crop the start and end** of each activity before exporting, using Strava's crop tool, and to re-check the export. Otherwise, tell them plainly that you'll see full tracks, protected only by the private folder and the deletion deadline.
 - Collect files in **one private folder per athlete** (e.g. a Google Drive folder shared only between you and them), never in group chats or email threads.
 - Tell them exactly this: *"I'll use these files only to test how LIMITLINE sets your challenges. Only I can see them. I'll delete them by 20 December 2026, one week after the pilot ends, or sooner if you ask."*
 - Delete every folder, including any fallback screenshots, by **Sun Dec 20, 2026**. That's the single deletion deadline.
@@ -554,3 +564,494 @@ issues verified: 5 of 5
 
 Verification is deterministic: a fix counts when its `applied_text` is in the current design and absent from the round-2 snapshot. It confirms applied edits, never a review verdict; no reviewer was launched past the cap.
 <!-- gstack:office-hours:concerns:end -->
+
+# Engineering review: LIMITLINE MVP design (plan-eng-review, 2026-10-29)
+
+Target: `docs/designs/limitline-mvp.md` (this document, approved design). The review record, decision ledger and final report live in this file below.
+
+## Scope Challenge record
+
+**Already exists (reuse):** nothing in this repo (no code yet). External: Garmin's official `@garmin/fitsdk` FIT decoder runs in browsers ([npm](https://npmjs.com/package/%40garmin%2Ffitsdk)). GPX is XML, so the browser's built-in `DOMParser` reads it. `.gz` files open with the browser's built-in `DecompressionStream('gzip')`. Supabase Auth + `@supabase/ssr` handles login links; Postgres Row Level Security enforces who sees what; `next/og` renders the share card image.
+
+**Factual corrections (no behavior change):**
+- FC1: Strava API: new apps start at athlete capacity 1 ("Single Player Mode") ([Strava docs](https://developers.strava.com/docs/rate-limits/)); third-party guides say it can be raised to 10 without review ([Terra](https://docs.tryterra.co/faq/help-topics/connecting/getting-a-provider-developer-app-approved/strava-production-app-and-athlete-limit), unverified). File upload stays the v1 data source (premise 4): it keeps raw files off our servers and avoids a Strava dependency.
+- FC2: No source confirms whether privacy zones are stripped from exported originals ([the5krunner](https://the5krunner.com/2019/02/21/strava-privacy-zone)). Treat "they don't remove points" as "may not"; athletes should open one export and check.
+
+**New risk:** Strava bulk export can take hours to 10 days to arrive ([takeoutday.org](https://takeoutday.org/guides/how-to-export-strava-data)), which can miss the Nov 8 collection date.
+
+**Reality rows:**
+REALITY: premise-table finding unverified=2 (privacy-zone export behavior; Supabase built-in email limit is third-party sourced only) docs/designs/limitline-mvp.md:37
+REALITY: already-done pass empty repo, no code on origin/main; git log shows only design-doc commits docs/designs/limitline-mvp.md:1
+REALITY: surface-check pass no CLI commands or HTTP routes are named in the plan; named packages checked: @garmin/fitsdk exists on npm docs/designs/limitline-mvp.md:109
+REALITY: binding-decisions pass two active user decisions (wedge; Approach B with Nov 13 fallback) match the plan docs/designs/limitline-mvp.md:62
+REALITY: numbers finding effort estimates and the 15 m/km cut-off are untagged estimates; $20k is [measured: Modern Retail 2024] docs/designs/limitline-mvp.md:58
+REALITY: deferred-asks pass no linked issue docs/designs/limitline-mvp.md:1
+REALITY: pr-count pass no .gstack/ship-policy.json, default one PR per wave; plan implies one build wave docs/designs/limitline-mvp.md:62
+
+**Scope record:** feature answers: D4 asked, then D6 (re-asked after the founder's Strava-link question) = defer .zip upload, v1 accepts multiple .fit/.gpx/.fit.gz files or an unzipped folder via native pickers; D5 = keep both 5 km and 10 km run metrics; structure: A (Original arrangement) per D7; accepted scope: approved design minus .zip intake, arranged as 7 pages (login, auth callback, history upload, challenge, result, board, admin) + share-card route, with separate intake, metrics, rules and data modules; pending remedies: R1.
+
+**Founder question answered (D4):** "won't a public strava activity link do the job?" No for v1: link pages don't expose full data and scraping breaks Strava's terms; the official API limits new apps to the developer's own account ([Strava docs](https://developers.strava.com/docs/rate-limits/)) and since Nov 2024 lets apps show a user's Strava data only to that user, which conflicts with a shared Limit board ([Cycling Weekly](https://cyclingweekly.com/news/strava-blocks-other-apps-from-using-leaderboard-and-segment-data)). Upload friction is carried into Sections 1-3 as a must-solve.
+
+**FC3 (factual correction):** effort figures ("human ~2-3 weeks / CC ~1-2 days"), file counts and the 15 m/km cut-off are [estimated], not measured.
+
+### Scope Challenge findings
+1. [INFORMATIONAL] (confidence: 7/10) docs/designs/limitline-mvp.md:144 — "send you 6-8 weeks of run or bike files exported from their watch or Strava" by Sun Nov 8; Strava bulk export can take hours to 10 days, so collection can miss the date. Remedy R1 below.
+2. [INFORMATIONAL] (confidence: 6/10) docs/designs/limitline-mvp.md:148 — "They don't remove points from exported files." stated as fact; unverified (FC2). Medium confidence, verify this is actually an issue. Folded into R1's instructions.
+
+## Decision ledger
+
+### R1: Pilot file-collection instructions (export path and privacy check)
+Finding: Scope Challenge #1 and #2, INFORMATIONAL, confidence 7/10 and 6/10, docs/designs/limitline-mvp.md:144 and :148, reviewer: plan-eng-review (Claude)
+Plan baseline: approved doc (D10 approval): athletes "send you 6-8 weeks of run or bike files exported from their watch or Strava"; privacy zones described as not removing points from exports; no export method named.
+Runtime evidence: Strava bulk export delivery "a few hours to up to 10 days" (takeoutday.org, third-party); Strava and Garmin Connect offer per-activity "Export Original" on their websites (Strava support article 216918437); privacy-zone effect on exported originals unknown (no source found).
+Comparison grid:
+| Choice | Current | A | B |
+|---|---|---|---|
+| R1 export instruction | unspecified ("exported from their watch or Strava") | per-activity "Export Original" from Strava or Garmin Connect website as the default; request bulk export on day 1 only as a backup | unchanged (no method named) |
+| R1 privacy wording | "They don't remove points from exported files." | "may not remove points; open one export and check before sending" | unchanged |
+| D4/D6 zip | deferred (D6) | deferred (D6) | deferred (D6) |
+| D5 run metrics | 5 km + 10 km (D5) | 5 km + 10 km (D5) | 5 km + 10 km (D5) |
+| D7 structure | Original arrangement (D7) | Original arrangement (D7) | Original arrangement (D7) |
+Question D8:
+D8 — Update the pilot file-collection instructions so files arrive by Nov 8?
+Project/branch/task: LIMITLINE on main, eng review; The Assignment asks 10 athletes for 6-8 weeks of files by Sun Nov 8 (docs/designs/limitline-mvp.md:144).
+ELI10: Strava's "download all my data" archive can take up to 10 days to arrive, which could miss your Nov 8 date. Both Strava and Garmin Connect let you download each workout's original file straight from its page on their website, instantly. For 8 weeks that's roughly 15-40 files, a few minutes of clicking on a computer. The update also fixes one sentence: we don't actually know whether privacy zones are removed from exported files, so athletes should open one file and check.
+Stakes if we pick wrong: keeping the vague wording risks athletes waiting days for an archive and the pilot starting late.
+Recommendation: A because same-day per-activity export protects the Nov 8 date, and the privacy wording should match what we actually know.
+Completeness: A=9/10, B=5/10
+Pros / cons:
+A) Update the instructions (recommended) (human: ~10 min / CC: ~2 min)
+  ✅ Athletes get files the same day instead of waiting up to 10 days
+  ✅ Privacy advice matches the evidence: check the file, don't assume
+  ❌ Per-activity export is tedious clicking for athletes with many workouts
+B) Keep the current wording
+  ✅ No change to the approved doc text
+  ❌ Some athletes may request the slow archive and miss Nov 8
+Net: a two-sentence edit that protects the collection date.
+Header: File collection
+Options:
+A) Update instructions (recommended)
+Default to per-activity "Export Original" from the Strava or Garmin Connect website; mention the bulk archive only as a day-1 backup; change the privacy-zone line to "may not remove points, open one export and check".
+B) Keep current wording
+Leave The Assignment's file-collection text as approved.
+
+State: approved
+Actual answer: A) Update instructions (recommended), answer to D8
+Accepted scope: The Assignment defaults to per-activity "Export Original" from the Strava or Garmin Connect website, mentions the bulk archive only as a day-1 backup, and changes the privacy-zone line to "may not remove points, open one export and check".
+History: none
+
+## Section 1: Architecture review
+Flow diagram: athlete device (lib/intake -> lib/metrics, raw files stay local) -> numbers -> server (lib/data, lib/rules, /api/share-card) -> Supabase (profiles, efforts, limits, challenges, attempts, rewards; RLS).
+1. [INFORMATIONAL] (confidence: 8/10) docs/designs/limitline-mvp.md:69 — "Upload the attempt. It gets an automatic pass or fail" does not say where pass/fail is computed; rules could run in both browser and server and drift. Decision R2.
+2. [INFORMATIONAL] (confidence: 8/10) docs/designs/limitline-mvp.md:121 — weekly challenge rules (Open Question 6) undecided; data model depends on them. Decisions R3-R6.
+3. [INFORMATIONAL] (confidence: 7/10) docs/designs/limitline-mvp.md:77 — metric list will be repeated in intake, metrics, rules, DB and UI (hand-synced list). Required work for approved behavior: one shared METRICS constant, others derived.
+4. [INFORMATIONAL] (confidence: 7/10) docs/designs/limitline-mvp.md:37 — FIT and GPX differ; required work: lib/intake normalizes both into one Activity type at the boundary.
+Design-twice: shape 1 = rules in browser and server; shape 2 = browser measures only, server lib/rules decides (pick: shape 2, smaller interface evaluateAttempt(effort, challenge) hides all fairness policy). Red flags: hand-synced list (#3), split ownership (R2).
+
+### R2: Where pass/fail and limits are decided
+Finding: Section 1 #1, INFORMATIONAL, confidence 8/10, docs/designs/limitline-mvp.md:69, reviewer: plan-eng-review (Claude)
+Plan baseline: approved doc: browser reads files and sends numbers; "automatic pass or fail"; location of the decision unspecified; verification trust-based.
+Runtime evidence: unknown (no code exists).
+Comparison grid:
+| Choice | Current | A | B |
+|---|---|---|---|
+| R2 rules location | unspecified | server only: browser sends effort numbers, file start time and hash; server lib/rules computes validity, pass/fail, %, limit raises; DB unique constraint on file hash | browser computes pass/fail and %, server stores the result |
+| Trust model | trust-based (approved) | trust-based (unchanged) | trust-based (unchanged) |
+| D5/D6/D7 | 5k+10k, zip deferred, original arrangement | unchanged | unchanged |
+| R3-R6 | pending | pending | pending |
+Question D9:
+D9 — Should pass/fail be decided only on the server?
+Project/branch/task: LIMITLINE on main, eng review Section 1; the doc says attempts get "an automatic pass or fail" but not where (docs/designs/limitline-mvp.md:69).
+ELI10: The athlete's browser has to read the file and measure the effort, because raw files never leave their device. The question is who then decides "passed" or "failed" and updates their limit. If the browser decides, the fairness math lives on every phone and in the server, and the two copies can quietly disagree. If only the server decides, the browser just sends numbers (effort time or watts, file start time, file fingerprint) and one copy of the rules does the rest.
+Stakes if we pick wrong: browser-side decisions mean a bug fix has to land in two places, and the board can show results the server never checked.
+Recommendation: A because one copy of the fairness rules on the server is the easiest to test and trust, and it costs nothing extra.
+Completeness: A=10/10, B=6/10
+Pros / cons:
+A) Server decides (recommended) (human: ~same / CC: ~same)
+  ✅ One copy of the rules, tested once, used for board, share card and draw
+  ✅ Frozen limits and time windows come from the database, not the phone's clock
+  ❌ Each attempt needs a network round trip before the result shows
+B) Browser decides, server stores
+  ✅ Result can show instantly, even with a slow connection
+  ❌ Fairness math duplicated; a phone with a wrong clock can mis-time a week
+Net: A keeps one source of truth for fairness at the cost of one network call.
+Header: Rules location
+Options:
+A) Server decides (recommended)
+Browser sends effort numbers, file start time and fingerprint; server-side lib/rules checks validity, computes pass/fail and % against the frozen limit, and updates limits; database rejects duplicate fingerprints.
+B) Browser decides
+Browser computes pass/fail and %, server stores what it receives.
+
+State: approved
+Actual answer: A) Server decides (recommended), answer to D9
+Accepted scope: Browser sends effort numbers, file start time and fingerprint; server-side lib/rules checks validity, computes pass/fail and % against the frozen limit, and updates limits; database rejects duplicate fingerprints.
+History: none
+
+### R3: How weekly challenges are assigned (count, who picks, swap)
+Finding: Section 1 #2, INFORMATIONAL, confidence 8/10, docs/designs/limitline-mvp.md:121 (Open Question 6), reviewer: plan-eng-review (Claude)
+Plan baseline: deferred by the founder to this review; wireframe shows one challenge with a "Swap to a bike challenge" button.
+Runtime evidence: unknown (no code exists).
+Comparison grid:
+| Choice | Current | A | B | C |
+|---|---|---|---|---|
+| R3 challenges per week | unspecified | 1 | 1 | 1 per eligible metric (up to 3) |
+| R3 who picks metric | unspecified | athlete picks from eligible metrics (4+ qualifying efforts) | app picks: rotates through eligible metrics | n/a (all eligible) |
+| R3 swap | wireframe button | allowed until first attempt is uploaded that week | not allowed | n/a |
+| R2 rules location | server (D9) | server (D9) | server (D9) | server (D9) |
+| D5 metrics | run 5k, run 10k, bike 20-min power | unchanged | unchanged | unchanged |
+| R4-R6 | pending | pending | pending | pending |
+Question D10:
+D10 — How many challenges does each athlete get per week, and who picks the type?
+Project/branch/task: LIMITLINE on main, eng review Section 1; Open Question 6 (docs/designs/limitline-mvp.md:121).
+ELI10: v1 has three challenge types: run 5 km, run 10 km and bike 20-minute power. An athlete only qualifies for a type once they have 4 good efforts of it. Each week, someone has to choose which type they face. Letting the athlete pick keeps it personal (they know their week's training), and allowing one swap before their first attempt matches the wireframe's "Swap" button. One challenge a week also keeps the reward draw simple: one entry per week, max.
+Stakes if we pick wrong: app-picked challenges can clash with an athlete's training week; three a week triples the work and muddies the draw.
+Recommendation: A because athletes know their own week, and one challenge keeps the board, draw and retention numbers simple.
+Note: options differ in kind, not coverage — no completeness score.
+Pros / cons:
+A) One a week, athlete picks (recommended) (human: ~same / CC: ~same)
+  ✅ Fits each athlete's real training week (long run week vs bike week)
+  ✅ One draw entry per week keeps rewards fair and easy to explain
+  ❌ Athletes might always pick their easiest type
+B) One a week, app rotates
+  ✅ Pushes athletes across types; no choice to make
+  ❌ A bike challenge in a run-focused week means a skipped week
+C) One per eligible type each week
+  ✅ More chances to pass every week
+  ❌ Up to 3x the attempts, boards and draw entries to explain and test
+Net: A trades some variety for challenges that fit athletes' real weeks.
+Header: Weekly challenge
+Options:
+A) One a week, athlete picks (recommended)
+One challenge per week. The athlete picks run 5 km, run 10 km or bike 20-min power from types they qualify for (4+ efforts), and can swap until they upload the week's first attempt.
+B) One a week, app rotates
+One challenge per week, assigned by the app rotating through the athlete's eligible types; no swap.
+C) One per eligible type
+Every type the athlete qualifies for gets its own challenge each week (up to 3).
+
+State: approved
+Actual answer: D11 free-text answer (quests, unlimited, same activity once), confirmed with D12
+Accepted scope: No single weekly challenge. Athletes complete quests (v1: run 5 km, run 10 km, bike 20-min power) any number of times; each activity (file fingerprint) counts once. Swim and links are raised separately (R8, R9).
+History: D10 asked with options A/B/C; founder answered in free text instead of choosing an option. D11 clarification asked; founder answered (D11 free text): "There are going to be a lot of quests, like running, swimming, and cycling. They just have to put in their link... they'll get points. They can do it a number of times, but... with the same link, they cannot access it more than once. ...embers with a single activity." Reading: no single weekly challenge; unlimited submissions of any type; each activity counts once; points called embers. Depends on R7 (what earns embers); swim and links conflict with approved decisions (premise 2, D4/D6) and are raised separately.
+
+### R7: What earns embers (points)
+Finding: founder answer to D11 introduces embers (points) per activity, INFORMATIONAL, confidence 9/10, docs/designs/limitline-mvp.md:41 (premise 1: "The wedge is the personal-limit challenge, not the rewards"), reviewer: plan-eng-review (Claude)
+Plan baseline: premise 1 and the approved reward rule: every weekly pass earns one entry into a random reward draw; no points currency.
+Runtime evidence: unknown (no code exists).
+Comparison grid:
+| Choice | Current | A | B | C |
+|---|---|---|---|---|
+| R7 what earns embers | no points (weekly draw) | only beating your own limit (a pass) | any valid activity | small base for any valid activity + larger amount for a pass |
+| Each activity counts once | approved (fingerprint) | unchanged | unchanged | unchanged |
+| Submissions per week | pending (R3) | unlimited, any type (D11) | unlimited, any type (D11) | unlimited, any type (D11) |
+| Reward draw vs embers spending | approved draw | pending (separate choice) | pending | pending |
+| Swim, links | deferred / file upload | unchanged, raised separately | unchanged | unchanged |
+Question D12:
+D12 — What should earn embers: beating your own limit, or any activity?
+Project/branch/task: LIMITLINE on main, eng review; your quests-and-embers idea vs premise 1 (docs/designs/limitline-mvp.md:41).
+ELI10: Embers are points athletes collect. The question is what earns them. If only beating your own limit earns embers, LIMITLINE stays the one app that rewards effort, not volume, which is the gap our research found. If any activity earns embers, it works like Strava, Edge and Muuvr, which reward logging workouts, and rewards like that tend to stop feeling special within weeks. A mix gives a few embers for showing up and many more for beating your limit.
+Stakes if we pick wrong: rewarding any activity makes LIMITLINE a copy of existing apps and removes the reason athletes would switch.
+Recommendation: A because rewarding only effort beyond your own limit is the one thing no competitor we found does, and it's what "test the human limits" means.
+Note: options differ in kind, not coverage — no completeness score.
+Pros / cons:
+A) Only for beating your limit (recommended)
+  ✅ Keeps the edge: a beginner's pass earns the same as a pro's
+  ✅ Embers stay rare, so they keep their value
+  ❌ Weeks without a pass earn nothing, which may discourage some athletes
+B) Any valid activity
+  ✅ Simple, and every workout feels rewarded
+  ❌ Same model as Strava, Edge and Muuvr; rewards volume, not effort
+C) Small for any activity, big for a pass
+  ✅ Rewards showing up while still making a pass the big win
+  ❌ More rules to tune; athletes may farm easy base points
+Net: A protects your wedge; C softens it; B gives it up.
+Header: Embers
+Options:
+A) Only for beating your limit (recommended)
+Embers are earned only when an activity beats its type's limit (a pass). Each activity can earn once.
+B) Any valid activity
+Every valid outdoor activity earns embers, once per activity.
+C) Small base + big for a pass
+Every valid activity earns a few embers; a pass earns many more. Each activity can earn once.
+
+State: approved
+Actual answer: free text to D12: "try the Duolingo model. They will get some embers when they complete it... You cannot make a PR out of a 10K every time you run, but if you beat your PR, if you crush the limit, you'll get double." (option C with a fixed 2x multiplier)
+Accepted scope: Every valid activity that completes a quest earns base embers; an activity that also beats that quest type's limit earns double. Each activity earns once. Embers amounts are config values [estimated]; what embers are spent on is decided separately (R10).
+History: none
+
+R4 (retry policy) and R5 (challenge issue timing): irrelevant after R3/R7 (no weekly challenge; each activity earns on its own, compared to the limit as it stood just before that activity; a pass raises the limit from then on). Not asked.
+
+### R8: How athletes submit an activity (link vs file)
+Finding: founder answers to D4 and D11 ("They just have to put in their link"), INFORMATIONAL, confidence 9/10, docs/designs/limitline-mvp.md:44 (premise 4), reviewer: plan-eng-review (Claude)
+Plan baseline: premise 4 and D6: file upload (.fit/.gpx/.fit.gz, multi-file or folder); same file can't count twice.
+Runtime evidence: Strava API: new apps capacity 1, apps may show a user's Strava data only to that user since Nov 2024 (Strava docs; Cycling Weekly); public activity pages expose limited data and scraping breaks Strava's terms.
+Comparison grid:
+| Choice | Current | A | B | C |
+|---|---|---|---|---|
+| R8 submission method | file upload (premise 4) | file upload; the file's fingerprint is the "link" (counts once) | athlete pastes a Strava link; founder checks it by hand and enters the numbers | "Connect with Strava" (official API) |
+| Shared board possible | yes | yes | yes (founder-entered numbers) | no for Strava-sourced data (Nov 2024 rules) |
+| Each activity once | fingerprint | fingerprint | link URL / activity ID | Strava activity ID |
+| R3, R7 | approved | unchanged | unchanged | unchanged |
+Question D13:
+D13 — How should athletes hand in an activity: upload the file, or paste a link?
+Project/branch/task: LIMITLINE on main, eng review; you want athletes to "put in their link" (D11), the plan uses file upload (premise 4).
+ELI10: Your rule, "the same activity can only count once", works with any of these. The problem is the link itself. A Strava link gives the app no workout data unless we use Strava's official connection, and Strava's rules since Nov 2024 forbid showing one person's Strava data to others, which breaks the board. Uploading the original file from Strava or Garmin works like a link that carries the full data: the app reads it and fingerprints it so it can't be reused. A middle path is links checked by you by hand, which is fine for 10 people but not for 1,000.
+Stakes if we pick wrong: building on Strava links risks the board being against Strava's rules, or the app having no real data to check limits against.
+Recommendation: A because the file gives full data with no Strava rules attached, and its fingerprint enforces your "once per activity" rule automatically.
+Note: options differ in kind, not coverage — no completeness score.
+Pros / cons:
+A) File upload (recommended) (human: ~same / CC: ~same)
+  ✅ Full data for fair limits; no dependency on Strava's API rules
+  ✅ Fingerprint makes "same activity only once" automatic
+  ❌ More steps than pasting a link, especially on a phone
+B) Paste link, you check by hand
+  ✅ Easiest for athletes; matches your link idea for the 10-person pilot
+  ❌ You read every activity and type numbers in; stops working past ~20 athletes
+C) Connect with Strava (official API)
+  ✅ One-tap after connecting; activities can arrive automatically
+  ❌ Strava's rules block showing data on a shared board; 1-athlete cap until approved
+Net: A is the only option that scales and keeps the board; B is a fine pilot-only fallback.
+Header: Submit activity
+Options:
+A) File upload (recommended)
+Athletes upload the original .fit/.gpx file (from Strava or Garmin "Export Original"); its fingerprint makes each activity count once.
+B) Link, checked by hand
+Athletes paste a Strava activity link; you open it, check it and enter the numbers; the link counts once.
+C) Connect with Strava
+Use Strava's official API connection; accept that Strava-sourced data can't appear on the shared board.
+
+State: approved
+Actual answer: B) Link, checked by hand, answer to D13 ("We can have the B option.")
+Accepted scope: Athletes paste a Strava activity link; the founder opens it, checks it and enters the numbers on the admin page; the server applies the rules (D9); each Strava activity ID counts once. File upload, the in-browser engine (lib/intake, lib/metrics) and @garmin/fitsdk leave v1. Pilot-only: manual checking stops scaling past ~20 athletes [estimated].
+History: none
+
+### R9: Swim quests in v1
+Finding: founder answer to D11 lists "running, swimming, and cycling" quests, INFORMATIONAL, confidence 9/10, docs/designs/limitline-mvp.md:42 (premise 2: "calibrating run and bike only"), reviewer: plan-eng-review (Claude)
+Plan baseline: premise 2 (revised in /office-hours D5): swim deferred because automated watch swim data is unreliable.
+Runtime evidence: D13 replaced automated file reading with founder-checked links, removing the automated-parsing reason; open-water GPS distance is still unreliable (general knowledge, unverified here).
+Comparison grid:
+| Choice | Current | A | B | C |
+|---|---|---|---|---|
+| R9 swim quests | deferred (premise 2) | pool swim quests: 400 m and 1500 m, base embers + double for beating limit (time read by founder) | pool swim quests: completion embers only, no doubling | still deferred |
+| Open-water swim | deferred | deferred | deferred | deferred |
+| R7 embers rule | base + 2x for beating limit | applies to swim | completion only for swim | n/a |
+| R8 submission | founder-checked links | unchanged | unchanged | unchanged |
+Question D14:
+D14 — Add swim quests to v1 now that you check each activity by hand?
+Project/branch/task: LIMITLINE on main, eng review; you listed swimming as a quest (D11), the plan deferred swim (premise 2).
+ELI10: Swim was cut because watches record swims messily and an automatic reader would get it wrong. Now that you read each activity yourself, you can see a pool swim's distance and time on Strava just like a run. Pool swims are easy to compare (a 25 m or 50 m pool is the same every time). Open-water swims aren't: GPS in water is poor, so those stay out. This also brings back the third leg that makes LIMITLINE a triathlon app.
+Stakes if we pick wrong: leaving swim out keeps the app looking like a run-and-bike app; adding it adds a third limit per athlete for you to read.
+Recommendation: A because your manual check removes the reason swim was cut, and pool times are as comparable as run times.
+Completeness: A=10/10, B=7/10, C=5/10
+Pros / cons:
+A) Pool swim quests with doubling (recommended) (human: ~same / CC: ~10 min)
+  ✅ All three triathlon legs from day one, with the same embers rules
+  ✅ Pool times are consistent, so beating your limit is fair
+  ❌ A third limit per athlete for you to read and enter
+B) Pool swim quests, completion only
+  ✅ Swimmers earn embers without you judging limits for swim
+  ❌ Swim never doubles, so it feels second-class next to run and bike
+C) Keep swim deferred
+  ✅ Fewest numbers for you to enter during the pilot
+  ❌ Run and bike only; doesn't match your quest idea
+Net: A completes the triathlon at the cost of one more number per athlete.
+Header: Swim quests
+Options:
+A) Pool swim, with doubling (recommended)
+Add pool swim quests (400 m and 1500 m). Completion earns base embers; beating your pool-time limit earns double. Open-water swims stay out.
+B) Pool swim, completion only
+Add pool swim quests (400 m and 1500 m) that earn base embers only, never double.
+C) Keep swim deferred
+No swim quests in v1.
+
+State: approved
+Actual answer: A) Pool swim, with doubling (recommended), answer to D14
+Accepted scope: Add pool swim quests (400 m and 1500 m). Completion earns base embers; beating your pool-time limit earns double. Open-water swims stay out.
+History: none
+
+### R10: What embers are spent on
+Finding: founder answer to D12 ("more users, more redeeming of more brand items, that's the whole model"), INFORMATIONAL, confidence 8/10, docs/designs/limitline-mvp.md (v1 rules: "Who gets rewarded"), reviewer: plan-eng-review (Claude)
+Plan baseline: approved reward rule: each pass earns one entry into a weekly random draw for a founder-delivered reward; brand codes go to passers if donated; premise 3: MVP does not depend on brands.
+Runtime evidence: unknown (no code exists).
+Comparison grid:
+| Choice | Current | A | B | C |
+|---|---|---|---|---|
+| R10 embers use | n/a (draw entries) | small rewards shop: items the founder stocks (brand codes if a brand joins, otherwise founder-sourced prizes), each with an embers price; founder hands them out and marks them given | embers are draw tickets: weekly random draw, more embers = more chances | embers are a score only; no spending in the pilot |
+| Weekly random draw | approved | replaced by the shop | kept, weighted by embers | removed |
+| Brand dependency (premise 3) | none required | none required (shop works with founder prizes) | none required | none |
+| R7 earning rule | base + 2x | unchanged | unchanged | unchanged |
+Question D15:
+D15 — What can athletes do with their embers during the pilot?
+Project/branch/task: LIMITLINE on main, eng review; you said the model is "more redeeming of more brand items" (D12), the plan has a weekly random prize draw.
+ELI10: Points only motivate if they buy something. A small shop lets athletes spend embers on items you stock: discount codes if a brand joins, or prizes you source yourself if not. That's your brand model, in miniature, from day one. Turning embers into draw tickets keeps the random draw but makes it feel like a lottery. A score with nothing to spend it on is simplest, but tends to stop motivating quickly.
+Stakes if we pick wrong: embers with nothing to spend them on lose their pull within weeks; a shop with nothing in it disappoints.
+Recommendation: A because it tests your actual business model (athletes redeeming brand items) during the pilot, and still works if no brand has signed yet.
+Note: options differ in kind, not coverage — no completeness score.
+Pros / cons:
+A) Small rewards shop (recommended) (human: ~2 days / CC: ~30 min)
+  ✅ Tests your real model: embers redeemed for brand items
+  ✅ Works with founder-sourced prizes if no brand signs in time
+  ❌ You must stock and hand out items; an empty shop hurts motivation
+B) Embers as draw tickets
+  ✅ Keeps the approved weekly draw; one prize a week is cheap
+  ❌ Feels like a lottery; most athletes win nothing most weeks
+C) Score only, no spending
+  ✅ Nothing to stock or fulfil during the pilot
+  ❌ Points with no use tend to stop motivating within weeks
+Net: A tests the business model now; B is cheaper; C risks embers feeling pointless.
+Header: Spending embers
+Options:
+A) Small rewards shop (recommended)
+Athletes spend embers on items you stock (brand codes if a brand joins, otherwise prizes you source). You hand items out and mark them given. Replaces the weekly random draw.
+B) Embers as draw tickets
+Keep the weekly random draw; each ember is a ticket, so more embers means more chances.
+C) Score only
+Embers are a score shown on the profile and board; nothing to spend them on in the pilot.
+
+State: approved
+Actual answer: A) Small rewards shop (recommended), answer to D15
+Accepted scope: Athletes spend embers on items the founder stocks (brand codes if a brand joins, otherwise founder-sourced prizes), each with an embers price; the founder hands items out and marks them given. Replaces the weekly random draw.
+History: none
+
+### R6: Board ranking and period
+Finding: Section 1 #2, INFORMATIONAL, confidence 8/10, docs/designs/limitline-mvp.md:121 (Open Question 6: "the board period"), reviewer: plan-eng-review (Claude)
+Plan baseline: approved: separate Run and Bike boards ranked by % beyond each athlete's own limit, members-only, names as "First L.", hide option; period and 5k/10k sharing deferred to this review.
+Runtime evidence: unknown (no code exists).
+Comparison grid:
+| Choice | Current | A | B | C |
+|---|---|---|---|---|
+| R6 ranking | % beyond own limit | best % beyond own limit this week | embers earned this week | two tabs: % beyond limit and embers |
+| R6 period | unspecified | weekly, Mon-Sun in the pilot's time zone (founder's), resets Monday | weekly, same | weekly, same |
+| R6 boards | Run, Bike | Run (5 km and 10 km together), Bike, Swim (400 m and 1500 m together) | one combined embers board | Run, Bike, Swim tabs + one embers tab |
+| Privacy (approved) | members-only, First L., hide option | unchanged | unchanged | unchanged |
+| R7, R9, R10 | approved | unchanged | unchanged | unchanged |
+Question D16:
+D16 — What should the board rank, and how often does it reset?
+Project/branch/task: LIMITLINE on main, eng review; Open Question 6 asks for the board period, and embers (D12) now compete with "% beyond your own limit" (docs/designs/limitline-mvp.md:121).
+ELI10: The board decides who looks like the hero each week. Ranking by "% beyond your own limit" means a beginner who beat their own best can top a pro, which is your whole idea. Ranking by embers rewards whoever trains the most, because every completed quest earns embers, so the busiest athlete always wins. A weekly reset gives everyone a fresh shot every Monday. Using one time zone for the pilot keeps "this week" the same for all 10 local athletes.
+Stakes if we pick wrong: an embers board turns LIMITLINE into "who trained most", which is what Strava already shows.
+Recommendation: A because ranking effort beyond your own limit is what makes LIMITLINE different, and embers already reward volume through the shop.
+Note: options differ in kind, not coverage — no completeness score.
+Pros / cons:
+A) % beyond your limit, weekly (recommended)
+  ✅ A beginner can top the board; matches "test the human limits"
+  ✅ Fresh start every Monday keeps late joiners in the game
+  ❌ Athletes who trained a lot but didn't beat a limit don't appear
+B) Embers earned, weekly
+  ✅ Simple, and rewards consistent training
+  ❌ The athlete with the most free time always wins; Strava already does this
+C) Both, as tabs
+  ✅ Shows effort and consistency side by side
+  ❌ Two rankings to explain; muddies what LIMITLINE stands for
+Net: A keeps the board about effort; embers already cover volume.
+Header: Board
+Options:
+A) % beyond limit, weekly (recommended)
+Three boards (Run: 5 km and 10 km together; Bike; Swim: 400 m and 1500 m together), each ranked by the athlete's best % beyond own limit this week; weekly reset Monday, pilot time zone.
+B) Embers earned, weekly
+One board ranked by embers earned this week; weekly reset Monday, pilot time zone.
+C) Both, as tabs
+Run, Bike and Swim boards by % beyond limit, plus an embers tab; weekly reset Monday, pilot time zone.
+
+State: approved
+Actual answer: A) % beyond limit, weekly (recommended), answer to D16
+Accepted scope: Three boards (Run: 5 km and 10 km together; Bike; Swim: 400 m and 1500 m together), each ranked by the athlete's best % beyond own limit this week; weekly reset Monday, pilot time zone (founder's).
+History: none
+
+Section 1 dispositions: #1 accepted (R2, D9 = server decides); #2 resolved via R3 (D11), R7 (D12), R8 (D13), R9 (D14), R10 (D15), R6 (D16), with R4 and R5 irrelevant; #3 and #4 required work for approved behavior. After D13, #4 (FIT/GPX normalization) no longer applies: v1 has no file intake. Structure update from D13: lib/intake and lib/metrics leave v1; the remaining modules are lib/rules and lib/data, plus pages login, auth callback, submit link, my quests, board, shop, admin and the share-card route.
+
+## Section 2: Code quality review
+1. [CRITICAL] (confidence: 8/10) docs/designs/limitline-mvp.md (amendments: "The founder opens it, checks it, and types the numbers into the admin page") — manual entry with a limit that "never goes down" means one typo (25:58 typed as 2:58) permanently inflates a limit and the embers. Required work for approved behavior: the founder can correct an entry, and limits and embers are recomputed from the corrected entries. Policy choice R11: an extra confirm step for unusual entries.
+2. [INFORMATIONAL] (confidence: 8/10) amendments ("Each Strava activity ID counts once") — required work: accept only strava.com/activities/<id> links, store the numeric ID, enforce uniqueness with a database constraint, and show a clear message for duplicates or non-Strava links.
+3. [INFORMATIONAL] (confidence: 8/10) amendments ("Embers shop (D15)") — required work: embers balance is derived from a ledger of earned and spent rows, never a stored counter; a redemption checks the balance and records the spend in one database transaction so a double-tap can't spend twice.
+4. [INFORMATIONAL] (confidence: 7/10) v1 rules ("The limit") — required work: the limit is derived (best verified effort before a given activity) rather than stored separately, so corrections (#1) can't leave a stale limit. One owner: lib/rules.
+
+### R11: Confirm step for unusual manual entries
+Finding: Section 2 #1, CRITICAL, confidence 8/10, amendments block (manual entry), reviewer: plan-eng-review (Claude)
+Plan baseline: founder enters numbers (D13); limits never go down (approved); corrections are required work (above).
+Runtime evidence: unknown (no code exists).
+Comparison grid:
+| Choice | Current | A | B |
+|---|---|---|---|
+| R11 confirm step | none | admin form previews % beyond limit and embers; entries more than 10% beyond the athlete's limit, or the athlete's first entry for a quest type, need a second "Yes, this is right" click | no extra step; corrections only |
+| Corrections + recompute | required work | unchanged | unchanged |
+| D9, D13, D16 | approved | unchanged | unchanged |
+Question D17:
+D17 — Add a "double-check" step when you enter an unusual result?
+Project/branch/task: LIMITLINE on main, eng review Section 2; you'll type every result into the admin page by hand (D13), and limits never go down.
+ELI10: Everyone mistypes sometimes. If you enter 2:58 instead of 25:58 for a 5 km, the app thinks the athlete beat their limit by 89%, gives double embers, puts them top of the board, and raises their limit to a time nobody can beat. You'll be able to fix entries either way. This question is whether the app also stops you before saving anything unusual: it shows the % and embers first, and asks you to confirm if the jump is over 10% or it's the athlete's first result of that type.
+Stakes if we pick wrong: without the check, a typo can sit on the board and in someone's limit until you notice.
+Recommendation: A because a one-click confirm on rare big jumps catches typos before athletes see them, and costs almost nothing.
+Completeness: A=10/10, B=7/10
+Pros / cons:
+A) Add the double-check (recommended) (human: ~2 hours / CC: ~10 min)
+  ✅ Catches typos before they reach the board or a limit
+  ✅ Big genuine jumps still go through with one extra click
+  ❌ One extra click on some entries (first results, big jumps)
+B) No extra step; fix mistakes after
+  ✅ Fastest entry flow for you
+  ❌ A typo can show on the board and inflate a limit until spotted
+Net: one rare extra click versus wrong results reaching athletes.
+Header: Entry check
+Options:
+A) Add the double-check (recommended)
+The admin form previews % beyond limit and embers; results more than 10% beyond the limit, or an athlete's first result for a quest type, need a second "Yes, this is right" click.
+B) No extra step
+Save entries directly; rely on corrections when mistakes are noticed.
+
+State: approved
+Actual answer: A) Add the double-check (recommended), answer to D17
+Accepted scope: The admin form previews % beyond limit and embers; results more than 10% beyond the limit, or an athlete's first result for a quest type, need a second "Yes, this is right" click.
+History: none
+
+Section 2 dispositions: #1 corrections + recompute = required work; confirm step accepted (R11, D17). #2, #3, #4 required work for approved behavior.
+
+## Section 3: Test review
+Framework: none detected (empty repo; no package.json, no CLAUDE.md testing section).
+Coverage diagram (planned paths, all GAP): lib/rules parseLink (full link, strava.app.link short link, non-Strava/malformed), questCompleted (run 5/10 km, swim 400/1500 m, bike >=20 min with power), limitBefore (<4 verified efforts = no limit; correction recomputes), pctBeyond/beatsLimit (time lower for run/swim, watts higher for bike), embersFor (base, 2x, once per activity ID), weekOf (Monday 00:00 edge, DST), board (best % per athlete, hidden excluded), redeem (balance check + spend in one transaction); share-card (passed only, name opt-in). User flows: login incl. expired link [E2E]; submit link [E2E]; duplicate/non-Strava message; my quests empty state; shop redeem/insufficient/sold out [E2E]; double-tap redeem; admin queue -> enter -> preview -> save [E2E]; confirm on >10% or first result; correction updates embers and board; mark item given; RLS: athlete cannot read others' private rows [E2E]; non-founder blocked from admin server-side [E2E]; logged-out sees no board.
+COVERAGE: 0/27 paths tested (no code yet) | GAPS: 27 (7 E2E)
+Notes: strava.app.link short links hide the activity ID, so the admin form records the canonical activity ID and the database uniqueness check runs there (required under D13). Before 4 verified efforts of a type exist, activities earn base embers only (approved minimum-history rule carried forward).
+
+### R12: Test framework
+Finding: Section 3, INFORMATIONAL, confidence 9/10, no test framework in repo, reviewer: plan-eng-review (Claude)
+Plan baseline: "Basic checks (tests and a build) run in GitHub Actions on every pull request" (Distribution Plan); no framework named.
+Runtime evidence: empty repo; no package.json.
+Comparison grid:
+| Choice | Current | A | B |
+|---|---|---|---|
+| R12 unit tests | unnamed | Vitest for lib/rules (table-driven cases from the diagram) | Vitest for lib/rules |
+| R12 E2E + access-rule tests | unnamed | Playwright click-through tests against a local Supabase (Supabase CLI) for the 7 E2E paths, including RLS | none in v1; manual checking before the pilot |
+| CI | GitHub Actions (approved) | runs both on every pull request | runs Vitest only |
+Question D18:
+D18 — Which tests should the build include?
+Project/branch/task: LIMITLINE on main, eng review Section 3; no test framework exists yet, and the plan promises tests on every pull request.
+ELI10: Tests are small programs that check the app still works after every change. Vitest checks the rules quickly: did this 5 km beat the limit, how many embers, does a correction fix the board. Playwright clicks through the real app in a browser: log in, paste a link, you confirm it, embers appear, redeem in the shop. It also checks that one athlete can't see another's private data and only you can open admin. Those last checks matter most, and only a click-through test catches them.
+Stakes if we pick wrong: without click-through tests, a change could quietly let athletes into admin or show private data, and nobody would notice until a real athlete did.
+Recommendation: A because the privacy and admin rules are the riskiest part, and a click-through test is the only kind that catches them.
+Completeness: A=10/10, B=6/10
+Pros / cons:
+A) Vitest + Playwright (recommended) (human: ~2 days / CC: ~30 min)
+  ✅ Rules, privacy and the admin lock are all checked automatically
+  ✅ Runs on every pull request, so mistakes are caught before athletes see them
+  ❌ Slower checks, and needs a local copy of Supabase to run against
+B) Vitest only
+  ✅ Fast and simple; checks all the embers and limit math
+  ❌ Privacy and admin-lock mistakes are only caught by hand, if at all
+Net: A adds a day of setup to protect athletes' privacy automatically.
+Header: Tests
+Options:
+A) Vitest + Playwright (recommended)
+Vitest unit tests for lib/rules, plus Playwright click-through tests against a local Supabase for the 7 E2E paths (login, submit, admin entry, shop, privacy rules, admin lock); both run in GitHub Actions on every pull request.
+B) Vitest only
+Vitest unit tests for lib/rules in GitHub Actions; click-through and privacy checks done by hand before the pilot.
+
+State: approved
+Actual answer: A) Vitest + Playwright (recommended), answer to D18
+Accepted scope: Vitest unit tests for lib/rules, plus Playwright click-through tests against a local Supabase for the 7 E2E paths (login, submit, admin entry, shop, privacy rules, admin lock); both run in GitHub Actions on every pull request.
+History: none
+
+Section 3 dispositions: framework accepted (R12, D18); all 27 gaps become required tests for approved behavior (see Test Plan Artifact).
+
+## Section 4: Performance review
+Scale: 10 athletes, roughly 10-20 activities a day [estimated], 3 boards, a handful of shop items. No queries in loops are proposed; board and embers are small aggregate queries.
+1. [INFORMATIONAL] (confidence: 6/10) amendments (boards, embers ledger) — Medium confidence, verify this is actually an issue: board and balance queries filter by athlete, week and quest type; add database indexes on (athlete_id, quest_type, activity_time) and (week_start, board) when the tables are created. Required work, no behavior change.
+No other performance issues found at pilot scale.
