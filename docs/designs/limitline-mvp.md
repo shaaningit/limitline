@@ -84,8 +84,11 @@ Core loop (wireframe: `docs/designs/limitline-mvp-sketch.png` (source: `docs/des
 Decided in `/plan-eng-review` on 2026-10-29 to 2026-10-31 (see Decision ledger at the end):
 - **Quests and embers (D11, D12):** no single weekly challenge. Athletes complete quests (run 5 km, run 10 km, bike 20-min power, and pool swim 400 m and 1500 m per D14; open-water swims excluded) as often as they like. Every valid activity that completes a quest earns base embers; beating that quest's limit earns **double**. Each activity earns once.
 - **Activity links, checked by the founder (D13):** athletes paste a Strava activity link. The founder opens it, checks it, and types the numbers into the admin page. The server decides completion, pass and embers (D9). Each Strava activity ID counts once. Activities must be visible to the founder (Followers with the founder following, or Everyone). **There is no file upload, file engine or Garmin parser in v1**, so the Constraints and tools text about reading files in the browser, supported uploads, the fallback gate and file collection is superseded.
-- **Limits:** set from the founder's reading of each athlete's last 6-8 weeks on Strava. Each new activity is compared with the limit as it stood just before it; a pass raises the limit.
+- **Limits:** set from the founder's reading of each athlete's last 6-8 weeks on Strava: one seed limit per quest type plus a "saw 4+ efforts" tick, which unlocks doubling from day one (D21). Each new activity is compared with the limit as it stood just before it; a pass raises the limit.
 - **Embers shop (D15):** athletes spend embers on items the founder stocks (brand codes if a brand joins, otherwise founder-sourced prizes); the founder hands them out and marks them given. **This replaces the weekly random draw** in "Who gets rewarded".
+- **Valid activity for links (outside voice #9, consistency with D13/D14):** recorded after the athlete's pilot sign-up; belongs to the athlete who submitted it (the founder checks the name); run and bike outdoor only; pool swims are exempt from the GPS rule; each Strava activity ID once.
+- **Empty board state (outside voice #6):** a board with no passes this week shows "Nobody beat their limit yet this week" plus the number of quests completed, never a blank page.
+- **Deploy dependency (outside voice #8):** before Nov 9, either install the Claude GitHub App on shaaningit/limitline or have the founder push manually, then connect Vercel. Without one of these, nothing can deploy.
 - **Boards (D16):** three members-only boards (Run: 5 km and 10 km together; Bike; Swim: 400 m and 1500 m together), ranked by each athlete's best % beyond own limit this week; reset every Monday in the pilot's time zone (the founder's).
 
 ### v1 rules (what makes it fair)
@@ -136,7 +139,8 @@ Proposed tools (to be locked in `/plan-eng-review`, not decided here):
 3. **What about athletes with little history?** One option is a single baseline test effort (borrowed from Approach C).
 4. **How do we handle cheating** (e-bikes, car segments, edited files)? v1 relies on trust plus the founder reviewing outliers by hand.
 5. **Will a small brand join?** The founder plans to approach small brands. It's uncertain, and the plan works either way.
-6. **Weekly challenge rules, deferred to `/plan-eng-review` by the founder's choice:**
+7. **Embers numbers (outside voice #11):** base embers per quest, shop prices, item stock and a prize budget cap. The founder sets these before Nov 16; amounts are config values.
+6. **Settled in eng review (D9-D16).** Original item: weekly challenge rules, deferred to `/plan-eng-review` by the founder's choice:
    - how many challenges each athlete gets per week
    - who picks run vs bike, and what "Swap" does
    - the retry policy, and which attempt counts for the board, share card and draw
@@ -146,6 +150,8 @@ Proposed tools (to be locked in `/plan-eng-review`, not decided here):
    The wireframe's "why this number" text, which mentions a run trend and heart rate, is illustrative only. v1 explains the fixed step from your limit.
 
 ## Success Criteria
+**Eng review D20 (supersedes the challenge-based bullets below):** an athlete "came back" if they submitted at least one valid activity in BOTH week 3 and week 4. Success = 5+ of 10 came back; rethink = under 4; exactly 4 = run 2 more weeks. Also track, per athlete, embers from completing quests vs from beating their limit, and ask every non-returner one question.
+
 A 4-week pilot:
 - **10 named** solo age-group triathletes upload their history (a list of names, not a sign-up count).
 - **7 or more** attempt challenge 1.
@@ -163,7 +169,7 @@ The pilot tests two things: **do personal-limit challenges bring people back** (
 | When | What |
 |---|---|
 | Thu Oct 29 – Sun Nov 8 | **Recruit:** 10 named athletes, collect their files (The Assignment), pitch 3 small brands. Run `/plan-eng-review` in parallel. |
-| Mon Nov 2 – Fri Nov 13 | **Build and test** Approach B against the collected histories. |
+| Mon Nov 2 – Fri Nov 13 | **Build and test** (eng review): login, boards and shop from Nov 2; **by Tue Nov 3** check which quest numbers are visible on Strava (D22), then build the quest-entry form; seed limits (D21) before Nov 16. |
 | **Fri Nov 13: go/no-go** | If upload → calibrate → verify doesn't work on at least 8 of the 10 athletes' histories, the pilot starts as **Approach A** (concierge) on the same date. |
 | Mon Nov 16 – Sun Dec 13 | **4-week pilot**, one challenge per week. |
 | By Sun Dec 20 | Delete all pre-pilot files and screenshots. Decide using the Success Criteria. |
@@ -183,18 +189,11 @@ The "human 2-3 weeks / CC 1-2 days" build estimate covers the core loop, share c
 
 ## The Assignment
 Before any code is written, **this week:**
-1. **Find 10 real athletes.** Message or visit 3 local tri, bike or run shops or clubs. Get 10 named solo age-group triathletes to agree to a 4-week pilot and send you 6-8 weeks of run or bike files. Write down their names.
-   - **How they export (same day):** on a computer, open each workout's page on the Strava or Garmin Connect website and use **"Export Original"**. For 8 weeks that's roughly 15-40 files [estimated].
-   - **Backup only:** Strava's "download all my data" archive can take hours to 10 days to arrive. Ask anyone who prefers it to request it on day 1.
+1. **Find 10 real athletes.** Message or visit 3 local tri, bike or run shops or clubs. Get 10 named solo age-group triathletes to agree to a 4-week pilot. Write down their names.
+   - **Strava access (D13):** each athlete lets you see their activities: they follow you back and set activities to "Followers" (or "Everyone"). No files are collected (eng review, outside voice #7).
 2. **Pitch one small brand.** Make the tiny ask to 3 small brands or shops: "Donate 10 discount codes or one product for athletes who beat their own limit in a 10-person pilot, and get named as the partner plus the results."
 
-**Handling their files safely** (they show where people live and work):
-- Privacy zones in Strava or Garmin Connect hide routes from other viewers, but **they may not remove points from exported files** (no source confirms either way). Ask athletes to open one export and check before sending. Ask each athlete to **crop the start and end** of each activity before exporting, using Strava's crop tool, and to re-check the export. Otherwise, tell them plainly that you'll see full tracks, protected only by the private folder and the deletion deadline.
-- Collect files in **one private folder per athlete** (e.g. a Google Drive folder shared only between you and them), never in group chats or email threads.
-- Tell them exactly this: *"I'll use these files only to test how LIMITLINE sets your challenges. Only I can see them. I'll delete them by 20 December 2026, one week after the pilot ends, or sooner if you ask."*
-- Delete every folder, including any fallback screenshots, by **Sun Dec 20, 2026**. That's the single deletion deadline.
-
-The 10 athletes' histories from step 1 are also the test data we'll use to check that the calibration math is fair.
+**Handling their data:** under D13 you see athletes' Strava activities (including maps) because they let you follow them. Never screenshot or share maps. Your notes hold only the numbers you enter in the admin page. Superseded: the earlier file-collection, privacy-zone and Drive-folder steps.
 
 ## What I noticed about how you think
 - You opened with "test the human limits," not "a rewards app." That instinct, effort over volume, is the one thing none of the competitors we found have built.
@@ -1007,7 +1006,7 @@ Section 2 dispositions: #1 corrections + recompute = required work; confirm step
 
 ## Section 3: Test review
 Framework: none detected (empty repo; no package.json, no CLAUDE.md testing section).
-Coverage diagram (planned paths, all GAP): lib/rules parseLink (full link, strava.app.link short link, non-Strava/malformed), questCompleted (run 5/10 km, swim 400/1500 m, bike >=20 min with power), limitBefore (<4 verified efforts = no limit; correction recomputes), pctBeyond/beatsLimit (time lower for run/swim, watts higher for bike), embersFor (base, 2x, once per activity ID), weekOf (Monday 00:00 edge, DST), board (best % per athlete, hidden excluded), redeem (balance check + spend in one transaction); share-card (passed only, name opt-in). User flows: login incl. expired link [E2E]; submit link [E2E]; duplicate/non-Strava message; my quests empty state; shop redeem/insufficient/sold out [E2E]; double-tap redeem; admin queue -> enter -> preview -> save [E2E]; confirm on >10% or first result; correction updates embers and board; mark item given; RLS: athlete cannot read others' private rows [E2E]; non-founder blocked from admin server-side [E2E]; logged-out sees no board.
+Coverage diagram (planned paths, all GAP): lib/rules parseLink (full link, strava.app.link short link, non-Strava/malformed), questCompleted (run 5/10 km, swim 400/1500 m, bike >=20 min with power), limitBefore (<4 verified efforts = no limit; correction recomputes), pctBeyond/beatsLimit (time lower for run/swim, watts higher for bike), embersFor (base, 2x, once per activity ID), weekOf (Monday 00:00 edge; DST case dropped per outside voice #14: clocks change before Nov 16), board (best % per athlete, hidden excluded), redeem (balance check + spend in one transaction); share-card (passed only, name opt-in). User flows: login incl. expired link [E2E]; submit link [E2E]; duplicate/non-Strava message; my quests empty state; shop redeem/insufficient/sold out [E2E]; double-tap redeem; admin queue -> enter -> preview -> save [E2E]; confirm on >10% or first result; correction updates embers and board; mark item given; RLS: athlete cannot read others' private rows [E2E]; non-founder blocked from admin server-side [E2E]; logged-out sees no board.
 COVERAGE: 0/27 paths tested (no code yet) | GAPS: 27 (7 E2E)
 Notes: strava.app.link short links hide the activity ID, so the admin form records the canonical activity ID and the database uniqueness check runs there (required under D13). Before 4 verified efforts of a type exist, activities earn base embers only (approved minimum-history rule carried forward).
 
@@ -1055,3 +1054,394 @@ Section 3 dispositions: framework accepted (R12, D18); all 27 gaps become requir
 Scale: 10 athletes, roughly 10-20 activities a day [estimated], 3 boards, a handful of shop items. No queries in loops are proposed; board and embers are small aggregate queries.
 1. [INFORMATIONAL] (confidence: 6/10) amendments (boards, embers ledger) — Medium confidence, verify this is actually an issue: board and balance queries filter by athlete, week and quest type; add database indexes on (athlete_id, quest_type, activity_time) and (week_start, board) when the tables are created. Required work, no behavior change.
 No other performance issues found at pilot scale.
+
+## Outside Voice
+Provider: Codex not installed (CODEX_MODE: not_installed); native fallback via Plan subagent, completed within the 5-minute timer. Full output presented in chat under "OUTSIDE VOICE (Claude subagent)". 15 findings: 2 Critical, 6 High, 5 Medium, 2 Low. Recommendation: run the pilot as a concierge test and build the app only after a redefined retention metric is positive.
+Parent synthesis: agree with #1 (D13 made the founder the verification engine, so an app build tests nothing a sheet can't) and with #2, #4, #5, #7, #9 as gaps regardless; partial disagreement with #3 (base embers were the founder's reasoned choice in D12; keep it, but measure base and double embers separately); #8, #12, #14, #15 depend on #1.
+
+### R13: Build the app for the pilot, or run it as a concierge test
+Finding: Outside Voice #1, Critical, confidence 8/10, docs/designs/limitline-mvp.md ("Why the pilot uses the app, not just concierge" section), reviewer: Claude subagent (native fallback), parent agrees
+Plan baseline: Approach B app build Nov 2-13 (approved in /office-hours D6/D10; arranged per D7), now with founder-checked links (D13), quests/embers (D11, D12), pool swim (D14), shop (D15), boards (D16), Vitest + Playwright (D18).
+Runtime evidence: no code exists; GitHub push from this session is blocked (403), so Vercel auto-deploy and CI cannot run from here yet.
+Comparison grid (whole-candidate scope):
+| Candidate | Current disposition | A Include | B Defer | C Cut | D Hold |
+|---|---|---|---|---|---|
+| App build for the 4-week pilot (pages, Supabase, shop, boards, share card, tests, CI) | included | build Nov 2-13 as planned | run the pilot as a concierge test (Google Form for links, Google Sheet computing %, limits and embers, weekly WhatsApp/email boards and shop, rewards handed out by hand); build the app after the pilot if the redefined retention metric passes | drop the app entirely | stop and discuss; disposition unchanged |
+| Quest, embers, swim, shop, board rules (D11-D16) | approved | unchanged | unchanged (run in the sheet) | unchanged | unchanged |
+| Success criteria rewrite, Strava readability check, Assignment cleanup | pending | pending (separate) | pending (separate) | pending (separate) | pending |
+Question D19:
+D19 — Build the app for the pilot, or run the pilot by hand first?
+Project/branch/task: LIMITLINE on main, eng review outside voice; you'll check every Strava link by hand (D13), and the app build is planned for Nov 2-13 alongside recruiting.
+ELI10: Since you're reading every activity yourself, you are already the engine. A Google Form (athletes paste links), a Google Sheet (you type the numbers; formulas work out % beyond limit, embers and limits) and a weekly WhatsApp post (boards and shop) test the same question the app would: do athletes keep coming back to beat their limits? That takes about a day, not two weeks. It frees Nov 2-13 for recruiting, which is at 0 of 10 people. All your rules (quests, embers, double for beating your limit, pool swim, shop, weekly boards) stay exactly the same. You build the real app after the pilot proves people return.
+Stakes if we pick wrong: building now spends your two most important weeks coding instead of recruiting, for an app that tests nothing a spreadsheet can't; going by hand means athletes get a less polished experience.
+Recommendation: B (defer the build) because the pilot's real question is demand, a sheet answers it in a day, and recruiting is the bottleneck.
+Note: options differ in kind, not coverage — no completeness score.
+Pros / cons:
+A) Include: build the app now
+  ✅ Athletes get a real app, share cards and instant boards from day one
+  ✅ The code is ready if the pilot works
+  ❌ Two weeks of building while recruiting is at 0 of 10; deploy is blocked until GitHub access is fixed
+B) Defer: pilot by hand, build after (recommended) (human: ~1 day / CC: ~1 hour for the sheet and form)
+  ✅ Ready in a day; Nov 2-13 goes to recruiting and checking Strava
+  ✅ Same rules, same question answered; you build only once people come back
+  ❌ Less polished for athletes; you post boards and track embers by hand
+C) Cut: no app at all
+  ✅ Zero build cost
+  ❌ Gives up the product; nothing to scale if the pilot works
+D) Hold: stop and discuss
+  ✅ Time to think about it before choosing
+  ❌ Recruiting and the build schedule both wait
+Net: B answers the same question two weeks sooner and puts your time where the risk is.
+Header: Pilot build
+Options:
+A) Include: build now
+Build the app Nov 2-13 as planned, then run the pilot in it.
+B) Defer: pilot by hand (recommended)
+Run the pilot with a Google Form, a Google Sheet and weekly WhatsApp/email posts, using all approved rules; build the app after the pilot if the retention metric passes.
+C) Cut: no app
+Drop the app entirely.
+D) Hold: discuss first
+Pause this decision; nothing changes yet.
+
+State: approved
+Actual answer: A) Include: build now, answer to D19
+Accepted scope: Build the app Nov 2-13 as planned (approved rules D9-D18), then run the pilot in it. Concierge (Google Form + Sheet) not adopted.
+History: none
+
+Outside voice dispositions applied without a question (consequences of approved decisions or factual corrections): #7 Assignment cleanup (D13), #9 link validity rules (D13/D14 consistency; "recorded after sign-up" carried forward), #6 empty board state (UI required work), #8 deploy dependency sequenced, #14 DST test dropped (factual).
+
+### R14: Pilot success metric under quests
+Finding: Outside Voice #2 (Critical) and #3 (measurement part), confidence 9/10, docs/designs/limitline-mvp.md (Success Criteria: "7 or more attempt challenge 1", "5 or more come back and attempt challenge 2"), reviewer: Claude subagent, parent agrees
+Plan baseline: success and kill thresholds written for weekly challenges (approved in /office-hours D10 revision); no weekly challenges after D11.
+Runtime evidence: unknown (no pilot yet).
+Comparison grid:
+| Choice | Current | A | B | C |
+|---|---|---|---|---|
+| R14 "returned" | attempted challenge 2 | submitted 1+ valid activity in BOTH week 3 and week 4 | submitted 1+ valid activity in week 4 | beat their own limit at least once after week 1 |
+| Success / kill / gray | 5+ / <4 / 4 of 10 | 5+ / <4 / 4 of 10 (unchanged numbers) | same numbers | same numbers |
+| Extra tracking (outside voice #3) | none | base-only vs double embers per athlete, plus the one-question exit survey | same | same |
+| D12 embers rule | base + 2x | unchanged | unchanged | unchanged |
+Question D20:
+D20 — How do we count an athlete as "came back" in the pilot?
+Project/branch/task: LIMITLINE on main, eng review; Success Criteria still count "attempts at challenge 2", but there are no weekly challenges now (D11).
+ELI10: The pilot exists to answer one question: do athletes keep coming back? We need a clear rule for "came back" before recruiting, or the pilot can't give a yes or no. The thresholds stay the same (5 of 10 = success, under 4 = rethink, 4 = run 2 more weeks). The change is what counts. We'll also track, per athlete, how many embers came from just completing quests vs from beating their limit, so you can see which one actually pulls people back.
+Stakes if we pick wrong: too loose a rule says "success" when people only logged a run or two; too strict a rule says "fail" because it's off-season and limits are hard to beat.
+Recommendation: A because activity in both of the last two weeks shows a habit, not a one-off, and the embers split shows whether beating limits is the reason.
+Note: options differ in kind, not coverage — no completeness score.
+Pros / cons:
+A) Active in weeks 3 AND 4 (recommended)
+  ✅ Shows a real habit forming, not curiosity that fades
+  ✅ Fair in off-season: any completed quest counts
+  ❌ An athlete who's sick in week 3 counts as not returning
+B) Active in week 4 only
+  ✅ Simplest; forgives one missed week
+  ❌ One last-minute run counts the same as a month of use
+C) Beat their limit after week 1
+  ✅ Measures your exact thesis, effort beyond your limit
+  ❌ Off-season makes limits hard to beat, so it may read "fail" when the real cause is timing
+Net: A measures habit; the embers split separately tells you if the limit mechanic is why.
+Header: Success metric
+Options:
+A) Weeks 3 and 4 (recommended)
+"Came back" = at least one valid activity in BOTH week 3 and week 4. Same thresholds. Track base vs double embers per athlete and ask non-returners one question.
+B) Week 4 only
+"Came back" = at least one valid activity in week 4. Same thresholds and tracking.
+C) Beat limit after week 1
+"Came back" = beat their own limit at least once after week 1. Same thresholds and tracking.
+
+State: approved
+Actual answer: A) Weeks 3 and 4 (recommended), answer to D20
+Accepted scope: "Came back" = at least one valid activity in BOTH week 3 and week 4. Same thresholds (5+ success, <4 rethink, 4 = run 2 more weeks with a smaller step). Track base vs double embers per athlete and ask non-returners one question.
+History: none
+
+### R15: Seeding limits at the start of the pilot
+Finding: Outside Voice #4, High, confidence 8/10, amendments ("Limits: set from the founder's reading of each athlete's last 6-8 weeks") vs v1 rules ("4 qualifying efforts"), reviewer: Claude subagent, parent agrees
+Plan baseline: limits from the founder's reading of 6-8 weeks of history; doubling only after 4 verified efforts of a type; seeding step undefined.
+Runtime evidence: unknown (no pilot yet). Estimated entry counts: about 50 seed entries (10 athletes x up to 5 types) for A; about 200 for B [estimated].
+Comparison grid:
+| Choice | Current | A | B | C |
+|---|---|---|---|---|
+| R15 seeding | undefined | founder enters ONE seed limit per athlete per type (their best from the last 8 weeks) and ticks "saw 4+ efforts"; doubling unlocks from day one where ticked | founder enters every historical effort as a verified entry; limit and the 4-effort rule are computed from them | no seeding: limits form only from pilot activities; doubling after 4 pilot efforts per type |
+| Founder entry work before Nov 16 | unknown | ~50 entries [estimated] | ~200 entries [estimated] | none |
+| D12 doubling, D17 confirm step | approved | unchanged | unchanged | unchanged |
+Question D21:
+D21 — How should each athlete's starting limits be set before the pilot?
+Project/branch/task: LIMITLINE on main, eng review; the plan says limits come from 6-8 weeks of history, but also that doubling needs 4 verified efforts, and never says how history gets in.
+ELI10: To double embers on day one, every athlete needs a starting limit for each quest type. You'll find those on Strava by looking back 8 weeks. The simplest way is to type just one number per type: their best in that time, and tick a box if you saw at least 4 efforts. Typing every past workout is more exact but about 4 times the work. Skipping it means limits only form during the pilot, and most athletes won't hit 4 efforts of a type in time, so doubling would hardly ever happen.
+Stakes if we pick wrong: no seeding means the "beat your limit" moment, your core idea, may barely appear in the pilot.
+Recommendation: A because one number per type gives everyone a fair limit from day one for about 50 entries of work.
+Completeness: A=9/10, B=10/10, C=4/10
+Pros / cons:
+A) One seed limit per type (recommended) (human: ~2-3 hours of entry / CC: ~15 min to build)
+  ✅ Doubling works from day one; about 50 entries total
+  ✅ Same fairness: the seed is their real best from the last 8 weeks
+  ❌ The "4 efforts" check is your tick, not counted by the app
+B) Enter every past effort
+  ✅ Most exact; the app counts the 4 efforts itself
+  ❌ About 200 entries to type before Nov 16, on top of recruiting
+C) No seeding
+  ✅ No extra entry work at all
+  ❌ Doubling rarely fires in 4 weeks; the pilot barely tests your idea
+Net: A gets the core mechanic working from day one for a few hours of typing.
+Header: Starting limits
+Options:
+A) One seed per type (recommended)
+You enter each athlete's best from the last 8 weeks, once per quest type, and tick "saw 4+ efforts"; doubling unlocks from day one where ticked.
+B) Every past effort
+You enter every historical effort as a verified entry; the app works out limits and the 4-effort rule.
+C) No seeding
+Limits form only from pilot activities; doubling after 4 pilot efforts per type.
+
+State: approved
+Actual answer: A) One seed per type (recommended), answer to D21
+Accepted scope: Before the pilot the founder enters each athlete's best from the last 8 weeks once per quest type and ticks "saw 4+ efforts"; doubling unlocks from day one where ticked. About 50 entries [estimated].
+History: none
+
+### R16: Check what Strava shows the founder before building
+Finding: Outside Voice #5, High, confidence 7/10, amendments (D13: "The founder opens it, checks it, and types the numbers"), reviewer: Claude subagent, parent agrees
+Plan baseline: the founder reads best 5 km/10 km inside longer runs, 20-min power, pool 400/1500 m times and elevation from other athletes' activities; not verified.
+Runtime evidence: unknown. Athletes can hide some stats; some analysis views may need a Strava subscription (outside voice, unverified).
+Comparison grid:
+| Choice | Current | A | B |
+|---|---|---|---|
+| R16 readability check | none | by Tue Nov 3, the founder opens 2-3 real athletes' recent run, ride and pool-swim activities as a follower on a free account and confirms each quest number is visible; any number that isn't visible gets a fallback rule (e.g. whole-activity time for a run of exactly 5 or 10 km) before the build starts | no check; find out during the pilot |
+| Build start | Nov 2 | build starts on non-quest parts (login, board, shop) Nov 2; quest-entry form waits for the check | Nov 2 as planned |
+| D13, D21 | approved | unchanged | unchanged |
+Question D22:
+D22 — Check you can read the numbers on Strava before building the quest form?
+Project/branch/task: LIMITLINE on main, eng review; the whole pilot relies on you reading other athletes' splits, power and swim times on Strava (D13), and nobody has checked that.
+ELI10: Your admin form asks for things like "fastest 5 km inside this run", "best 20 minutes of power" and "1500 m pool time". On someone else's activity, as a follower on a free Strava account, some of those may be hidden or need a paid subscription. Spending 30 minutes with 2-3 real athletes' activities tells you which numbers you can really see. If one isn't visible, we pick a simple fallback (like "run exactly 5 km and use the total time") before building around it.
+Stakes if we pick wrong: if a number turns out to be invisible after the build, that quest can't be checked and the form has to be redone mid-pilot.
+Recommendation: A because a 30-minute check now prevents building a form around numbers you can't see.
+Completeness: A=10/10, B=5/10
+Pros / cons:
+A) Check by Nov 3 (recommended) (human: ~30 min)
+  ✅ You know which quest numbers are really visible before building
+  ✅ Login, boards and shop can still start Nov 2; no time lost
+  ❌ Needs 2-3 athletes who already let you follow them
+B) Skip the check
+  ✅ No extra step this week
+  ❌ A hidden or paid-only number could break a quest during the pilot
+Net: 30 minutes now against a mid-pilot redesign.
+Header: Strava check
+Options:
+A) Check by Nov 3 (recommended)
+Open 2-3 real athletes' recent run, ride and pool-swim activities as a follower on a free account; confirm each quest number is visible; set a fallback rule for any that isn't. Login, boards and shop start Nov 2; the quest-entry form waits for the check.
+B) Skip the check
+Build everything from Nov 2 and find out during the pilot.
+
+State: approved
+Actual answer: A) Check by Nov 3 (recommended), answer to D22
+Accepted scope: By Tue Nov 3 the founder opens 2-3 real athletes' recent run, ride and pool-swim activities as a follower on a free account, confirms each quest number is visible, and sets a fallback rule for any that isn't. Login, boards and shop start Nov 2; the quest-entry form waits for the check.
+History: none
+
+### R17: Login method
+Finding: Outside Voice #12, Medium, confidence 6/10 (Medium confidence, verify this is actually an issue), Proposed tools ("email magic link"), reviewer: Claude subagent, parent agrees
+Plan baseline: Sign up with an email magic link (approved core loop step 1); custom SMTP via Resend.
+Runtime evidence: unknown; outside voice reports that links opened in a mail app's built-in browser commonly fail with @supabase/ssr (unverified).
+Comparison grid:
+| Choice | Current | A | B |
+|---|---|---|---|
+| R17 login | clickable email link | 6-digit email code typed into the same browser (Supabase email one-time code) | keep the clickable link; test it on iPhone Mail, Gmail app and Android before the pilot |
+| Custom SMTP (Resend) | approved | unchanged | unchanged |
+Question D23:
+D23 — Should athletes log in with a 6-digit email code instead of a clickable link?
+Project/branch/task: LIMITLINE on main, eng review; the plan uses clickable email login links (core loop step 1).
+ELI10: With a login link, an athlete taps it in their mail app, and it often opens in the mail app's own mini-browser, not the browser where they started. The app then doesn't recognise them and they're stuck. With a 6-digit code, they read the code in the email and type it where they started, so it always works. It's the same email service and the same security, just one extra thing to type.
+Stakes if we pick wrong: if login links fail on phones, athletes give up on day one and the pilot loses people before it starts.
+Recommendation: A because a typed code works the same on every phone and mail app, and losing even one of 10 athletes at login hurts.
+Completeness: A=9/10, B=7/10
+Pros / cons:
+A) 6-digit code (recommended) (human: ~same / CC: ~same)
+  ✅ Works in every mail app and browser, no matter where the email opens
+  ✅ Same email service, same security
+  ❌ Athletes type 6 digits instead of tapping once
+B) Keep the link, test on phones
+  ✅ One tap when it works
+  ❌ Needs testing on several phones and mail apps, and may still fail for some
+Net: A trades one tap for six digits that always work.
+Header: Login
+Options:
+A) 6-digit code (recommended)
+Athletes get an email with a 6-digit code and type it into the page where they started; no link to tap.
+B) Keep the link, test it
+Keep the clickable login link; test it on iPhone Mail, Gmail and Android mail apps before the pilot.
+
+State: approved
+Actual answer: B) Keep the link, test it, answer to D23
+Accepted scope: Keep the clickable email login link; test it on iPhone Mail, Gmail and Android mail apps before the pilot. Shortcut (Completeness 7): upgrade to the 6-digit code if any pilot athlete gets stuck at login.
+History: none
+
+Outside voice findings not turned into questions: #3 measurement handled in D20 (base vs double embers tracked); D12 embers rule kept as the founder's reasoned choice. #10 post-pilot data source -> TODO proposal. #11 embers amounts, shop prices and prize budget -> Open Question (founder sets before Nov 16). #13 founder workload (~50-100 entries a week [estimated]) and the follow/visibility request -> risk noted in Failure modes. #15 per-sport confirm threshold -> noted; D17 (10%) kept unless reopened.
+
+## TODOS.md proposals
+### R18: TODO — automate activity checking before scaling past ~20 athletes
+Finding: Outside Voice #10, Medium, confidence 7/10, D13 accepted scope ("manual checking stops scaling past ~20 athletes [estimated]"), reviewer: Claude subagent, parent agrees
+Plan baseline: no post-pilot data source named; file upload rejected for v1 (D13); Strava API blocks a shared board (Nov 2024 rules).
+Runtime evidence: none (no TODOS.md exists).
+TODO body:
+- What: pick and build an automatic way to verify activities (most likely file upload with the in-browser reader designed in this review, or a Strava API connection for a private self-view only).
+- Why: founder hand-checking (D13) is about 50-100 entries a week at 10 athletes [estimated] and breaks past ~20.
+- Pros: unblocks growth after a successful pilot; reuses the file-engine design already reviewed (intake, metrics, fingerprint).
+- Cons: 1-2 weeks of build [estimated]; file upload adds friction for athletes; Strava API cannot feed shared boards.
+- Context: start from this doc's Section 1 diagram and the D6/D9 decisions; revisit only if the D20 pilot result is "success".
+- Depends on / blocked by: pilot result (D20), Dec 13-20.
+Comparison grid:
+| Choice | Current | A | B | C |
+|---|---|---|---|---|
+| R18 | not tracked | add to TODOS.md | skip | build now in this build |
+Question D24:
+D24 — Add "automate activity checking before growing past ~20 athletes" to the TODO list?
+Project/branch/task: LIMITLINE on main, eng review; you'll check every activity by hand (D13), which works for 10 athletes but not 50.
+ELI10: A TODO list is where we park important later work so it isn't forgotten. If the pilot works, the first thing that breaks is you: reading 50-100 Strava activities a week by hand. This TODO records the fix (most likely the file-upload reader we designed earlier) and says when to start it: only after the pilot shows athletes come back.
+Stakes if we pick wrong: without it, a successful pilot runs straight into a wall of manual checking with no plan ready.
+Recommendation: A because it costs nothing now and has the next step written down for when the pilot succeeds.
+Note: options differ in kind, not coverage — no completeness score.
+Pros / cons:
+A) Add to TODOS.md (recommended)
+  ✅ The scaling plan is written down for when the pilot works
+  ✅ Costs nothing to build now
+  ❌ One more file in the repo to keep up to date
+B) Skip
+  ✅ Keeps the repo minimal
+  ❌ The post-pilot plan lives only in this long review doc
+C) Build it now
+  ✅ Ready to scale the moment the pilot ends
+  ❌ Weeks of building for a problem you may never have
+Net: A writes the next step down without building it early.
+Header: TODO
+Options:
+A) Add to TODOS.md (recommended)
+Create TODOS.md with this item (what, why, pros, cons, context, depends on).
+B) Skip
+Don't track it outside this review.
+C) Build it now
+Add automated checking to the current build.
+
+State: approved
+Actual answer: A) Add to TODOS.md (recommended), answer to D24
+Accepted scope: Create TODOS.md with this item (what, why, pros, cons, context, depends on).
+History: none
+
+Approval readiness: PASS — checked R1 (D8), R2 (D9), R3 (D11 free text, confirmed D12), R6 (D16), R7 (D12 free text), R8 (D13), R9 (D14), R10 (D15), R11 (D17), R12 (D18), R13 (D19), R14 (D20), R15 (D21), R16 (D22), R17 (D23), R18 (D24); scope selectors D5, D6, D7; R4 and R5 irrelevant (not asked).
+
+## NOT in scope
+- Strava bulk-export .zip upload: deferred (D6), then moot after D13.
+- File upload, in-browser file reader and @garmin/fitsdk: out of v1 (D13); tracked in TODOS.md.
+- "Connect with Strava" API: Strava's Nov 2024 rules block shared boards; new apps start at 1 athlete.
+- Open-water swim: GPS in water is unreliable (D14).
+- Weekly random prize draw: replaced by the embers shop (D15).
+- Concierge pilot (Google Form + Sheet): considered and not adopted (D19).
+- 6-digit email login code: not adopted (D23); upgrade trigger logged.
+- Automated anti-cheat, payments, brand portal, coaching, global chat: deferred since /office-hours.
+
+## What already exists
+Nothing in this repo (empty apart from docs). Reused off-the-shelf: Supabase Auth (email login links) and Postgres Row Level Security for privacy and the founder-only admin; Resend as custom SMTP; Next.js `next/og` for the share card image; Vercel deploys from GitHub. No shared-code extraction applies (no existing code).
+
+## Failure modes
+| Path | Realistic failure | Handling | Test | User sees |
+|---|---|---|---|---|
+| Submit link | Activity is private or the founder can't open it | Admin marks it "can't view" with a reason; athlete sees the reason (required, T7) | E2E submit flow | Clear message |
+| Admin entry | Typo inflates a limit | Confirm step on unusual entries (D17) + corrections recompute | Vitest + E2E | Corrected result |
+| Founder backlog | Entries wait hours or days | "Waiting for check" state on My quests | E2E | Clear status |
+| Shop | Double-tap redeem | Balance check and spend in one transaction | Vitest + E2E | Charged once |
+| Login | Link opens in a mail app's in-app browser and fails | Tested on iPhone Mail, Gmail, Android (D23); upgrade trigger logged | Manual pre-pilot test | Retry message |
+| Board | Off-season week with no passes | Empty state with quests completed (outside voice #6) | E2E | Non-empty board |
+| Deploy | GitHub push blocked | Install the Claude GitHub App or push manually before Nov 9 (T1) | n/a | n/a |
+| Privacy | Athlete reads another's private rows / non-founder opens admin | RLS + server-side role check | E2E (D18) | Access denied |
+Critical gaps (no test, no handling, silent): 0.
+
+## Worktree parallelization strategy
+| Step | Modules touched | Depends on |
+|---|---|---|
+| Database schema + RLS | supabase/ | — |
+| Rules engine + unit tests | lib/rules, tests/unit | — |
+| Auth + pages (submit, quests, board, shop) | app/, lib/data | Database schema |
+| Admin (queue, entry, corrections, seeds, fulfilment) | app/admin, lib/data | Database schema, Rules engine |
+| Share card | app/api/share-card | Rules engine |
+| E2E + CI | tests/e2e, .github/ | Pages, Admin |
+Parallel lanes: Lane A: schema -> auth + pages -> admin (shared lib/data). Lane B: rules engine -> share card (independent). Lane C: E2E + CI after A and B merge.
+Execution order: launch A + B; merge both; then C.
+Conflict flags: lib/data is shared by pages and admin, so keep those sequential within Lane A.
+
+## Implementation Tasks
+Synthesized from this review's findings. Each task derives from a specific finding above. Run with Claude Code or Codex; checkbox as you ship.
+
+- [ ] **T1 (P1, human: ~30min / CC: ~5min)** — Infrastructure — Unblock deploys: install the Claude GitHub App on shaaningit/limitline (or push manually), connect Vercel
+  - Surfaced by: Outside Voice #8 — Vercel and CI need GitHub pushes, which this session can't do (403)
+  - Files: none (GitHub and Vercel settings)
+  - Verify: `git push -u origin main` succeeds; Vercel preview deploy appears
+- [ ] **T2 (P1, human: ~30min)** — Founder — Check which quest numbers are visible on 2-3 athletes' Strava activities by Nov 3; set fallback rules
+  - Surfaced by: Outside Voice #5 / D22
+  - Files: docs/designs/limitline-mvp.md (record the results)
+  - Verify: each quest type has a visible number or a written fallback rule
+- [ ] **T3 (P1, human: ~1 day / CC: ~20min)** — Database — Supabase schema and RLS: profiles (hidden flag, display name), quest entries (unique Strava activity ID, status incl. "can't view"), seed limits with the 4+ tick, embers ledger, shop items, redemptions, founder role; indexes
+  - Surfaced by: Section 2 #2, #3, #4; Section 4 #1; D9, D15, D21
+  - Files: supabase/migrations/
+  - Verify: RLS E2E tests (T9); duplicate activity ID rejected
+- [ ] **T4 (P1, human: ~2 days / CC: ~20min)** — lib/rules — One METRICS constant (run 5/10 km, bike 20-min power, pool swim 400/1500 m); parseLink, questCompleted, limitBefore (seeds + entries), pctBeyond, embersFor (base, 2x after 4+ efforts), weekOf (pilot time zone), board ranking, redeem check
+  - Surfaced by: Section 1 #3; D9, D11, D12, D14, D16, D21
+  - Files: lib/rules/, tests/unit/
+  - Verify: `npx vitest run` with table-driven cases from the Section 3 diagram
+- [ ] **T5 (P1, human: ~half day / CC: ~10min)** — Auth — Email login link via Resend custom SMTP + callback; test on iPhone Mail, Gmail and Android before the pilot
+  - Surfaced by: D23 (Outside Voice #12)
+  - Files: app/login, app/auth/callback, lib/data
+  - Verify: manual login on 3 mail apps; E2E login test
+- [ ] **T6 (P1, human: ~3 days / CC: ~30min)** — Pages — Submit link (validation, duplicates, "waiting for check"), My quests (embers, limits, statuses), three members-only boards (empty state, hide option), shop (atomic redeem)
+  - Surfaced by: Section 2 #2, #3; D15, D16; Outside Voice #6
+  - Files: app/submit, app/quests, app/board, app/shop, lib/data
+  - Verify: Playwright E2E (T9)
+- [ ] **T7 (P1, human: ~2 days / CC: ~20min)** — Admin — Founder-only queue: open link, enter numbers, preview % and embers, confirm on >10% or first result, "can't view" with reason, corrections that recompute, seed-limit entry, mark shop items given
+  - Surfaced by: Section 2 #1; D13, D17, D21; Failure modes
+  - Files: app/admin, lib/data
+  - Verify: E2E admin flow + non-founder blocked server-side
+- [ ] **T8 (P2, human: ~half day / CC: ~10min)** — Share card — next/og image for passed results only; name only if opted in
+  - Surfaced by: Section 3 diagram (share-card path)
+  - Files: app/api/share-card
+  - Verify: unit test rejects non-passed results; manual image check
+- [ ] **T9 (P1, human: ~2 days / CC: ~30min)** — Tests/CI — Playwright E2E for the 7 paths against local Supabase; Vitest + Playwright in GitHub Actions
+  - Surfaced by: D18
+  - Files: tests/e2e/, .github/workflows/
+  - Verify: CI green on a pull request
+- [ ] **T10 (P1, human: ~3h)** — Founder — Enter seed limits (~50 entries) and set embers amounts, shop prices, stock and prize budget before Nov 16
+  - Surfaced by: D21; Outside Voice #11 (Open Question 7)
+  - Files: none (admin page data)
+  - Verify: every athlete has a seed per quest type they do; shop shows priced items
+- [ ] **T11 (P2, human: ~1h / CC: ~10min)** — Docs — Update the wireframe sketch to the quests, embers and shop model
+  - Surfaced by: Outside Voice (critical files: wireframe has the wrong model)
+  - Files: docs/designs/limitline-mvp-sketch.html, .png
+  - Verify: sketch shows quests, embers, three boards and the shop
+
+## Unresolved decisions
+None in this review. Open Question 7 (embers amounts, shop prices, prize budget) is founder data entry before Nov 16, tracked as T10.
+
+## Completion summary
+- Step 0: Scope Challenge — scope reduced per recommendation (.zip upload deferred, D6)
+- Reality rows: 7/7 applicable rows emitted (PLAN_REALITY complete), 2 unverified premises
+- Architecture Review: 4 issues found
+- Code Quality Review: 4 issues found
+- Test Review: diagram produced, 27 gaps identified
+- Performance Review: 1 issue found
+- NOT in scope: written
+- What already exists: written
+- TODOS.md updates: 1 item proposed to user (added)
+- Failure modes: 0 critical gaps flagged
+- Unresolved decisions: 0 in this review
+- Outside voice: Codex not installed; native fallback (Claude Plan subagent) completed, 15 findings; outside coverage unavailable
+- Parallelization: 3 lanes, 2 parallel / 1 sequential
+- Lake Score: 6/10 = answers picking a 10/10 option / answers scored for Completeness
+
+## GSTACK REVIEW REPORT
+
+| Review | Trigger | Why | Runs | Status | Findings |
+|--------|---------|-----|------|--------|----------|
+| CEO Review | `/plan-ceo-review` | Scope & strategy | 0 | — | — |
+| Outside Review | codex not installed; native Claude Plan subagent | Independent 2nd opinion | 1 | unavailable (native fallback completed) | 15 findings: 2 critical, 6 high; 1 rejected by founder (D19), others decided or applied |
+| Eng Review | `/plan-eng-review` | Architecture & tests (required) | 1 | ISSUES OPEN (not persisted until logged) | 36 issues, 0 critical gaps |
+| Design Review | `/plan-design-review` | UI/UX gaps | 0 | — | — |
+| DX Review | `/plan-devex-review` | Developer experience gaps | 0 | — | — |
+
+- **OUTSIDE COVERAGE:** codex, phase plan-review: unavailable (CLI not installed). Native Claude Plan subagent completed within the timer with 15 findings; this does not count as outside coverage.
+- **VERDICT:** No reviews CLEAR. Eng review found issues that are all decided and mapped to Implementation Tasks T1-T11; eng review required (status issues_open).
+
+NO UNRESOLVED DECISIONS
