@@ -88,6 +88,7 @@ Decided in `/plan-eng-review` on 2026-10-29 to 2026-10-31 (see Decision ledger a
 - **Embers shop (D15):** athletes spend embers on items the founder stocks (brand codes if a brand joins, otherwise founder-sourced prizes); the founder hands them out and marks them given. **This replaces the weekly random draw** in "Who gets rewarded".
 - **Valid activity for links (outside voice #9, consistency with D13/D14):** recorded after the athlete's pilot sign-up; belongs to the athlete who submitted it (the founder checks the name); run and bike outdoor only; pool swims are exempt from the GPS rule; each Strava activity ID once.
 - **Empty board state (outside voice #6):** a board with no passes this week shows "Nobody beat their limit yet this week" plus the number of quests completed, never a blank page.
+- **Email domain (eng re-review D1):** before Nov 9 the founder buys a domain (e.g. limitline.app), verifies it in Resend, and all login and result emails come from an address on it. Resend free plan: 100 emails/day, 3,000/month.
 - **Deploy dependency (outside voice #8):** before Nov 9, either install the Claude GitHub App on shaaningit/limitline or have the founder push manually, then connect Vercel. Without one of these, nothing can deploy.
 - **Boards (D16):** three members-only boards (Run: 5 km and 10 km together; Bike; Swim: 400 m and 1500 m together), ranked by each athlete's best % beyond own limit this week; reset every Monday in the pilot's time zone (the founder's).
 
@@ -1572,6 +1573,78 @@ Remaining gaps keeping passes below 10: no picture mockups to verify the visual 
 
 ### Unresolved Decisions
 None.
+
+# Engineering re-review after design decisions (plan-eng-review, 2026-10-31)
+
+Target: `docs/designs/limitline-mvp.md`, focusing on what design decisions 1A-15A change technically. Earlier eng decisions (R1-R18, D4-D24) are carried forward unchanged.
+
+## Re-review Scope Challenge
+Complexity: still above 8 files / 2 new modules; the structure answer D7 (Original arrangement) is reused as the exact prior approval; no feature cuts proposed (all design features were approved one by one in the design review). Scope Challenge result: scope accepted as-is.
+External facts checked: Resend free plan is 100 emails/day and 3,000/month, and the onboarding@resend.dev sandbox only delivers to the account owner's address until a domain is verified ([Resend limits](https://resend.com/docs/knowledge-base/account-quotas-and-limits), [Resend 403 guide](https://resend.com/docs/knowledge-base/403-error-resend-dev-domain)). next/og (Satori) needs TTF/OTF font data, not WOFF2 ([Vercel guide](https://vercel.com/guides/using-custom-font)).
+
+REALITY: premise-table finding unverified=1 (founder can read quest numbers on Strava, pending D22 check by Nov 3) docs/designs/limitline-mvp.md:83
+REALITY: already-done pass no code exists; git log shows only plan commits docs/designs/limitline-mvp.md:1
+REALITY: surface-check pass named packages exist: @supabase/ssr, next/og, Resend, @axe-core/playwright docs/designs/limitline-mvp.md:95
+REALITY: binding-decisions pass eng D4-D24 and design 1A-15A are consistent; no reintroduced default docs/designs/limitline-mvp.md:83
+REALITY: numbers pass Resend 100/day [measured: Resend docs]; email volume ~50-100 results + logins a week [estimated] fits docs/designs/limitline-mvp.md:95
+REALITY: deferred-asks pass no linked issue docs/designs/limitline-mvp.md:1
+REALITY: pr-count pass default one PR per wave; no ship-policy file docs/designs/limitline-mvp.md:1
+
+### Re-review findings
+1. [CRITICAL] (confidence: 8/10) docs/designs/limitline-mvp.md (design 3A: "never raw times or watts") — if the board reads the entries table, any signed-in athlete can fetch other athletes' raw times through the Supabase API even though the screen hides them. Required work for approved 3A: the entries table's access rules allow own rows + founder only; boards read from a database view or function that returns only rank, display name, quest label and %.
+2. [INFORMATIONAL] (confidence: 9/10) Proposed tools (Resend) and design 5A — Resend's sandbox sender only delivers to the founder's own address; login links (D23) and result emails (5A) need a verified sending domain. Decision R19.
+3. [INFORMATIONAL] (confidence: 8/10) design 5A — required error handling: save the entry first, then send the email; a failed send is recorded and the admin shows "email not sent, retry" instead of failing silently.
+4. [INFORMATIONAL] (confidence: 8/10) design 6A/9A — required: bundle Barlow Condensed as a .ttf file in the repo for the share image (next/og rejects WOFF2).
+5. [INFORMATIONAL] (confidence: 7/10) design 7A — required clarification: the app can't see Strava follows or visibility, so checklist steps 1-2 are ticked by the athlete; step 3 ticks itself on the first submission.
+6. [INFORMATIONAL] (confidence: 7/10) design 8A — required: the "How embers work" numbers (base embers, 2x, 4 efforts) come from the same config lib/rules uses, never typed into the page (hand-synced list).
+7. [INFORMATIONAL] (confidence: 7/10) designs 5A/15A — required data: a "seen" flag per result for the result card; profile fields show_on_boards and show_name_on_share, enforced on the server (board view, share card), not only in the UI.
+8. [INFORMATIONAL] (confidence: 7/10) design 14A — required validation: minutes and seconds 0-59, watts within a sane range (e.g. 50-2,000 [estimated]), with unit tests.
+9. [INFORMATIONAL] (confidence: 6/10) design 13A / DT10 — Medium confidence, verify this is actually an issue: the automated accessibility scan needs the @axe-core/playwright test package; it serves approved 13A.
+
+### R19: Email sending domain
+Finding: Re-review #2, INFORMATIONAL, confidence 9/10, Proposed tools ("A transactional email service (e.g. Resend...)"), reviewer: plan-eng-review (Claude)
+Plan baseline: Resend as custom SMTP for login links (D23) and result emails (5A); no domain named.
+Runtime evidence: Resend docs: sandbox sender delivers only to the account owner; verified domain required for other recipients; free plan 100/day, 3,000/month.
+Comparison grid:
+| Choice | Current | A | B |
+|---|---|---|---|
+| R19 sending domain | none | founder buys a domain (e.g. limitline.app, about $10-20/yr [estimated]) and verifies it in Resend before Nov 9; emails come from hello@<domain> | send from the founder's personal Gmail through Gmail SMTP (app password), no domain |
+| Daily limit | n/a | Resend free 100/day | Gmail ~500/day for personal accounts [estimated, unverified] |
+| D23 login link, 5A result emails | approved | unchanged | unchanged |
+Question D1:
+D1 — How should LIMITLINE send its emails (login links and result alerts)?
+Project/branch/task: LIMITLINE on main, eng re-review; the plan uses Resend for login links (D23) and result emails (5A), but Resend only sends to strangers from a domain you own and have verified.
+ELI10: To email athletes, an app needs a "from" address that email providers trust. Resend's free test sender only delivers to your own inbox, so athletes would get nothing, not even login links. The fix is to own a web address (a domain like limitline.app, roughly $10-20 a year) and prove it's yours by adding a few settings, which takes about 30 minutes. The free alternative is sending through your own Gmail with an app password, which works for 10 people but puts your personal address on every email and can land in spam.
+Stakes if we pick wrong: with no working sender, nobody can log in on Nov 16 and the pilot can't start.
+Recommendation: A because a domain makes login and result emails reliable for about the price of a lunch, and you'll want it for the app's web address anyway.
+Completeness: A=10/10, B=6/10
+Pros / cons:
+A) Buy and verify a domain (recommended) (human: ~30 min + ~$10-20/yr / CC: ~5 min config)
+  ✅ Login and result emails reliably reach athletes' inboxes
+  ✅ The same domain gives the app a real web address instead of a vercel.app one
+  ❌ Small yearly cost and a one-time 30-minute setup before Nov 9
+B) Send from your personal Gmail
+  ✅ Free and quick to set up for a 10-person pilot
+  ❌ Your personal address on every email, more spam risk, and it breaks when you grow
+Net: A costs a little money for reliable email; B is free but fragile and personal.
+Header: Email domain
+Options:
+A) Buy and verify a domain (recommended)
+Founder buys a domain (e.g. limitline.app) before Nov 9, verifies it in Resend, and emails come from an address on it; the app can use the same domain.
+B) Personal Gmail
+Send login and result emails from the founder's Gmail via an app password; no domain.
+
+State: approved
+Actual answer: A) Buy and verify a domain (recommended), answer to D1 (eng re-review)
+Accepted scope: Founder buys a domain (e.g. limitline.app) before Nov 9, verifies it in Resend, and emails come from an address on it; the app can use the same domain.
+History: none
+
+
+### Re-review Sections 1-4
+Section 1 (Architecture): new pieces from design 5A-15A: lib/email.sendResult() called after the entry transaction commits (email_status sent/failed, admin retry); DB view board_week exposing only rank, display name, quest label and %; /api/share-card with bundled Barlow Condensed .ttf; profile fields show_on_boards and show_name_on_share; results.seen_at. Findings #1 and #3 above are required work. Design-twice: only new module is a one-function lib/email; no second shape needed. Dispositions: #1, #3 required (approved 3A, 5A).
+Section 2 (Code quality): #6 (explainer reads rules config) and #8 (input validation) required. Dispositions: required (approved 8A, 14A).
+Section 3 (Tests): 9 new paths, all GAP, covered by approved frameworks (D18) plus @axe-core/playwright for approved 13A: result email sent on save and failure shows retry [E2E]; board view never returns raw times/watts (direct API query as another athlete) [E2E]; hidden athlete absent from board view; share card refuses non-passed results and omits name unless opted in; result card shows until seen; first-run checklist ticks (manual 1-2, auto 3); explainer numbers match rules config (unit); time/watts validation (unit); accessibility scan at 360, 768, 1280 px [E2E]. Test plan artifact updated.
+Section 4 (Performance): no issues; ~20 emails on a busy day [estimated] vs Resend 100/day; email sends after commit so admin entry never waits on it.
 
 ## GSTACK REVIEW REPORT
 
