@@ -1,4 +1,5 @@
 import "server-only";
+import { connection } from "next/server";
 import { buildBoard, limitBefore, weekStart, type Seed, type VerifiedEntry } from "@/lib/rules";
 import { EMBERS, PILOT_TIME_ZONE, QUEST_IDS, type QuestId, type RejectReason, type Sport } from "@/lib/rules/config";
 import type { requireAthlete } from "./session";
@@ -61,7 +62,9 @@ export async function getMyQuests(session: Session) {
   };
 }
 
-export function currentWeek(): string {
+// "This week" depends on when the request happens, so it must never be prerendered.
+export async function currentWeek(): Promise<string> {
+  await connection();
   return weekStart(new Date(), PILOT_TIME_ZONE);
 }
 

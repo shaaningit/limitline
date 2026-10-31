@@ -11,7 +11,7 @@ export default async function BoardPage({ searchParams }: PageProps<"/board">) {
   const session = await requireAthlete();
   const { sport: raw } = await searchParams;
   const sport: Sport = BOARDS.includes(raw as Sport) ? (raw as Sport) : "run";
-  const week = currentWeek();
+  const week = await currentWeek();
   const board = await getBoard(session, sport, week);
   const me = board.rows.find((r) => r.isMe);
 
@@ -60,7 +60,7 @@ export default async function BoardPage({ searchParams }: PageProps<"/board">) {
 
       {board.rows.length > 0 && board.othersCompleted > 0 && (
         <p className="muted" style={{ marginTop: "var(--space-2)" }}>
-          {board.othersCompleted} others completed quests this week
+          {board.othersCompleted} other {board.othersCompleted === 1 ? "athlete" : "athletes"} completed quests this week
         </p>
       )}
     </>
