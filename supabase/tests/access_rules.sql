@@ -190,4 +190,47 @@ do $$ begin
 end $$;
 reset role;
 
+-- ---------- founder_update_entries: founder only, all or nothing ----------
+set role authenticated;
+set app.uid = '00000000-0000-0000-0000-00000000000a';
+do $$ begin
+  begin
+    perform public.founder_update_entries('[{"id": "10000000-0000-0000-0000-00000000000a", "embers": 999}]');
+    raise exception 'TEST FAIL: athlete used founder_update_entries';
+  exception when others then if sqlerrm not like '%founder only%' then raise; end if; end;
+end $$;
+reset role;
+
+set role authenticated;
+set app.uid = '00000000-0000-0000-0000-0000000000f0';
+do $$ begin
+  -- Second row doesn't exist: the first row's change must be rolled back too.
+  begin
+    perform public.founder_update_entries('[
+      {"id": "10000000-0000-0000-0000-00000000000b", "embers": 5},
+      {"id": "10000000-0000-0000-0000-0000000000ff", "embers": 5}]');
+    raise exception 'TEST FAIL: batch with a missing row succeeded';
+  exception when others then if sqlerrm like 'TEST FAIL%' then raise; end if; end;
+  if (select embers from public.entries where id = '10000000-0000-0000-0000-00000000000b') <> 20 then
+    raise exception 'TEST FAIL: partial batch was applied';
+  end if;
+
+  -- A valid batch applies every row; keys left out keep their values.
+  if public.founder_update_entries('[
+      {"id": "10000000-0000-0000-0000-00000000000b", "embers": 10, "beat_limit": false, "percent": -0.5}]') <> 1 then
+    raise exception 'TEST FAIL: valid batch not applied';
+  end if;
+  if (select (embers, beat_limit, value) from public.entries where id = '10000000-0000-0000-0000-00000000000b')
+     is distinct from (10, false, 2892::numeric) then
+    raise exception 'TEST FAIL: valid batch applied wrong values';
+  end if;
+
+  -- Verifying without the required fields is refused by the table's checks.
+  begin
+    perform public.founder_update_entries('[{"id": "10000000-0000-0000-0000-00000000000a", "value": null}]');
+    raise exception 'TEST FAIL: verified entry saved without a value';
+  exception when check_violation then null; end;
+end $$;
+reset role;
+
 \echo ALL ACCESS-RULE TESTS PASSED
