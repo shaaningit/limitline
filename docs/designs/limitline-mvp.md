@@ -91,6 +91,57 @@ Decided in `/plan-eng-review` on 2026-10-29 to 2026-10-31 (see Decision ledger a
 - **Deploy dependency (outside voice #8):** before Nov 9, either install the Claude GitHub App on shaaningit/limitline or have the founder push manually, then connect Vercel. Without one of these, nothing can deploy.
 - **Boards (D16):** three members-only boards (Run: 5 km and 10 km together; Bike; Swim: 400 m and 1500 m together), ranked by each athlete's best % beyond own limit this week; reset every Monday in the pilot's time zone (the founder's).
 
+### Design review decisions (binding; from `/plan-design-review`, 2026-10-31)
+- **Home and navigation (design 1A):** athletes land on **My quests**. Top to bottom: embers balance; a large "Paste a Strava link" button; new and waiting results; limits per quest type. A bottom bar with 3 tabs (Quests, Board, Shop) is always visible on phones. The admin page is reached only from the founder's login, never from the bar.
+- **Quest choice (design 2A):** on the submit screen the athlete pastes a link, then picks the quest (run 5 km / run 10 km / bike 20-min power / swim 400 m / swim 1500 m). The founder can change it in admin. Every status row shows the chosen quest. Each activity still earns once.
+- **Board rows (design 3A):** each row shows rank, "First L.", quest label (e.g. Run 10 km) and +% beyond own limit, never raw times or watts. The viewer's own row is pinned. Below the ranking: "N others completed quests this week".
+- **Screen map (restates 1A-3A):**
+```
+ [Login] --email link--> [My quests]  <-- home (tab 1)
+                          1 embers balance
+                          2 [Paste a Strava link] -> [Submit: link + pick quest] -> back to My quests ("waiting for check")
+                          3 new / waiting results (status rows show quest)
+                          4 limits per quest type
+ Bottom bar (always):  Quests | Board | Shop
+ [Board] tabs Run / Bike / Swim: rank, First L., quest, +% ; own row pinned ; "N others completed quests"
+ [Shop]  items with embers price ; redeem
+ [Admin] founder login only: queue -> entry -> preview/confirm -> save ; corrections ; seeds ; mark given
+```
+- **Interaction states (design 4A):**
+
+| Screen | Loading | Empty | Error | Success | Partial / special |
+|---|---|---|---|---|---|
+| Login | "Sending…" on button | — | "That link expired, we've sent a new one" | "Check your email" | — |
+| Submit | Button shows "Checking link…" | — | "That's not a Strava activity link" / "Already submitted on <date>" / "Couldn't save, try again" (link kept in the box) | "Got it! Waiting for check", back to My quests | — |
+| My quests: results | Grey placeholder rows | "No activities yet. Paste your first Strava link" + button | — | Beat limit: "+3.4% beyond your limit · 2× embers". Completed: "Quest done · +10 embers. Your limit stands at 25:58" | "Waiting for check" · "Can't view: set activity to Followers" · "Before your sign-up, doesn't count" · "Bike quest needs power data" |
+| My quests: limits | Placeholder | "No limit yet. 2 of 4 efforts logged" | — | Limit per quest | Correction: "Founder corrected this result: embers 40 → 20" |
+| Board | Placeholder rows | "Nobody beat their limit yet this week · N quests completed" | "Couldn't load, pull to refresh" | Ranked rows | Hidden: "You're hidden from boards (change in Profile)" |
+| Shop | Placeholder | "Rewards are coming soon. Keep earning" | "Not enough embers, N to go" / "Sold out" | "Requested! The founder will hand it over" | "Requested" → "Handed over ✓" |
+- **Result alert (design 5A):** when the founder saves a result, the athlete gets an email. Beat limit: "You beat your 5 km limit: 25:58, +3.4%, double embers". Completed only: a short "Quest done, +10 embers" note. On their next visit a large result card sits at the top of My quests until they've seen it.
+- **Share card (design 6A):** a Share button appears on the result card only for limit-beating results. The 1080×1920 image shows +% beyond limit, the quest (e.g. Run 5 km) and the LIMITLINE name, plus the athlete's first name only if they opted in. No embers on the image.
+- **First run (design 7A):** on first login, My quests shows a 3-step checklist above everything else: (1) follow the founder on Strava, (2) set activity visibility to Followers (short how-to), (3) paste your first link. Steps tick off; the list disappears once done. The paste box hint reads "In the Strava app: Share → Copy link".
+- **Embers rules in the app (design 8A):** a "How embers work" sheet opens from the embers balance on My quests, in 4 lines: complete a quest = embers; beat your own limit = double; doubling starts after 4 efforts of a quest type; spend embers in the Shop. Each shop item shows "N embers to go".
+- **Visual direction (design 9A):** light mode by default (dark follows the phone setting); Barlow Condensed for display and numbers with tabular (equal-width) digits, IBM Plex Sans for body; one accent, ember gold `#E8A317`, on `#14161A` text and a white ground (deliberately not Strava orange); the +% beyond limit is the largest element wherever it appears; no decorative cards (the result card is the only card); one motion moment, a ~0.6 s ease-out count-up of +% and embers on the result card, off under prefers-reduced-motion; 8px spacing grid.
+- **DESIGN.md (design 10A):** before T6, write a short DESIGN.md from 9A only: CSS variables for colors (--ember #E8A317, --ink #14161A, --ground #FFFFFF, plus dark-mode values), fonts and type scale with tabular digits, 8px spacing, one corner radius, focus ring and text-selection color in ember, a visited-link color. Every screen uses these values. /design-consultation can expand it later.
+- **Gold contrast (design 11A):** ember gold is used only as a background (main button, embers chip, badges) with `#14161A` text on it (~8.3:1). Never gold text or thin gold lines on white (~2.2:1 fails). Body text at least 16px and 4.5:1 contrast.
+- **Responsive (design 12A):** athlete screens are phone-first from 360px wide, one column with the bottom bar; on wider screens they stay centered and capped at 480px. Admin is laptop-first: two panes (queue left, entry form right), falling back to one column below 768px.
+- **Accessibility (design 13A):** tap targets at least 44×44px; a visible label above every field (no placeholder-only labels); everything works by keyboard with an ember focus ring; header / main / bottom-nav landmarks; results announced in full words to screen readers (e.g. "3.4 percent beyond your limit, double embers").
+- **Admin entry form (design 14A):** fields change with the quest: h / mm / ss boxes for run and swim, one watts box for bike. The athlete's current limit is shown beside the input. The queue lists the oldest submissions first. Full keyboard flow: Tab between boxes, Enter to save, a shortcut for "can't view".
+- **Settings (design 15A):** tapping your initials (top corner of My quests) opens a Profile sheet: display name ("First L."), a "Show me on boards" switch, a "Show my name on share cards" switch, "Request data deletion" (opens an email to the founder), and Log out. The bottom bar stays at 3 tabs.
+- **Journey storyboard (restates 1A-8A):**
+
+| Step | Athlete does | Feels | Plan specifies |
+|---|---|---|---|
+| 1 | Invited at a tri shop or club | Curious, skeptical | Recruiting pitch |
+| 2 | Logs in, lands on My quests | "What do I do?" | First-run checklist (7A) |
+| 3 | Pastes a link, picks a quest | Hopeful | Submit + quest choice (1A, 2A), states (4A) |
+| 4 | Waits for the founder's check | Might forget | Email when checked (5A) |
+| 5 | Sees "+3.4% beyond your limit · 2× embers" | Proud, wants to share | Result card (5A) + Share (6A) |
+| 6 | Spends embers | Rewarded, has a next goal | Shop states (4A), "N embers to go" (8A) |
+| 7 | Weeks 3-4: comes back | Habit forming | Success metric D20 |
+
+5-second: "beat your own limit, earn embers". 5-minute: "I know how to earn double". 5-week: "I'm getting fitter and I can see it".
+
 ### v1 rules (what makes it fair)
 These settle what the first draft left open. `/plan-eng-review` may refine them.
 
@@ -1431,17 +1482,108 @@ None in this review. Open Question 7 (embers amounts, shop prices, prize budget)
 - Parallelization: 3 lanes, 2 parallel / 1 sequential
 - Lake Score: 6/10 = answers picking a 10/10 option / answers scored for Completeness
 
+# Design review: LIMITLINE MVP screens (plan-design-review, 2026-10-31)
+
+Target: `docs/designs/limitline-mvp.md`. All 15 decisions are recorded in "Design review decisions (binding)" near the top of this doc. Mockups were not generated: the gstack designer needs an OpenAI API key, and `api.openai.com` is blocked in this environment (`$D setup` enables it on another machine).
+
+Outside design voice: Claude subagent only (Codex not installed), 10 findings, all folded into passes 1-7. Litmus: brand on first screen NO, visual anchor NO, one job per section NO, others NOT SPEC'D, no hard rejections (before fixes).
+
+## Design review: NOT in scope
+- Picture mockups and a comparison board: designer unavailable here (no OpenAI key, network blocked).
+- A full researched design system: /design-consultation can expand the short DESIGN.md later (10A).
+- Landing or marketing page: recruiting happens in person and by message; no public page in v1.
+- Dark-mode-specific art direction: dark mode follows the phone setting using DESIGN.md dark values only (9A, 10A).
+
+## Design review: What already exists
+No UI code, no DESIGN.md and no components in the repo. The old wireframe (`docs/designs/limitline-mvp-sketch.html`) shows the superseded weekly-challenge model and is replaced by decisions 1A-15A (redraw tracked as eng task T11).
+
+## Design review: TODOS.md updates
+No design TODOs proposed: every gap was decided and lands in the implementation tasks below; nothing was deferred.
+
+## Design Review Implementation Tasks
+Synthesized from this review's findings. Each task derives from a specific finding above. Run with Claude Code or Codex; checkbox as you ship.
+
+- [ ] **DT1 (P1, human: ~1h / CC: ~10min)** — DESIGN.md — Write DESIGN.md from 9A, 10A and 11A (CSS variables, dark values, fonts with tabular digits, 8px grid, radius, ember focus ring and selection, visited links, gold-as-fill rule)
+  - Surfaced by: Pass 5 (1/10) and Pass 6 contrast finding (#E8A317 on white ~2.2:1)
+  - Files: DESIGN.md
+  - Verify: every color in the app comes from a DESIGN.md variable; contrast checks pass
+- [ ] **DT2 (P1, human: ~1h / CC: ~10min)** — Wireframe — Redraw the sketch to the 1A-15A model (My quests home, submit with quest picker, result card, board rows, shop, profile sheet, admin two-pane); replaces eng T11
+  - Surfaced by: Step 0 (outdated weekly-challenge wireframe)
+  - Files: docs/designs/limitline-mvp-sketch.html, docs/designs/limitline-mvp-sketch.png
+  - Verify: sketch matches the screen map and storyboard in this doc
+- [ ] **DT3 (P1, human: ~1 day / CC: ~20min)** — My quests — Home order (embers, paste button, results, limits), first-run checklist, result card with count-up and Share, "How embers work" sheet, Profile sheet
+  - Surfaced by: Pass 1 (1A), Pass 3 (5A, 7A, 8A), Pass 4 (9A), Pass 7 (15A)
+  - Files: app/quests
+  - Verify: Playwright first-run and result-card flows; reduced-motion disables count-up
+- [ ] **DT4 (P1, human: ~half day / CC: ~10min)** — Submit — Paste link, pick quest, all submit states and messages
+  - Surfaced by: Pass 1 (2A), Pass 2 (4A)
+  - Files: app/submit
+  - Verify: E2E for valid, duplicate, non-Strava and save-failure messages
+- [ ] **DT5 (P1, human: ~half day / CC: ~10min)** — Board — Rows with rank, First L., quest, +% only; own row pinned; "N others completed" line; empty and hidden states
+  - Surfaced by: Pass 1 (3A), Pass 2 (4A)
+  - Files: app/board
+  - Verify: E2E shows no raw times or watts; own row pinned
+- [ ] **DT6 (P1, human: ~half day / CC: ~10min)** — Shop — Items with "N embers to go", requested/handed-over states, not-enough and sold-out messages, empty shop copy
+  - Surfaced by: Pass 2 (4A), Pass 3 (8A)
+  - Files: app/shop
+  - Verify: E2E redeem flow and messages
+- [ ] **DT7 (P1, human: ~half day / CC: ~15min)** — Email — Result emails via Resend when the founder saves an entry (beat-limit and completed versions)
+  - Surfaced by: Pass 3 (5A), payoff moment silent under D13
+  - Files: lib/data (email on save), email templates
+  - Verify: saving an entry in admin sends the right email in a test inbox
+- [ ] **DT8 (P2, human: ~half day / CC: ~10min)** — Share card — 1080x1920 effort-only image (+%, quest, LIMITLINE, opt-in first name)
+  - Surfaced by: Pass 3 (6A)
+  - Files: app/api/share-card
+  - Verify: image renders for a passed result only; name appears only when opted in
+- [ ] **DT9 (P1, human: ~1 day / CC: ~20min)** — Admin — Two-pane layout on laptop, per-quest h/mm/ss or watts fields, current limit beside input, oldest-first queue, keyboard flow
+  - Surfaced by: Pass 6 (12A), Pass 7 (14A)
+  - Files: app/admin
+  - Verify: full entry by keyboard only; E2E at 1280px and 375px widths
+- [ ] **DT10 (P1, human: ~half day / CC: ~15min)** — Accessibility + responsive checks — 44px targets, visible labels, landmarks, screen-reader result text, 360px and 480px-cap layouts
+  - Surfaced by: Pass 6 (12A, 13A)
+  - Files: tests/e2e
+  - Verify: Playwright at 360px, 768px and 1280px; automated accessibility scan passes
+
+## Design Review Completion Summary
+```
+  +====================================================================+
+  |         DESIGN PLAN REVIEW — COMPLETION SUMMARY                    |
+  +====================================================================+
+  | System Audit         | no DESIGN.md; UI scope: 5 athlete screens + admin |
+  | Step 0               | 3/10 initial; all 7 areas (D1)              |
+  | Pass 1  (Info Arch)  | 2/10 → 8/10 after fixes                     |
+  | Pass 2  (States)     | 3/10 → 9/10 after fixes                     |
+  | Pass 3  (Journey)    | 3/10 → 9/10 after fixes                     |
+  | Pass 4  (AI Slop)    | 3/10 → 8/10 after fixes                     |
+  | Pass 5  (Design Sys) | 1/10 → 8/10 after fixes                     |
+  | Pass 6  (Responsive) | 2/10 → 9/10 after fixes                     |
+  | Pass 7  (Decisions)  | 2 resolved, 0 deferred                      |
+  +--------------------------------------------------------------------+
+  | NOT in scope         | written (4 items)                           |
+  | What already exists  | written                                     |
+  | TODOS.md updates     | 0 items proposed                            |
+  | Approved Mockups     | 0 generated, 0 approved (designer unavailable) |
+  | Decisions made       | 15 added to plan                            |
+  | Decisions deferred   | 0                                           |
+  | Overall design score | 1/10 → 8/10                                 |
+  +====================================================================+
+```
+Remaining gaps keeping passes below 10: no picture mockups to verify the visual direction (Pass 4); DESIGN.md is a task, not yet written (Pass 5); shop and admin layouts are specified in text only (Pass 1).
+
+### Unresolved Decisions
+None.
+
 ## GSTACK REVIEW REPORT
 
 | Review | Trigger | Why | Runs | Status | Findings |
 |--------|---------|-----|------|--------|----------|
 | CEO Review | `/plan-ceo-review` | Scope & strategy | 0 | — | — |
-| Outside Review | codex not installed; native Claude Plan subagent | Independent 2nd opinion | 1 | unavailable (native fallback completed) | 15 findings: 2 critical, 6 high; 1 rejected by founder (D19), others decided or applied |
-| Eng Review | `/plan-eng-review` | Architecture & tests (required) | 1 | ISSUES OPEN (not persisted until logged) | 36 issues, 0 critical gaps |
-| Design Review | `/plan-design-review` | UI/UX gaps | 0 | — | — |
+| Outside Review | codex not installed; native Claude subagents (eng plan + design) | Independent 2nd opinion | 2 | unavailable (native fallbacks completed) | eng: 15 findings; design: 10 findings, all folded into passes |
+| Eng Review | `/plan-eng-review` | Architecture & tests (required) | 1 | ISSUES OPEN | 36 issues, 0 critical gaps (1 commit since review) |
+| Design Review | `/plan-design-review` | UI/UX gaps | 1 | CLEAR | score: 1/10 → 8/10, 15 decisions |
 | DX Review | `/plan-devex-review` | Developer experience gaps | 0 | — | — |
 
-- **OUTSIDE COVERAGE:** codex, phase plan-review: unavailable (CLI not installed). Native Claude Plan subagent completed within the timer with 15 findings; this does not count as outside coverage.
-- **VERDICT:** No reviews CLEAR. Eng review found issues that are all decided and mapped to Implementation Tasks T1-T11; eng review required (status issues_open).
+- **OUTSIDE COVERAGE:** codex unavailable (CLI not installed) for plan-review and design phases; native Claude subagents completed in both (15 and 10 findings), which does not count as outside coverage.
+- **VERDICT:** DESIGN CLEARED. Eng review is not clear (issues_open: all decided and mapped to tasks), so eng review required.
 
 NO UNRESOLVED DECISIONS
