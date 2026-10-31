@@ -1,49 +1,311 @@
+/* Tokens from DESIGN.md. Change DESIGN.md first, then here. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --ink: #14161a;
+  --ink-muted: #4a4f57;
+  --ground: #ffffff;
+  --surface: #f4f5f7;
+  --line: #d9dce1;
+  --ember: #e8a317; /* fill only, never text on ground (11A) */
+  --on-ember: #14161a;
+  --danger: #b42318;
+  --link-visited: #5b3e96;
+
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-6: 48px;
+  --radius: 10px;
+  --tap: 44px;
+
+  --text-hero: 56px;
+  --text-h1: 32px;
+  --text-h2: 22px;
+  --text-body: 16px;
+  --text-small: 14px;
+
+  color-scheme: light dark;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --ink: #f2f3f5;
+    --ink-muted: #b4b9c1;
+    --ground: #14161a;
+    --surface: #1e2127;
+    --line: #3a3f47;
+    --danger: #f97066;
+    --link-visited: #c3a6f2;
   }
-}
-
-html {
-  height: 100%;
-}
-
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 * {
   box-sizing: border-box;
-  padding: 0;
+}
+
+html,
+body {
   margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-body), sans-serif;
+  font-size: var(--text-body);
+  line-height: 1.5;
+}
+
+::selection {
+  background: var(--ember);
+  color: var(--on-ember);
+}
+
+:focus-visible {
+  outline: 3px solid var(--ember);
+  outline-offset: 2px;
 }
 
 a {
   color: inherit;
-  text-decoration: none;
+  text-underline-offset: 3px;
+}
+a:visited {
+  color: var(--link-visited);
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+h1,
+h2,
+.num {
+  font-family: var(--font-display), sans-serif;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+h1 {
+  font-size: var(--text-h1);
+  line-height: 1.1;
+  margin: var(--space-4) 0 var(--space-2);
+}
+h2 {
+  font-size: var(--text-h2);
+  line-height: 1.2;
+  margin: var(--space-4) 0 var(--space-1);
+}
+p {
+  margin: 0 0 var(--space-2);
+}
+
+/* Athlete screens: one column, capped at 480px, room for the bottom bar (12A). */
+.page {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: var(--space-2) var(--space-2) calc(var(--tap) + var(--space-6));
+}
+
+.muted {
+  color: var(--ink-muted);
+}
+.small {
+  font-size: var(--text-small);
+}
+.error {
+  color: var(--danger);
+}
+
+/* Buttons and fields: 44px targets, visible labels (13A). */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tap);
+  padding: 0 var(--space-2);
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: var(--ground);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+.button:visited {
+  color: var(--ink);
+}
+.button-primary {
+  background: var(--ember);
+  border-color: var(--ember);
+  color: var(--on-ember);
+}
+.button-primary:visited {
+  color: var(--on-ember);
+}
+.button-block {
+  display: flex;
+  width: 100%;
+}
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: var(--space-1);
+}
+input,
+select {
+  width: 100%;
+  min-height: var(--tap);
+  padding: 0 var(--space-1);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+}
+.field {
+  margin-bottom: var(--space-2);
+}
+
+/* Embers chip: gold fill with dark text (11A). */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: var(--tap);
+  padding: 0 var(--space-2);
+  border-radius: 999px;
+  background: var(--ember);
+  color: var(--on-ember);
+  font-family: var(--font-display), sans-serif;
+  font-weight: 600;
+  font-size: var(--text-h2);
+  font-variant-numeric: tabular-nums;
+  text-decoration: none;
+}
+.chip:visited {
+  color: var(--on-ember);
+}
+
+/* Lists as rows, not decorative cards (9A). */
+.rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--line);
+}
+.rows > li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  min-height: var(--tap);
+  padding: var(--space-1) 0;
+  border-bottom: 1px solid var(--line);
+}
+.rows > li.me {
+  font-weight: 600;
+}
+
+/* The one card: the result card (5A). */
+.result-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: var(--space-3) var(--space-2);
+  margin: var(--space-2) 0;
+}
+.hero-number {
+  font-family: var(--font-display), sans-serif;
+  font-weight: 600;
+  font-size: var(--text-hero);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.badge {
+  display: inline-block;
+  padding: 2px var(--space-1);
+  border-radius: 6px;
+  background: var(--ember);
+  color: var(--on-ember);
+  font-size: var(--text-small);
+  font-weight: 600;
+}
+
+/* Bottom bar: Quests, Board, Shop (1A). */
+.bottom-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--ground);
+  border-top: 1px solid var(--line);
+}
+.bottom-nav ul {
+  display: flex;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+}
+.bottom-nav li {
+  flex: 1;
+}
+.bottom-nav a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 56px;
+  color: var(--ink-muted);
+  text-decoration: none;
+  font-weight: 600;
+}
+.bottom-nav a[aria-current="page"] {
+  color: var(--ink);
+  box-shadow: inset 0 3px 0 var(--ember);
+}
+
+.tabs {
+  display: flex;
+  gap: var(--space-1);
+  margin-bottom: var(--space-2);
+}
+.tabs a {
+  flex: 1;
+}
+.tabs a[aria-current="page"] {
+  background: var(--ember);
+  border-color: var(--ember);
+  color: var(--on-ember);
+}
+
+.checklist li {
+  justify-content: flex-start;
+}
+
+/* Admin: laptop two-pane, single column below 768px (12A). */
+.admin {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-2);
+}
+.admin-panes {
+  display: grid;
+  gap: var(--space-3);
+}
+@media (min-width: 768px) {
+  .admin-panes {
+    grid-template-columns: minmax(280px, 1fr) 2fr;
   }
+}
+.time-inputs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-1);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
