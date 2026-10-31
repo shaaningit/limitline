@@ -72,7 +72,7 @@ One standard all-out test, a 4-week block to beat it, then a retest card. Effort
 **Approach B with C's share card.** The user said "no preference" and accepted the recommendation by default. It can be changed at approval.
 
 Core loop (wireframe: `docs/designs/limitline-mvp-sketch.png` (source: `docs/designs/limitline-mvp-sketch.html`)):
-1. **Sign up** with an email magic link, a one-click login link with no password to forget. Set your time zone.
+1. **Sign up** with an email magic link, a one-click login link with no password to forget. (Time zone: one pilot time zone per D16; outside voice re-review #9.)
 2. **Upload 6-8 weeks** of run and bike files. They're read in your browser on your own device (see Constraints), and the app finds your limit for each v1 metric (below).
 3. **Weekly challenge:** your limit plus a small step (starting at about +2-3%), with a "why this number" line so the bar feels fair.
 4. **Upload the attempt.** The browser measures it and sends only the numbers; the **server** decides pass or fail with the margin shown (eng review D9).
@@ -128,6 +128,8 @@ Decided in `/plan-eng-review` on 2026-10-29 to 2026-10-31 (see Decision ledger a
 - **Responsive (design 12A):** athlete screens are phone-first from 360px wide, one column with the bottom bar; on wider screens they stay centered and capped at 480px. Admin is laptop-first: two panes (queue left, entry form right), falling back to one column below 768px.
 - **Accessibility (design 13A):** tap targets at least 44×44px; a visible label above every field (no placeholder-only labels); everything works by keyboard with an ember focus ring; header / main / bottom-nav landmarks; results announced in full words to screen readers (e.g. "3.4 percent beyond your limit, double embers").
 - **Admin entry form (design 14A):** fields change with the quest: h / mm / ss boxes for run and swim, one watts box for bike. The athlete's current limit is shown beside the input. The queue lists the oldest submissions first. Full keyboard flow: Tab between boxes, Enter to save, a shortcut for "can't view".
+- **Applied from the re-review outside voice (required to make approved decisions work):** (#1) the admin entry form records the **activity date and time**, read off the Strava page; weekly boards, "recorded after sign-up", the week 3/4 metric and limits all use it, and everything is ordered by it. (#2) the admin form has a **Reject** action with reasons that map to the 4A status rows: can't view, before sign-up, needs power data, not outdoor, not the athlete's own activity. (#4) the board view is readable only by signed-in members (no access for logged-out visitors) and computes "is this my row" on the server. (#7) seed limits store the **number** of efforts seen (D21), so "2 of 4 efforts logged" can show. (#8) Share uses the phone's share sheet with the image file, falling back to a download; the share-card route checks the result belongs to the signed-in athlete. (#6) result emails carry the full result in the email body; getting stuck at login after clicking an email counts toward the D23 upgrade trigger.
+- **Corrections (eng re-review D3):** a correction recomputes embers too; the balance may go below zero, the shop locks until it's positive again, and the athlete sees the 4A correction note plus a short correction email.
 - **Settings (design 15A):** tapping your initials (top corner of My quests) opens a Profile sheet: display name ("First L."), a "Show me on boards" switch, a "Show my name on share cards" switch, "Request data deletion" (opens an email to the founder), and Log out. The bottom bar stays at 3 tabs.
 - **Journey storyboard (restates 1A-8A):**
 
@@ -222,7 +224,7 @@ The pilot tests two things: **do personal-limit challenges bring people back** (
 |---|---|
 | Thu Oct 29 – Sun Nov 8 | **Recruit:** 10 named athletes, collect their files (The Assignment), pitch 3 small brands. Run `/plan-eng-review` in parallel. |
 | Mon Nov 2 – Fri Nov 13 | **Build and test** (eng review): login, boards and shop from Nov 2; **by Tue Nov 3** check which quest numbers are visible on Strava (D22), then build the quest-entry form; seed limits (D21) before Nov 16. |
-| **Fri Nov 13: go/no-go** | If upload → calibrate → verify doesn't work on at least 8 of the 10 athletes' histories, the pilot starts as **Approach A** (concierge) on the same date. |
+| **Fri Nov 13: go/no-go** (eng re-review D2, supersedes the file-engine gate) | On the real domain, a test athlete logs in, pastes a link, the founder enters it, the result email arrives, and the board and embers update. If any step fails, the pilot starts **Mon Nov 23** instead (file deletion deadline moves to Dec 27). |
 | Mon Nov 16 – Sun Dec 13 | **4-week pilot**, one challenge per week. |
 | By Sun Dec 20 | Delete all pre-pilot files and screenshots. Decide using the Success Criteria. |
 
@@ -1646,17 +1648,149 @@ Section 2 (Code quality): #6 (explainer reads rules config) and #8 (input valida
 Section 3 (Tests): 9 new paths, all GAP, covered by approved frameworks (D18) plus @axe-core/playwright for approved 13A: result email sent on save and failure shows retry [E2E]; board view never returns raw times/watts (direct API query as another athlete) [E2E]; hidden athlete absent from board view; share card refuses non-passed results and omits name unless opted in; result card shows until seen; first-run checklist ticks (manual 1-2, auto 3); explainer numbers match rules config (unit); time/watts validation (unit); accessibility scan at 360, 768, 1280 px [E2E]. Test plan artifact updated.
 Section 4 (Performance): no issues; ~20 emails on a busy day [estimated] vs Resend 100/day; email sends after commit so admin entry never waits on it.
 
+
+## Re-review Outside Voice
+Provider: Codex not installed; native Plan subagent completed within the 5-minute timer; 9 findings (3 High, 4 Medium, 2 Low). Full output shown in chat under "OUTSIDE VOICE (Claude subagent)". Applied as required work (consequences of approved decisions): #1 activity date/time field, #2 reject reasons, #4 board view locked to signed-in members with server-side is_me, #6 result in email body + D23 trigger, #7 seed effort count, #8 share sheet + ownership check, #9 stale time-zone text. Decisions: #3 (R20), #5 (R21).
+
+### R20: Build window: merged task list, cut line and launch gate
+Finding: Re-review Outside Voice #3, High, confidence 8/10, Implementation Tasks T1-T11 and DT1-DT10, Timeline ("Fri Nov 13: go/no-go"), reviewer: Claude subagent, parent agrees
+Plan baseline: Timeline: build Nov 2-13, go/no-go Fri Nov 13 tests "upload -> calibrate -> verify on 8 of 10 histories" (obsolete after D13); T and DT lists overlap; all P1; ~16 human-days [estimated] vs 10 working days.
+Runtime evidence: no code exists; GitHub push now works (T1 GitHub step done).
+Comparison grid:
+| Choice | Current | A | B | C |
+|---|---|---|---|---|
+| R20 task list | two overlapping lists, all P1 | one merged list with a cut order: drop first (1) result-card count-up motion, (2) dark mode, (3) automated accessibility scan (manual check instead), (4) wireframe redraw, (5) share-card image | merged list, nothing cut | unchanged |
+| Nov 13 gate | obsolete file-engine test | on the real domain, a test athlete logs in, pastes a link, the founder enters it, the email arrives, and the board and embers update | same as A | unchanged (obsolete) |
+| If the gate fails | concierge | pilot start slips one week to Mon Nov 23 (deletion deadline moves to Dec 27) | pilot start moves to Mon Nov 23 now | concierge |
+| D19 build-now, D13 links | approved | unchanged | unchanged | unchanged |
+Question D2:
+D2 — How do we fit the build into Nov 2-13 and decide if it's ready?
+Project/branch/task: LIMITLINE on main, eng re-review; the two task lists overlap, add up to about 16 days of work for a 10-day window, and the Nov 13 go/no-go still tests a file reader that no longer exists.
+ELI10: The plan has more work than time, no order for what to drop, and a launch check that tests the wrong thing. The fix is one combined task list with a clear "drop first" order for nice-to-haves (the count-up animation, dark mode, the automated accessibility scan, redrawing the sketch, the share image), so the core loop ships even if time runs short. The new Nov 13 check is the real journey: on your domain, a test athlete logs in, pastes a link, you enter it, the email arrives and the board updates. If that fails, the pilot starts a week later instead of launching broken.
+Stakes if we pick wrong: without a cut order the build runs out of time on polish while the core loop is unfinished, and a broken launch loses athletes on day one.
+Recommendation: A because it protects the core loop and the Nov 16 start, and only delays if the real journey doesn't work.
+Completeness: A=9/10, B=8/10, C=3/10
+Pros / cons:
+A) Merge, cut order, real gate (recommended) (human: ~30 min to reorganize / CC: ~5 min)
+  ✅ Core loop is built first; polish is dropped in a set order if time runs out
+  ✅ Nov 13 tests what athletes will actually do; a fail means a 1-week delay, not a broken launch
+  ❌ Some approved polish (animation, dark mode, share image) may not make the pilot
+B) Merge, keep everything, start Nov 23
+  ✅ Every approved feature ships, including the share image and animation
+  ❌ Loses a week of pilot time; results arrive just before the holidays
+C) Keep the plan as written
+  ✅ No replanning effort now
+  ❌ No cut order and a launch check that can't pass or fail meaningfully
+Net: A protects the date and the core; B protects every feature; C protects nothing.
+Header: Build window
+Options:
+A) Merge, cut order, real gate (recommended)
+One merged task list; drop first, in order: count-up motion, dark mode, automated accessibility scan (manual check instead), wireframe redraw, share-card image. Nov 13 gate = real journey on the domain; if it fails, pilot slips to Mon Nov 23.
+B) Merge, keep all, start Nov 23
+One merged task list, nothing cut; pilot starts Mon Nov 23.
+C) Keep as written
+No change to tasks or the Nov 13 gate.
+
+State: approved
+Actual answer: A) Merge, cut order, real gate (recommended), answer to D2 (eng re-review)
+Accepted scope: One merged task list; drop first, in order: count-up motion, dark mode, automated accessibility scan (manual check instead), wireframe redraw, share-card image. Nov 13 gate = real journey on the domain; if it fails, pilot slips to Mon Nov 23.
+History: none
+
+
+### R21: Corrections after embers are spent or announced
+Finding: Re-review Outside Voice #5, Medium, confidence 7/10, Section 2 #1 (corrections recompute limits and embers) and design 5A (result emails), reviewer: Claude subagent, parent agrees
+Plan baseline: corrections recompute later limits and embers (eng review, required work); 4A shows "Founder corrected this result: embers 40 → 20"; embers ledger with atomic redemption (D15); no rule for spent embers or emails already sent.
+Runtime evidence: unknown (no code exists).
+Comparison grid:
+| Choice | Current | A | B |
+|---|---|---|---|
+| R21 embers on correction | recomputed (no rule if spent) | recomputed; the balance may go below zero, and the shop is locked until it's positive again; the athlete gets the 4A note plus a short correction email | embers already earned are never taken back; corrections change only limits and board rows |
+| Limits and board on correction | recomputed (approved) | unchanged | unchanged |
+| 5A emails | approved | plus a correction email | unchanged |
+Question D3:
+D3 — If you correct a result after the athlete already spent the embers, what happens?
+Project/branch/task: LIMITLINE on main, eng re-review; corrections recompute embers, but an athlete may already have spent them in the shop or read an email saying "double embers".
+ELI10: Say you mistype a time, an athlete earns double embers and spends them, then you notice and fix it. Either the app takes the embers back (their balance can dip below zero, and the shop locks until they earn it back, with a short email explaining the fix), or the embers stay theirs and only their limit and board spot are corrected. Taking back is fair and stops anyone keeping embers from a wrong entry. Letting them keep it is kinder and costs you a little, since mistakes are usually yours.
+Stakes if we pick wrong: taking back can feel harsh after a typo that was your fault; never taking back lets embers from a wrong or invalid entry stay spent.
+Recommendation: A because the embers ledger stays truthful and invalid entries can't keep their rewards, and the email explains it kindly.
+Note: options differ in kind, not coverage — no completeness score.
+Pros / cons:
+A) Take back, allow below zero, lock shop (recommended) (human: ~half day / CC: ~10 min)
+  ✅ Embers always match real, valid activities
+  ✅ Clear rule; a short email explains each correction
+  ❌ An athlete can see a negative balance after your typo, which may sting
+B) Never take back earned embers
+  ✅ Kind and simple: corrections never cost the athlete anything
+  ❌ Embers from wrong or invalid entries stay spent; you absorb the cost
+Net: A keeps embers honest; B keeps athletes happy at your expense.
+Header: Corrections
+Options:
+A) Take back, below zero OK (recommended)
+Corrections recompute embers; the balance may go below zero and the shop locks until positive; the athlete sees the 4A note and gets a short correction email.
+B) Never take back
+Embers already earned stay; corrections change only limits and board rows.
+
+State: approved
+Actual answer: A) Take back, below zero OK (recommended), answer to D3 (eng re-review)
+Accepted scope: Corrections recompute embers; the balance may go below zero and the shop locks until positive; the athlete sees the 4A note and gets a short correction email.
+History: none
+
+
+Re-review Approval readiness: PASS — checked R19 (D1), R20 (D2), R21 (D3); carried forward R1-R18 and design 1A-15A unchanged.
+
+## Merged build list (authoritative; eng re-review D2, supersedes the order of T1-T11 and DT1-DT10)
+Build in this order. If time runs short, drop from the **cut order** first; never cut M1-M10.
+- [ ] **M1 (P1, founder, before Nov 9)** — Connect Vercel to the GitHub repo (push now works); buy the domain and verify it in Resend (R19). From T1.
+- [ ] **M2 (P1, founder, by Nov 3)** — Check which quest numbers are visible on Strava; set fallback rules (D22). T2.
+- [ ] **M3 (P1, human ~1h / CC ~10min)** — DESIGN.md from 9A-11A. DT1.
+- [ ] **M4 (P1, human ~1 day / CC ~20min)** — Database and access rules: entries with **activity date/time**, quest, status and **reject reason**, email_status, seen_at; seed limits with **effort count**; profiles with show_on_boards and show_name_on_share; embers ledger (negative allowed, D3); shop items and redemptions; founder role; **board view for signed-in members only, raw numbers never exposed, server-side is_me**; indexes. T3 + re-review #1, #2, #4, #7.
+- [ ] **M5 (P1, human ~2 days / CC ~20min)** — lib/rules + Vitest: one METRICS/embers config (also feeds the explainer), quest completion, limit before an activity (by activity date), %, embers base/2x after 4 efforts, week of activity in the pilot time zone, corrections recompute (incl. below zero), input validation. T4 + re-review #6, #8.
+- [ ] **M6 (P1, human ~half day / CC ~10min)** — Login link via Resend on the domain; test on iPhone Mail, Gmail and Android (D23). T5.
+- [ ] **M7 (P1, human ~1.5 days / CC ~30min)** — Admin: two-pane layout, structured fields with activity date/time, current limit beside input, confirm on unusual entries, reject with reasons, corrections with correction email, seed entry with counts, mark shop items given, keyboard flow. T7 + DT9.
+- [ ] **M8 (P1, human ~3 days / CC ~45min)** — Athlete pages: My quests (home order, first-run checklist, result card until seen, embers explainer, profile sheet), Submit (link + quest picker, states), Board (rows, pinned own row, empty and hidden states), Shop (progress, requested/handed over, locked when below zero). T6 + DT3-DT6.
+- [ ] **M9 (P1, human ~half day / CC ~15min)** — Result and correction emails after save; failed sends shown in admin with retry. DT7 + re-review #3.
+- [ ] **M10 (P1, human ~2 days / CC ~30min)** — Playwright E2E for the core journey, privacy (board view, admin lock, logged-out), shop and admin; CI in GitHub Actions; manual accessibility check at 360/768/1280 px. T9 + DT10 (manual part).
+- [ ] **M11 (P1, founder, before Nov 16)** — Enter seed limits with effort counts; set embers amounts, shop prices, stock and prize budget. T10.
+- **Fri Nov 13 gate:** real journey on the domain (log in, paste link, founder enters it, email arrives, board and embers update). Fail = pilot starts Mon Nov 23.
+- **Cut order (drop first, in this order):** C1 result-card count-up motion; C2 dark mode; C3 automated accessibility scan (keep the manual check); C4 wireframe redraw (T11/DT2); C5 share-card image and Share button (T8/DT8, 6A).
+
+## Re-review Failure modes (new paths)
+| Path | Failure | Handling | Test | User sees |
+|---|---|---|---|---|
+| Result email | Resend down or daily limit hit | Entry saved first; email_status failed; admin retry | E2E (mocked failure) | Founder sees "email not sent, retry"; athlete still sees the result in the app |
+| Board view | View readable by logged-out visitors or exposing raw numbers | Members-only grant, rank fields only | E2E direct API query | Access denied / no raw data |
+| Activity date | Sunday activity entered Monday lands in the wrong week | Founder enters activity date/time; week computed from it | Vitest week boundary | Correct week |
+| Correction after spending | Balance below zero | Shop locked, correction note + email | Vitest + E2E | Clear explanation |
+| Share card | Another athlete's result ID requested | Ownership check | Unit | Not found |
+Critical gaps: 0.
+
+## Re-review Completion summary
+- Step 0: Scope Challenge — scope accepted as-is (D7 structure reused)
+- Reality rows: 7/7 applicable rows emitted (PLAN_REALITY complete), 2 unverified premises
+- Architecture Review: 2 issues found (#1 board view, #3 email ordering)
+- Code Quality Review: 2 issues found (#6 config-driven explainer, #8 validation)
+- Test Review: diagram produced, 9 gaps identified
+- Performance Review: 0 issues found
+- NOT in scope: unchanged from the first review
+- What already exists: unchanged (no code); Resend and next/og facts checked
+- TODOS.md updates: 0 items proposed
+- Failure modes: 0 critical gaps flagged
+- Unresolved decisions: 0 in this review
+- Outside voice: Codex not installed; native fallback completed, 9 findings (7 applied as required work, 2 decided: D2, D3)
+- Parallelization: unchanged, 3 lanes, 2 parallel / 1 sequential
+- Lake Score: 1/2 = answers picking a 10/10 option / answers scored for Completeness
+
 ## GSTACK REVIEW REPORT
 
 | Review | Trigger | Why | Runs | Status | Findings |
 |--------|---------|-----|------|--------|----------|
 | CEO Review | `/plan-ceo-review` | Scope & strategy | 0 | — | — |
-| Outside Review | codex not installed; native Claude subagents (eng plan + design) | Independent 2nd opinion | 2 | unavailable (native fallbacks completed) | eng: 15 findings; design: 10 findings, all folded into passes |
-| Eng Review | `/plan-eng-review` | Architecture & tests (required) | 1 | ISSUES OPEN | 36 issues, 0 critical gaps (1 commit since review) |
+| Outside Review | codex not installed; native Claude subagents (eng x2, design) | Independent 2nd opinion | 3 | unavailable (native fallbacks completed) | eng: 15 then 9 findings; design: 10 findings; all decided or applied |
+| Eng Review | `/plan-eng-review` | Architecture & tests (required) | 2 | ISSUES OPEN | 13 issues, 0 critical gaps (re-review; all decided, mapped to merged build list M1-M11) |
 | Design Review | `/plan-design-review` | UI/UX gaps | 1 | CLEAR | score: 1/10 → 8/10, 15 decisions |
 | DX Review | `/plan-devex-review` | Developer experience gaps | 0 | — | — |
 
-- **OUTSIDE COVERAGE:** codex unavailable (CLI not installed) for plan-review and design phases; native Claude subagents completed in both (15 and 10 findings), which does not count as outside coverage.
-- **VERDICT:** DESIGN CLEARED. Eng review is not clear (issues_open: all decided and mapped to tasks), so eng review required.
+- **OUTSIDE COVERAGE:** codex unavailable (CLI not installed) for both plan-review runs and the design phase; native Claude subagents completed each time, which does not count as outside coverage.
+- **VERDICT:** DESIGN CLEARED. Eng review not clear (issues_open: findings all decided and mapped to the merged build list); eng review required.
 
 NO UNRESOLVED DECISIONS
