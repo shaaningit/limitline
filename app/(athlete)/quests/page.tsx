@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ShareButton } from "@/components/share-button";
 import { getMyQuests, type MyEntry } from "@/lib/data/athlete";
 import { requireAthlete } from "@/lib/data/session";
 import { describeResult, formatPercent, formatValue } from "@/lib/format";
@@ -169,12 +170,15 @@ function ResultCard({ entry }: { entry: MyEntry }) {
           {percent !== null && <span className="muted"> · {describeResult(percent, false, false)}</span>}
         </p>
       )}
-      <form action={markSeen}>
-        <input type="hidden" name="id" value={entry.id} />
-        <button className="button" type="submit">
-          Got it
-        </button>
-      </form>
+      <div style={{ display: "flex", gap: "var(--space-1)", flexWrap: "wrap", alignItems: "center" }}>
+        {entry.beat_limit && <ShareButton entryId={entry.id} title="Beyond my limit on LIMITLINE" />}
+        <form action={markSeen}>
+          <input type="hidden" name="id" value={entry.id} />
+          <button className="button" type="submit">
+            Got it
+          </button>
+        </form>
+      </div>
     </section>
   );
 }

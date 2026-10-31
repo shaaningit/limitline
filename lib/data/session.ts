@@ -11,6 +11,7 @@ export interface Profile {
   checklist_followed: boolean;
   checklist_visibility: boolean;
   signed_up_at: string;
+  email: string | null;
 }
 
 // The signed-in user and their profile, or null. Every page and action checks access

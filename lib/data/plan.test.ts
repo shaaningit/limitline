@@ -88,6 +88,26 @@ describe("planChange", () => {
     expect(plan.notices).toEqual([]);
   });
 
+  it("a later result whose % moves but embers don't is updated without an email", () => {
+    const entries = [
+      verified("old", 1600, "2026-11-17T07:00:00Z", 0.7, true, 20),
+      verified("later", 1590, "2026-11-20T07:00:00Z", 0.6, true, 20),
+    ];
+    // Correcting "old" from 26:40 to 26:45 changes later's % (still a pass, same embers).
+    const plan = planChange(entries, seeds, {
+      kind: "verify",
+      id: "old",
+      questId: "run5k",
+      stravaActivityId: "old",
+      activityAt: new Date("2026-11-17T07:00:00Z"),
+      value: 1605,
+    }, now);
+    const later = plan.rows.find((r) => r.id === "later")!;
+    expect(later).toMatchObject({ percent: 0.9, embers: 20 });
+    expect(later).not.toHaveProperty("email_status");
+    expect(plan.notices).toEqual([{ entryId: "old", type: "correction" }]);
+  });
+
   it("unchanged later results are not rewritten", () => {
     const entries = [verified("b", 1600, "2026-11-17T07:00:00Z", 0.7, true, 20), waiting("c")];
     const plan = planChange(entries, seeds, {

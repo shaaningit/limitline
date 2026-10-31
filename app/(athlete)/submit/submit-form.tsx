@@ -33,7 +33,15 @@ export function SubmitForm() {
           {QUEST_IDS.map((id) => (
             <li key={id}>
               <label style={{ display: "flex", alignItems: "center", gap: "var(--space-1)", margin: 0, flex: 1 }}>
-                <input type="radio" name="quest" value={id} required style={{ width: 22, minHeight: 22 }} />
+                <input
+                  type="radio"
+                  name="quest"
+                  value={id}
+                  required
+                  defaultChecked={state.quest === id}
+                  key={`${id}-${state.quest}`}
+                  style={{ width: 22, minHeight: 22 }}
+                />
                 {QUESTS[id].label}
               </label>
             </li>

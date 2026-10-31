@@ -25,7 +25,15 @@ export function LoginForm({ expired }: { expired: boolean }) {
       )}
       <div className="field">
         <label htmlFor="email">Email</label>
-        <input id="email" name="email" type="email" autoComplete="email" required />
+        <input
+          id="email"
+          name="email"
+          type="email"
+          autoComplete="email"
+          required
+          defaultValue={state.email}
+          key={state.email}
+        />
       </div>
       {state.status === "error" && (
         <p className="error" role="alert">

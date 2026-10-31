@@ -8,6 +8,7 @@ import { QUEST_IDS, type QuestId } from "@/lib/rules/config";
 export interface SubmitState {
   message: string;
   link: string; // keep what they typed on errors (4A)
+  quest?: string;
 }
 
 export async function submitEntry(_prev: SubmitState, formData: FormData): Promise<SubmitState> {
@@ -16,7 +17,7 @@ export async function submitEntry(_prev: SubmitState, formData: FormData): Promi
   const quest = String(formData.get("quest") ?? "") as QuestId;
 
   const parsed = parseStravaLink(link);
-  if (parsed.kind === "invalid") return { message: "That's not a Strava activity link", link };
+  if (parsed.kind === "invalid") return { message: "That's not a Strava activity link", link, quest };
   if (!QUEST_IDS.includes(quest)) return { message: "Pick which quest this activity is for", link };
 
   const stravaId = parsed.kind === "activity" ? parsed.activityId : null;
@@ -36,8 +37,8 @@ export async function submitEntry(_prev: SubmitState, formData: FormData): Promi
       .eq("strava_activity_id", stravaId!)
       .maybeSingle();
     const when = mine ? ` on ${new Date(mine.submitted_at).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}` : "";
-    return { message: `Already submitted${when}`, link };
+    return { message: `Already submitted${when}`, link, quest };
   }
-  if (error) return { message: "Couldn't save, try again", link };
+  if (error) return { message: "Couldn't save, try again", link, quest };
   redirect("/quests?submitted=1");
 }

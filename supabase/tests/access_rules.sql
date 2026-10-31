@@ -156,7 +156,29 @@ do $$ begin
     raise exception 'TEST FAIL: athlete created a profile for someone else';
   exception when others then if sqlerrm like 'TEST FAIL%' then raise; end if; end;
 end $$;
-insert into public.profiles (id, display_name) values (auth.uid(), 'Sam O.');
+insert into public.profiles (id, display_name, email) values (auth.uid(), 'Sam O.', 'sam@example.com');
+do $$ begin
+  begin
+    update public.profiles set email = 'other@example.com' where id = auth.uid();
+    raise exception 'TEST FAIL: athlete changed their stored email';
+  exception when insufficient_privilege then null; end;
+end $$;
+reset role;
+
+-- The founder can read athletes' emails (to send result emails); other athletes can't.
+set role authenticated;
+set app.uid = '00000000-0000-0000-0000-0000000000f0';
+do $$ begin
+  if (select email from public.profiles where id = '00000000-0000-0000-0000-00000000000d') <> 'sam@example.com' then
+    raise exception 'TEST FAIL: founder cannot read athlete email';
+  end if;
+end $$;
+set app.uid = '00000000-0000-0000-0000-00000000000a';
+do $$ begin
+  if exists (select 1 from public.profiles where email = 'sam@example.com') then
+    raise exception 'TEST FAIL: athlete read another athlete''s email';
+  end if;
+end $$;
 reset role;
 
 -- ---------- Founder ----------

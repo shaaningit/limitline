@@ -88,8 +88,16 @@ export function planChange(entries: DbEntry[], seeds: Seed[], change: Change, no
     const changed =
       Number(e.percent) !== Number(r.percent) || Boolean(e.beat_limit) !== r.beatLimit || Number(e.embers) !== r.embers;
     if (!changed) continue;
-    rows.push({ id: e.id, percent: r.percent, beat_limit: r.beatLimit, embers: r.embers, email_status: "pending" });
-    if (Number(e.embers) !== r.embers) notices.push({ entryId: e.id, type: "correction" });
+    const embersChanged = Number(e.embers) !== r.embers;
+    // Only entries that will get a correction email are marked pending.
+    rows.push({
+      id: e.id,
+      percent: r.percent,
+      beat_limit: r.beatLimit,
+      embers: r.embers,
+      ...(embersChanged ? { email_status: "pending" } : {}),
+    });
+    if (embersChanged) notices.push({ entryId: e.id, type: "correction" });
   }
 
   const preview =

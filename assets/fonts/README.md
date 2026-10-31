@@ -1,0 +1,1 @@
+`BarlowCondensed-SemiBold.ttf` is Barlow Condensed by Jeremy Tribby, licensed under the SIL Open Font License 1.1 (https://openfontlicense.org). It is used only for the share-card image (next/og needs a .ttf file, not the web font).
