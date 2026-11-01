@@ -94,7 +94,7 @@ Decided in `/plan-eng-review` on 2026-10-29 to 2026-10-31 (see Decision ledger a
 
 ### Design review decisions (binding; from `/plan-design-review`, 2026-10-31)
 - **Home and navigation (design 1A):** athletes land on **My quests**. Top to bottom: embers balance; a large "Paste a Strava link" button; new and waiting results; limits per quest type. A bottom bar with 3 tabs (Quests, Board, Shop) is always visible on phones. The admin page is reached only from the founder's login, never from the bar.
-- **Quest choice (design 2A):** on the submit screen the athlete pastes a link, then picks the quest (run 5 km / run 10 km / bike 20-min power / swim 400 m / swim 1500 m). The founder can change it in admin. Every status row shows the chosen quest. Each activity still earns once.
+- **Quest choice (design 2A, superseded Nov 1 by "Founder changes" below: quest first, then link):** on the submit screen the athlete pastes a link, then picks the quest (run 5 km / run 10 km / bike 20-min power / swim 400 m / swim 1500 m). The founder can change it in admin. Every status row shows the chosen quest. Each activity still earns once.
 - **Board rows (design 3A):** each row shows rank, "First L.", quest label (e.g. Run 10 km) and +% beyond own limit, never raw times or watts. The viewer's own row is pinned. Below the ranking: "N others completed quests this week".
 - **Screen map (restates 1A-3A):**
 ```
@@ -122,9 +122,9 @@ Decided in `/plan-eng-review` on 2026-10-29 to 2026-10-31 (see Decision ledger a
 - **Share card (design 6A):** a Share button appears on the result card only for limit-beating results. The 1080×1920 image shows +% beyond limit, the quest (e.g. Run 5 km) and the LIMITLINE name, plus the athlete's first name only if they opted in. No embers on the image.
 - **First run (design 7A):** on first login, My quests shows a 3-step checklist above everything else: (1) follow the founder on Strava, (2) set activity visibility to Followers (short how-to), (3) paste your first link. Steps tick off; the list disappears once done. The paste box hint reads "In the Strava app: Share → Copy link".
 - **Embers rules in the app (design 8A):** a "How embers work" sheet opens from the embers balance on My quests, in 4 lines: complete a quest = embers; beat your own limit = double; doubling starts after 4 efforts of a quest type; spend embers in the Shop. Each shop item shows "N embers to go".
-- **Visual direction (design 9A):** light mode by default (dark follows the phone setting); Barlow Condensed for display and numbers with tabular (equal-width) digits, IBM Plex Sans for body; one accent, ember gold `#E8A317`, on `#14161A` text and a white ground (deliberately not Strava orange); the +% beyond limit is the largest element wherever it appears; no decorative cards (the result card is the only card); one motion moment, a ~0.6 s ease-out count-up of +% and embers on the result card, off under prefers-reduced-motion; 8px spacing grid.
+- **Visual direction (design 9A; colors superseded Nov 1: black + neon green, see "Founder changes"):** light mode by default (dark follows the phone setting); Barlow Condensed for display and numbers with tabular (equal-width) digits, IBM Plex Sans for body; one accent, ember gold `#E8A317`, on `#14161A` text and a white ground (deliberately not Strava orange); the +% beyond limit is the largest element wherever it appears; no decorative cards (the result card is the only card); one motion moment, a ~0.6 s ease-out count-up of +% and embers on the result card, off under prefers-reduced-motion; 8px spacing grid.
 - **DESIGN.md (design 10A):** before T6, write a short DESIGN.md from 9A only: CSS variables for colors (--ember #E8A317, --ink #14161A, --ground #FFFFFF, plus dark-mode values), fonts and type scale with tabular digits, 8px spacing, one corner radius, focus ring and text-selection color in ember, a visited-link color. Every screen uses these values. /design-consultation can expand it later.
-- **Gold contrast (design 11A):** ember gold is used only as a background (main button, embers chip, badges) with `#14161A` text on it (~8.3:1). Never gold text or thin gold lines on white (~2.2:1 fails). Body text at least 16px and 4.5:1 contrast.
+- **Gold contrast (design 11A; no longer applies after the Nov 1 color change):** ember gold is used only as a background (main button, embers chip, badges) with `#14161A` text on it (~8.3:1). Never gold text or thin gold lines on white (~2.2:1 fails). Body text at least 16px and 4.5:1 contrast.
 - **Responsive (design 12A):** athlete screens are phone-first from 360px wide, one column with the bottom bar; on wider screens they stay centered and capped at 480px. Admin is laptop-first: two panes (queue left, entry form right), falling back to one column below 768px.
 - **Accessibility (design 13A):** tap targets at least 44×44px; a visible label above every field (no placeholder-only labels); everything works by keyboard with an ember focus ring; header / main / bottom-nav landmarks; results announced in full words to screen readers (e.g. "3.4 percent beyond your limit, double embers").
 - **Admin entry form (design 14A):** fields change with the quest: h / mm / ss boxes for run and swim, one watts box for bike. The athlete's current limit is shown beside the input. The queue lists the oldest submissions first. Full keyboard flow: Tab between boxes, Enter to save, a shortcut for "can't view".
@@ -263,6 +263,16 @@ At the founder's request, the doc was revised after the spec review closed. It h
 The generated Reviewer Concerns section below is the original review record and is left unedited.
 
 <!-- gstack:office-hours:concerns:start -->
+## Founder changes (2026-11-01, binding)
+
+Asked for by the founder after seeing the first build. These override the earlier decisions they name.
+
+- **Colors:** black background, neon green (`#39FF14`) logo and accent, everywhere, dark only. Replaces the ember gold of 9A/10A/11A. Values live in DESIGN.md.
+- **Logo first:** the first screen is the logo and a tagline; "Continue with email" opens the email form. Other login methods (Google, Apple) can be added as extra buttons there later.
+- **Quest first, then the link:** My quests lists the quests; each quest has its own page (`/quests/<quest>`) with the paste-link box. The old `/submit` screen and its quest picker are gone (old links redirect to My quests). Replaces 2A.
+- **Longer counts, shorter doesn't:** a 10 km run pasted on the 5 km quest counts as a 5 km, timed on its fastest 5 km. A 5 km run on the 10 km quest is rejected ("Quest distance or time not completed"). Same for swims (fastest 400 m / 1500 m) and the bike (best 20-minute power from a ride of 20+ minutes). The rule text comes from `questRules()` in `lib/rules`, shown to athletes and to the founder in admin.
+- **Bottom bar:** left to right, Quests · Board · Shop · Profile. Replaces 1A/15A's three tabs; the initials button on My quests is gone.
+
 ## Reviewer Concerns
 
 Disposition: CONCERNS_RECORDED

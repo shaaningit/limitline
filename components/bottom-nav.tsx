@@ -7,9 +7,10 @@ const TABS = [
   { href: "/quests", label: "Quests" },
   { href: "/board", label: "Board" },
   { href: "/shop", label: "Shop" },
+  { href: "/profile", label: "Profile" },
 ];
 
-// Always-visible bar with 3 tabs (design 1A, 15A keeps it at 3).
+// Always-visible bar, left to right: Quests, Board, Shop, Profile (replaces 1A/15A's 3 tabs).
 export function BottomNav() {
   const pathname = usePathname();
   return (

@@ -8,15 +8,6 @@ import { markSeen, tickChecklist } from "./actions";
 
 const FOUNDER_STRAVA = process.env.NEXT_PUBLIC_FOUNDER_STRAVA_NAME ?? "the founder";
 
-function initials(name: string) {
-  return name
-    .split(/\s+/)
-    .map((p) => p.charAt(0))
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
-}
-
 function statusLine(e: MyEntry): string {
   const quest = QUESTS[e.quest_id].label;
   if (e.status === "waiting") return `${quest} · Waiting for check`;
@@ -36,10 +27,11 @@ export default async function QuestsPage({ searchParams }: PageProps<"/quests">)
 
   return (
     <>
-      <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "var(--space-2)", marginTop: "var(--space-2)" }}>
         <h1 style={{ margin: 0 }}>My quests</h1>
-        <Link className="button" href="/profile" aria-label={`Profile and settings for ${profile.display_name}`}>
-          {initials(profile.display_name)}
+        {/* embers balance (opens "How embers work", 8A) */}
+        <Link className="chip" href="/quests/embers" aria-label={`${balance} embers. How embers work`}>
+          {balance} embers
         </Link>
       </header>
 
@@ -48,13 +40,6 @@ export default async function QuestsPage({ searchParams }: PageProps<"/quests">)
           Got it! Waiting for check.
         </p>
       )}
-
-      {/* 1: embers balance (opens "How embers work", 8A) */}
-      <p style={{ marginTop: "var(--space-2)" }}>
-        <Link className="chip" href="/quests/embers" aria-label={`${balance} embers. How embers work`}>
-          {balance} embers
-        </Link>
-      </p>
 
       {/* First run (7A): above everything else until done */}
       {!firstRunDone && (
@@ -75,27 +60,50 @@ export default async function QuestsPage({ searchParams }: PageProps<"/quests">)
                 text="Set your Strava activity visibility to Followers (Strava → Settings → Privacy Controls)"
               />
             </li>
-            <li>{entries.length > 0 ? "✓ " : ""}Paste your first link</li>
+            <li>{entries.length > 0 ? "✓ " : ""}Pick a quest below and paste your first link</li>
           </ol>
         </section>
       )}
 
-      {/* 2: the main action */}
-      <p style={{ marginTop: "var(--space-3)" }}>
-        <Link className="button button-primary button-block" href="/submit">
-          Paste a Strava link
-        </Link>
-      </p>
-
-      {/* 3: new results (5A), each card until seen */}
+      {/* New results (5A), each card until seen */}
       {unseen.map((e) => (
         <ResultCard key={e.id} entry={e} />
       ))}
 
+      {/* The main action: pick a quest, then paste the link on its page */}
+      <section aria-labelledby="quests">
+        <h2 id="quests">Quests</h2>
+        <ul className="rows quest-rows">
+          {limits.map((l) => (
+            <li key={l.questId}>
+              <Link href={`/quests/${l.questId}`}>
+                <span>
+                  <span style={{ fontWeight: 600 }}>{QUESTS[l.questId].label}</span>
+                  <br />
+                  <span className="muted small">
+                    {l.limit === null ? (
+                      "No limit yet"
+                    ) : (
+                      <>
+                        Limit <span className="num">{formatValue(l.questId, l.limit)}</span>
+                        {l.effortCount < minEfforts && ` · ${l.effortCount} of ${minEfforts} efforts`}
+                      </>
+                    )}
+                  </span>
+                </span>
+                <span className="go" aria-hidden="true">
+                  Paste link →
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
+
       <section aria-labelledby="results">
         <h2 id="results">Your activities</h2>
         {entries.length === 0 ? (
-          <p className="muted">No activities yet. Paste your first Strava link.</p>
+          <p className="muted">No activities yet. Pick a quest above and paste your first Strava link.</p>
         ) : (
           <ul className="rows">
             {entries.slice(0, 20).map((e) => (
@@ -107,27 +115,6 @@ export default async function QuestsPage({ searchParams }: PageProps<"/quests">)
         )}
       </section>
 
-      {/* 4: limits per quest */}
-      <section aria-labelledby="limits">
-        <h2 id="limits">Your limits</h2>
-        <ul className="rows">
-          {limits.map((l) => (
-            <li key={l.questId}>
-              <span>{QUESTS[l.questId].label}</span>
-              {l.limit === null ? (
-                <span className="muted small">No limit yet</span>
-              ) : l.effortCount < minEfforts ? (
-                <span className="small">
-                  <span className="num">{formatValue(l.questId, l.limit)}</span> · {l.effortCount} of {minEfforts} efforts
-                  logged
-                </span>
-              ) : (
-                <span className="num">{formatValue(l.questId, l.limit)}</span>
-              )}
-            </li>
-          ))}
-        </ul>
-      </section>
     </>
   );
 }

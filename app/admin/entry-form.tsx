@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
+import { questRules } from "@/lib/rules";
 import { QUESTS, QUEST_IDS, REJECT_REASONS, type QuestId } from "@/lib/rules/config";
 import { saveEntry, type EntryFormState } from "./actions";
 
@@ -74,6 +75,9 @@ export function EntryForm(props: EntryFormProps) {
             ))}
           </select>
           <p className="muted small">Current limit: {props.limits[questId]}</p>
+          <p className="muted small">
+            {questRules(questId).timedOn} {questRules(questId).rejected} (reject: &ldquo;{REJECT_REASONS.not_completed}&rdquo;)
+          </p>
         </div>
 
         <div className="field">

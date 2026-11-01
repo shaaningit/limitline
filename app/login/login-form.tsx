@@ -30,6 +30,7 @@ export function LoginForm({ expired }: { expired: boolean }) {
           name="email"
           type="email"
           autoComplete="email"
+          autoFocus
           required
           defaultValue={state.email}
           key={state.email}

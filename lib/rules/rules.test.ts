@@ -6,6 +6,7 @@ import {
   canRedeem,
   embersBalance,
   embersExplainer,
+  questRules,
   evaluate,
   evaluateAll,
   limitBefore,
@@ -249,5 +250,19 @@ describe("embersExplainer (8A)", () => {
     expect(lines[0]).toContain(String(EMBERS.base));
     expect(lines[1]).toContain(String(EMBERS.base * EMBERS.beatMultiplier));
     expect(lines[2]).toContain(String(EMBERS.minEffortsToDouble));
+  });
+});
+
+describe("questRules (longer counts, shorter is rejected)", () => {
+  it("times a longer run on the quest distance", () => {
+    const r = questRules("run5k");
+    expect(r.counts).toContain("5 km or longer");
+    expect(r.timedOn).toContain("fastest 5 km");
+    expect(r.rejected).toContain("Shorter than 5 km");
+  });
+  it("uses metres for swims and minutes for the power quest", () => {
+    expect(questRules("swim400").counts).toContain("pool swim of 400 m");
+    expect(questRules("swim1500").rejected).toContain("Shorter than 1500 m");
+    expect(questRules("bike20").counts).toContain("20 minutes or more");
   });
 });

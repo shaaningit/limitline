@@ -1,26 +1,33 @@
 # LIMITLINE design system
 
-The look of the app, as one set of values every screen uses. Written from the approved design decisions 9A, 10A, 11A and 13A in `docs/designs/limitline-mvp.md`. Change a value here first, then in `app/globals.css`.
+The look of the app, as one set of values every screen uses. Written from the approved design decisions 9A, 10A and 13A, with the color amended on Nov 1 (black + neon green replaces the gold of 9A/11A), in `docs/designs/limitline-mvp.md`. Change a value here first, then in `app/globals.css`.
 
 ## Use scene
 
-Athletes open LIMITLINE right after a run, ride or swim: outdoors in daylight or poolside, on a phone held in one hand. So it's light mode by default (readable in sun), dark mode follows the phone setting, and every tap target is large.
+Athletes open LIMITLINE right after a run, ride or swim, on a phone held in one hand. The brand is black with neon green (founder's call, Nov 1): every screen is dark, and the neon is the one accent. Neon green on black is ~15:1 contrast, so it stays readable even in daylight.
+
+## Logo
+
+A neon green line breaking up through a dashed "limit line", next to the LIMITLINE wordmark (`components/logo.tsx`), always on black. It's a stand-in drawn in code until the founder's own logo file arrives; swap the SVG in that one file and every screen picks it up.
 
 ## Color
 
-One accent, used as a **fill only** (11A). Gold text or thin gold lines on white fail contrast (~2.2:1), so never use them.
+Dark only. One accent, neon green, used for the main button, the embers chip, badges, the +% hero number and the active tab. Text on a neon fill is always black.
 
-| Token | Light | Dark | Use |
-|---|---|---|---|
-| `--ink` | `#14161A` | `#F2F3F5` | Body text, headings, text on gold |
-| `--ink-muted` | `#4A4F57` | `#B4B9C1` | Secondary text (≥ 4.5:1 on ground) |
-| `--ground` | `#FFFFFF` | `#14161A` | Page background |
-| `--surface` | `#F4F5F7` | `#1E2127` | Result card, sheets, input backgrounds |
-| `--line` | `#D9DCE1` | `#3A3F47` | Dividers and input borders |
-| `--ember` | `#E8A317` | `#E8A317` | Main button, embers chip, "beat limit" badge (fill) |
-| `--on-ember` | `#14161A` | `#14161A` | Text on ember fills (~8.3:1) |
-| `--danger` | `#B42318` | `#F97066` | Errors and rejected results |
-| `--link-visited` | `#5B3E96` | `#C3A6F2` | Visited links |
+| Token | Value | Use |
+|---|---|---|
+| `--ground` | `#000000` | Page background |
+| `--surface` | `#0F120F` | Result card, input backgrounds |
+| `--line` | `#2A302A` | Dividers and input borders |
+| `--ink` | `#F2F5F0` | Body text and headings |
+| `--ink-muted` | `#A3ABA0` | Secondary text (~8.6:1 on ground) |
+| `--neon` | `#39FF14` | Accent: fills, the +% number, active tab, focus ring |
+| `--on-neon` | `#000000` | Text on neon fills |
+| `--neon-glow` | 12px neon at 45% | Soft glow on the logo and the +% number only |
+| `--danger` | `#FF6B6B` | Errors and rejected results |
+| `--link-visited` | `#B5F5A3` | Visited links |
+
+The share image uses the same colors: black ground, neon wordmark and +%.
 
 ## Type
 
@@ -45,13 +52,13 @@ One accent, used as a **fill only** (11A). Gold text or thin gold lines on white
 
 ## Browser details
 
-- Focus ring: 3px `--ember` outline with a 2px offset, on every interactive element.
-- Text selection: `--ember` background, `--on-ember` text.
+- Focus ring: 3px `--neon` outline with a 2px offset, on every interactive element.
+- Text selection: `--neon` background, `--on-neon` text.
 - Links are underlined, with visited links in `--link-visited`.
 
 ## Layout and accessibility (12A, 13A)
 
-- Athlete screens are phone-first from 360px wide: one column with the bottom bar (Quests, Board, Shop). Wider screens stay centered, capped at 480px.
+- Athlete screens are phone-first from 360px wide: one column with the bottom bar (left to right: Quests, Board, Shop, Profile). Wider screens stay centered, capped at 480px.
 - Admin is laptop-first: queue on the left, entry form on the right. Below 768px it becomes one column.
 - Tap targets are at least 44×44px.
 - Every field has a visible label above it. Placeholder text is never the only label.

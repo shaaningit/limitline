@@ -260,4 +260,27 @@ export function embersExplainer(): string[] {
   ];
 }
 
+// What counts for a quest, shown on the quest page and to the founder in admin.
+// Longer counts (a 10 km run on the 5 km quest is timed on its fastest 5 km);
+// shorter is rejected as "Quest distance or time not completed".
+export function questRules(questId: QuestId): { counts: string; timedOn: string; rejected: string } {
+  const q = QUESTS[questId];
+  if (q.measure === "power") {
+    const min = Math.round((q.durationSeconds ?? 0) / 60);
+    return {
+      counts: `Any outdoor ride of ${min} minutes or more, with a power meter.`,
+      timedOn: `We use your best ${min}-minute power from the ride.`,
+      rejected: `Shorter than ${min} minutes, or no power data, won't be approved.`,
+    };
+  }
+  const meters = q.distanceMeters ?? 0;
+  const distance = q.sport === "swim" ? `${meters} m` : `${meters / 1000} km`; // matches the quest labels
+  const activity = q.sport === "run" ? "outdoor run" : "pool swim";
+  return {
+    counts: `Any ${activity} of ${distance} or longer.`,
+    timedOn: `A longer one counts as ${distance}, timed on its fastest ${distance}.`,
+    rejected: `Shorter than ${distance} won't be approved.`,
+  };
+}
+
 export type { QuestId, Sport };
