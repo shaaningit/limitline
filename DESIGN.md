@@ -1,33 +1,32 @@
 # LIMITLINE design system
 
-The look of the app, as one set of values every screen uses. Written from the approved design decisions 9A, 10A and 13A, with the color amended on Nov 1 (black + neon green replaces the gold of 9A/11A), in `docs/designs/limitline-mvp.md`. Change a value here first, then in `app/globals.css`.
+The look of the app, as one set of values every screen uses. Written from the approved design decisions 9A, 10A and 13A, with the color amended on Nov 1 (volt on matte black replaces the gold of 9A/11A), in `docs/designs/limitline-mvp.md`. Change a value here first, then in `app/globals.css`.
 
 ## Use scene
 
-Athletes open LIMITLINE right after a run, ride or swim, on a phone held in one hand. The brand is black with neon green (founder's call, Nov 1): every screen is dark, and the neon is the one accent. Neon green on black is ~15:1 contrast, so it stays readable even in daylight.
+Athletes open LIMITLINE right after a run, ride or swim, on a phone held in one hand. The brand is **volt on matte black** (founder's call, locked Nov 1): every screen is dark and flat, and volt is the one accent. Volt on matte black is ~16:1 contrast, so it stays readable even in daylight.
 
 ## Logo
 
-A neon green line breaking up through a dashed "limit line", next to the LIMITLINE wordmark (`components/logo.tsx`), always on black. It's a stand-in drawn in code until the founder's own logo file arrives; swap the SVG in that one file and every screen picks it up.
+A volt line breaking up through a dashed "limit line", next to the LIMITLINE wordmark (`components/logo.tsx`), always on matte black. It's a stand-in drawn in code until the founder's own logo file arrives; swap the SVG in that one file and every screen picks it up.
 
 ## Color
 
-Dark only. One accent, neon green, used for the main button, the embers chip, badges, the +% hero number and the active tab. Text on a neon fill is always black.
+Dark only, matte: no glows, gloss or gradients. One accent, volt, used for the main button, the embers chip, badges, the +% hero number and the active tab. Text on a volt fill is always matte black.
 
 | Token | Value | Use |
 |---|---|---|
-| `--ground` | `#000000` | Page background |
-| `--surface` | `#0F120F` | Result card, input backgrounds |
-| `--line` | `#2A302A` | Dividers and input borders |
-| `--ink` | `#F2F5F0` | Body text and headings |
-| `--ink-muted` | `#A3ABA0` | Secondary text (~8.6:1 on ground) |
-| `--neon` | `#39FF14` | Accent: fills, the +% number, active tab, focus ring |
-| `--on-neon` | `#000000` | Text on neon fills |
-| `--neon-glow` | 12px neon at 45% | Soft glow on the logo and the +% number only |
+| `--ground` | `#121212` | Page background (matte black) |
+| `--surface` | `#1C1C1C` | Result card, input backgrounds |
+| `--line` | `#2E2E2E` | Dividers and input borders |
+| `--ink` | `#F2F2EE` | Body text and headings |
+| `--ink-muted` | `#A6A6A0` | Secondary text (~7.6:1 on ground) |
+| `--volt` | `#CEFF00` | Accent: fills, the +% number, active tab, focus ring |
+| `--on-volt` | `#121212` | Text on volt fills |
 | `--danger` | `#FF6B6B` | Errors and rejected results |
-| `--link-visited` | `#B5F5A3` | Visited links |
+| `--link-visited` | `#E2FF80` | Visited links |
 
-The share image uses the same colors: black ground, neon wordmark and +%.
+The share image uses the same colors: matte black ground, volt wordmark and +%.
 
 ## Type
 
@@ -52,8 +51,8 @@ The share image uses the same colors: black ground, neon wordmark and +%.
 
 ## Browser details
 
-- Focus ring: 3px `--neon` outline with a 2px offset, on every interactive element.
-- Text selection: `--neon` background, `--on-neon` text.
+- Focus ring: 3px `--volt` outline with a 2px offset, on every interactive element.
+- Text selection: `--volt` background, `--on-volt` text.
 - Links are underlined, with visited links in `--link-visited`.
 
 ## Layout and accessibility (12A, 13A)

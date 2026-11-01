@@ -35,22 +35,22 @@ export async function GET(_request: Request, ctx: RouteContext<"/api/share-card/
           flexDirection: "column",
           justifyContent: "space-between",
           padding: 96,
-          background: "#000000",
-          color: "#F2F5F0",
+          background: "#121212",
+          color: "#F2F2EE",
           fontFamily: "Barlow Condensed",
         }}
       >
-        <div style={{ display: "flex", fontSize: 56, letterSpacing: 4, color: "#39FF14" }}>LIMITLINE</div>
+        <div style={{ display: "flex", fontSize: 56, letterSpacing: 4, color: "#CEFF00" }}>LIMITLINE</div>
         <div style={{ display: "flex", flexDirection: "column" }}>
-          <div style={{ display: "flex", fontSize: 320, lineHeight: 1, color: "#39FF14", textShadow: "0 0 40px rgba(57, 255, 20, 0.5)" }}>
+          <div style={{ display: "flex", fontSize: 320, lineHeight: 1, color: "#CEFF00" }}>
             {formatPercent(Number(entry.percent))}
           </div>
           <div style={{ display: "flex", fontSize: 80, marginTop: 24 }}>beyond my limit</div>
-          <div style={{ display: "flex", fontSize: 64, marginTop: 16, color: "#A3ABA0" }}>
+          <div style={{ display: "flex", fontSize: 64, marginTop: 16, color: "#A6A6A0" }}>
             {QUESTS[entry.quest_id as QuestId].label}
           </div>
         </div>
-        <div style={{ display: "flex", fontSize: 56, color: "#A3ABA0" }}>{name ?? " "}</div>
+        <div style={{ display: "flex", fontSize: 56, color: "#A6A6A0" }}>{name ?? " "}</div>
       </div>
     ),
     {

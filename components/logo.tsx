@@ -1,4 +1,4 @@
-// LIMITLINE logo: a neon line breaking up through the limit line, plus the wordmark.
+// LIMITLINE logo: a volt line breaking up through the limit line, plus the wordmark.
 // Stand-in drawn in code until the real logo file arrives; swap the <svg> for it then.
 export function LogoMark({ size = 32 }: { size?: number }) {
   return (
