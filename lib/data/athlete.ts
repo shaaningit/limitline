@@ -1,6 +1,6 @@
 import "server-only";
 import { connection } from "next/server";
-import { buildBoard, limitBefore, weekStart, type Seed, type VerifiedEntry } from "@/lib/rules";
+import { buildBoard, limitBefore, weekStart, weeklyStreak, type Seed, type VerifiedEntry } from "@/lib/rules";
 import { EMBERS, PILOT_TIME_ZONE, QUEST_IDS, type QuestId, type RejectReason, type Sport } from "@/lib/rules/config";
 import type { requireAthlete } from "./session";
 
@@ -53,9 +53,13 @@ export async function getMyQuests(session: Session) {
     return { questId, limit: state.limit, effortCount: state.effortCount };
   });
 
+  await connection(); // "this week" for the streak depends on when the request happens
+  const streak = weeklyStreak(verified.map((e) => e.activityAt), new Date(), PILOT_TIME_ZONE);
+
   return {
     entries,
     limits,
+    streak,
     balance: Number(balanceRes.data ?? 0),
     unseen: entries.filter((e) => e.status === "verified" && !e.seen_at),
     minEfforts: EMBERS.minEffortsToDouble,

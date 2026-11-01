@@ -1,3 +1,4 @@
+import { EmberIcon } from "@/components/icons";
 import { getShop } from "@/lib/data/athlete";
 import { requireAthlete } from "@/lib/data/session";
 import { canRedeem } from "@/lib/rules";
@@ -18,10 +19,13 @@ export default async function ShopPage({ searchParams }: PageProps<"/shop">) {
 
   return (
     <>
-      <h1>Shop</h1>
-      <p>
-        <span className="chip">{balance} embers</span>
-      </p>
+      <div className="stat-bar" style={{ justifyContent: "space-between", marginTop: "var(--space-2)" }}>
+        <h1 style={{ margin: 0 }}>Shop</h1>
+        <span className="stat-pill embers" aria-label={`${balance} embers to spend`}>
+          <EmberIcon size={22} />
+          <span className="num" aria-hidden="true">{balance}</span>
+        </span>
+      </div>
       {balance < 0 && (
         <p className="error">A correction took back some embers. The shop opens again once your balance is above zero.</p>
       )}

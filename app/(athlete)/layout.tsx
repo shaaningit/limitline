@@ -1,6 +1,9 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { BottomNav } from "@/components/bottom-nav";
 import { Logo } from "@/components/logo";
+import { avatarFromClaims } from "@/lib/avatar";
+import { createClient } from "@/lib/supabase/server";
 
 export default function AthleteLayout({ children }: LayoutProps<"/">) {
   return (
@@ -11,7 +14,16 @@ export default function AthleteLayout({ children }: LayoutProps<"/">) {
         </Link>
       </header>
       <main className="page">{children}</main>
-      <BottomNav />
+      {/* The bar shows at once with the silhouette; the photo streams in when the session is read. */}
+      <Suspense fallback={<BottomNav avatarUrl={null} />}>
+        <NavWithAvatar />
+      </Suspense>
     </>
   );
+}
+
+async function NavWithAvatar() {
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getClaims();
+  return <BottomNav avatarUrl={avatarFromClaims(data?.claims as Record<string, unknown> | undefined)} />;
 }

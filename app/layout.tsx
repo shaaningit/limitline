@@ -1,10 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Barlow_Condensed, IBM_Plex_Sans } from "next/font/google";
+import { Barlow_Condensed, Nunito } from "next/font/google";
 import "./globals.css";
 
-// DESIGN.md: Barlow Condensed for display and numbers, IBM Plex Sans for body.
-const display = Barlow_Condensed({ variable: "--font-display", subsets: ["latin"], weight: "600" });
-const body = IBM_Plex_Sans({ variable: "--font-body", subsets: ["latin"], weight: ["400", "600"] });
+// DESIGN.md: Barlow Condensed for display and numbers; Nunito, a rounded friendly face, for
+// body and buttons (the Duolingo-style feel, founder Nov 1).
+const display = Barlow_Condensed({ variable: "--font-display", subsets: ["latin"], weight: ["600", "700"] });
+const body = Nunito({ variable: "--font-body", subsets: ["latin"], weight: ["500", "700", "800"] });
 
 export const metadata: Metadata = {
   title: "LIMITLINE",

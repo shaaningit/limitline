@@ -257,7 +257,31 @@ export function embersExplainer(): string[] {
     `Beat your own limit: ${EMBERS.base * EMBERS.beatMultiplier} embers (double).`,
     `Doubling starts once you have ${EMBERS.minEffortsToDouble} efforts of a quest type.`,
     "Spend embers in the Shop.",
+    "Log at least one activity every week (Monday to Sunday) to grow your streak.",
   ];
+}
+
+// ---------- Weekly streak (Duolingo-style, founder Nov 1) ----------
+
+export interface Streak {
+  weeks: number; // consecutive weeks (Monday to Sunday) with at least one verified activity
+  activeThisWeek: boolean; // false = the streak is alive from last week but needs an activity this week
+}
+
+// Counts back from this week (or from last week, if nothing is in yet this week: the streak
+// isn't lost until this week ends). Same week boundaries as the boards.
+export function weeklyStreak(activityDates: Date[], now: Date, timeZone: string): Streak {
+  const weeks = new Set(activityDates.map((d) => weekStart(d, timeZone)));
+  const minusWeek = (monday: string) => new Date(Date.parse(`${monday}T00:00:00Z`) - 7 * 86400000).toISOString().slice(0, 10);
+  const thisWeek = weekStart(now, timeZone);
+  const activeThisWeek = weeks.has(thisWeek);
+  let cursor = activeThisWeek ? thisWeek : minusWeek(thisWeek);
+  let count = 0;
+  while (weeks.has(cursor)) {
+    count += 1;
+    cursor = minusWeek(cursor);
+  }
+  return { weeks: count, activeThisWeek };
 }
 
 // What counts for a quest, shown on the quest page and to the founder in admin.

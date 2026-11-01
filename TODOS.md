@@ -25,7 +25,9 @@ Still to do:
 
 **Context:** The earlier fallback was file upload (.fit/.gpx read in the browser), designed in `docs/designs/limitline-mvp.md`, Section 1 of the engineering review. Keep it as plan B if Strava says no.
 
-## Brand
+## Brand and money
+
+Full plan and order: `docs/business/revenue-plan.md` (brand deals first, coaching second, subscriptions last; nothing paid during the pilot).
 
 ### Brand quests and content challenges (founder idea, Nov 1, "we'll see this later")
 

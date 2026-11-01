@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BikeIcon, ChevronIcon, EmberIcon, FlameIcon, RunIcon, SwimIcon } from "@/components/icons";
 import { ShareButton } from "@/components/share-button";
 import { StravaConnectButton, StravaReturnMessage } from "@/components/strava-connect";
 import { getMyQuests, getMyStrava, type MyEntry } from "@/lib/data/athlete";
@@ -24,19 +25,32 @@ export default async function QuestsPage({ searchParams }: PageProps<"/quests">)
   const { submitted, reason, strava: stravaReturn } = await searchParams;
   const session = await requireAthlete();
   const { profile } = session;
-  const [{ entries, limits, balance, unseen, minEfforts }, strava] = await Promise.all([getMyQuests(session), getMyStrava(session)]);
+  const [{ entries, limits, streak, balance, unseen, minEfforts }, strava] = await Promise.all([getMyQuests(session), getMyStrava(session)]);
   const offerStrava = stravaEnabled() && !strava;
   const firstRunDone = profile.checklist_followed && profile.checklist_visibility && entries.length > 0;
 
   return (
     <>
-      <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "var(--space-2)", marginTop: "var(--space-2)" }}>
-        <h1 style={{ margin: 0 }}>My quests</h1>
-        {/* embers balance (opens "How embers work", 8A) */}
-        <Link className="chip" href="/quests/embers" aria-label={`${balance} embers. How embers work`}>
-          {balance} embers
+      {/* Top stats, Duolingo-style: weekly streak and embers (opens "How embers work", 8A) */}
+      <div className="stat-bar">
+        <span
+          className={`stat-pill streak${streak.weeks > 0 ? "" : " cold"}`}
+          aria-label={`${streak.weeks}-week streak${streak.weeks > 0 && !streak.activeThisWeek ? ", log an activity this week to keep it" : ""}`}
+        >
+          <FlameIcon size={22} />
+          <span className="num" aria-hidden="true">{streak.weeks}</span>
+        </span>
+        <Link className="stat-pill embers" href="/quests/embers" aria-label={`${balance} embers. How embers work`}>
+          <EmberIcon size={22} />
+          <span className="num" aria-hidden="true">{balance}</span>
         </Link>
-      </header>
+      </div>
+      <h1 style={{ marginTop: "var(--space-2)" }}>My quests</h1>
+      {streak.weeks > 0 && !streak.activeThisWeek && (
+        <p className="nudge" role="status">
+          <FlameIcon size={20} /> Keep your {streak.weeks}-week streak: log one activity before Sunday ends.
+        </p>
+      )}
 
       <SubmittedMessage submitted={submitted} reason={reason} offerStrava={offerStrava} />
       <StravaReturnMessage status={stravaReturn} />
@@ -84,30 +98,42 @@ export default async function QuestsPage({ searchParams }: PageProps<"/quests">)
       {/* The main action: pick a quest, then paste the link on its page */}
       <section aria-labelledby="quests">
         <h2 id="quests">Quests</h2>
-        <ul className="rows quest-rows">
-          {limits.map((l) => (
-            <li key={l.questId}>
-              <Link href={`/quests/${l.questId}`}>
-                <span>
-                  <span style={{ fontWeight: 600 }}>{QUESTS[l.questId].label}</span>
-                  <br />
-                  <span className="muted small">
-                    {l.limit === null ? (
-                      "No limit yet"
-                    ) : (
-                      <>
-                        Limit <span className="num">{formatValue(l.questId, l.limit)}</span>
-                        {l.effortCount < minEfforts && ` · ${l.effortCount} of ${minEfforts} efforts`}
-                      </>
-                    )}
+        <ul className="quest-cards">
+          {limits.map((l) => {
+            const quest = QUESTS[l.questId];
+            const Icon = quest.sport === "run" ? RunIcon : quest.sport === "bike" ? BikeIcon : SwimIcon;
+            const unlocked = l.effortCount >= minEfforts;
+            return (
+              <li key={l.questId}>
+                <Link href={`/quests/${l.questId}`}>
+                  <span className={`sport-badge ${quest.sport}`}>
+                    <Icon size={26} />
                   </span>
-                </span>
-                <span className="go" aria-hidden="true">
-                  Paste link →
-                </span>
-              </Link>
-            </li>
-          ))}
+                  <span className="quest-text">
+                    <span className="quest-name">{quest.label}</span>
+                    <span className="muted small">
+                      {l.limit === null ? (
+                        "No limit yet: your first one sets it"
+                      ) : (
+                        <>
+                          Limit <span className="num">{formatValue(l.questId, l.limit)}</span>
+                        </>
+                      )}
+                    </span>
+                    <span className="progress" aria-label={unlocked ? "Double embers unlocked" : `${l.effortCount} of ${minEfforts} efforts to unlock double embers`}>
+                      <span className="progress-track">
+                        <span className="progress-fill" style={{ width: `${Math.min(100, (l.effortCount / minEfforts) * 100)}%` }} />
+                      </span>
+                      <span className="progress-label" aria-hidden="true">
+                        {unlocked ? "2× unlocked" : `${l.effortCount}/${minEfforts}`}
+                      </span>
+                    </span>
+                  </span>
+                  <ChevronIcon className="go" />
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       </section>
 

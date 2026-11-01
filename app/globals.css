@@ -1,13 +1,20 @@
 /* Tokens from DESIGN.md. Change DESIGN.md first, then here.
-   Matte black ground, one volt accent, dark only, flat. */
+   Matte black ground, one volt accent, dark only. Duolingo-style feel (founder, Nov 1):
+   chunky "pressable" buttons and cards with a solid bottom edge, rounded corners, bold type. */
 :root {
   --ink: #f2f2ee;
   --ink-muted: #a6a6a0; /* ~7.6:1 on ground */
   --ground: #121212; /* matte black */
   --surface: #1c1c1c;
+  --surface-2: #242424;
   --line: #2e2e2e;
+  --line-strong: #3a3a3a; /* the bottom edge of chunky buttons and cards */
   --volt: #ceff00; /* ~16:1 on ground: fine as text, lines and fills */
+  --volt-deep: #8fb000; /* volt's pressable bottom edge */
   --on-volt: #121212;
+  --avatar-bg: #3a3a3a;
+  --avatar-fg: #8a8a85;
+  --ember-facet: rgb(18 18 18 / 0.35);
   --danger: #ff6b6b;
   --link-visited: #e2ff80;
 
@@ -16,7 +23,7 @@
   --space-3: 24px;
   --space-4: 32px;
   --space-6: 48px;
-  --radius: 10px;
+  --radius: 16px;
   --tap: 44px;
 
   --text-hero: 56px;
@@ -65,7 +72,7 @@ h1,
 h2,
 .num {
   font-family: var(--font-display), sans-serif;
-  font-weight: 600;
+  font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
 h1 {
@@ -107,13 +114,21 @@ p {
   min-height: var(--tap);
   padding: 0 var(--space-2);
   border-radius: var(--radius);
-  border: 1px solid var(--line);
+  border: 2px solid var(--line-strong);
   background: var(--ground);
   color: var(--ink);
   font: inherit;
-  font-weight: 600;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
   text-decoration: none;
   cursor: pointer;
+  box-shadow: 0 4px 0 var(--line-strong);
+  transition: transform 0.06s ease-out, box-shadow 0.06s ease-out;
+}
+.button:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--line-strong);
 }
 .button:visited {
   color: var(--ink);
@@ -122,6 +137,10 @@ p {
   background: var(--volt);
   border-color: var(--volt);
   color: var(--on-volt);
+  box-shadow: 0 4px 0 var(--volt-deep);
+}
+.button-primary:active:not(:disabled) {
+  box-shadow: 0 1px 0 var(--volt-deep);
 }
 .button-primary:visited {
   color: var(--on-volt);
@@ -140,16 +159,16 @@ p {
 
 label {
   display: block;
-  font-weight: 600;
+  font-weight: 800;
   margin-bottom: var(--space-1);
 }
 input,
 select {
   width: 100%;
   min-height: var(--tap);
-  padding: 0 var(--space-1);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
+  padding: 0 12px;
+  border: 2px solid var(--line-strong);
+  border-radius: 14px;
   background: var(--surface);
   color: var(--ink);
   font: inherit;
@@ -169,10 +188,11 @@ select {
   background: var(--volt);
   color: var(--on-volt);
   font-family: var(--font-display), sans-serif;
-  font-weight: 600;
+  font-weight: 700;
   font-size: var(--text-h2);
   font-variant-numeric: tabular-nums;
   text-decoration: none;
+  box-shadow: 0 3px 0 var(--volt-deep);
 }
 .chip:visited {
   color: var(--on-volt);
@@ -195,20 +215,23 @@ select {
   border-bottom: 1px solid var(--line);
 }
 .rows > li.me {
-  font-weight: 600;
+  font-weight: 800;
 }
 
 /* The one card: the result card (5A). */
 .result-card {
   background: var(--surface);
-  border-radius: var(--radius);
+  border: 2px solid var(--line);
+  border-radius: 20px;
   padding: var(--space-3) var(--space-2);
   margin: var(--space-2) 0;
 }
 .hero-number {
   color: var(--volt);
+  animation: pop 0.45s cubic-bezier(0.2, 1.4, 0.4, 1) both; /* the celebration moment */
+  transform-origin: left center;
   font-family: var(--font-display), sans-serif;
-  font-weight: 600;
+  font-weight: 700;
   font-size: var(--text-hero);
   line-height: 1;
   font-variant-numeric: tabular-nums;
@@ -216,28 +239,30 @@ select {
 .badge {
   display: inline-block;
   padding: 2px var(--space-1);
-  border-radius: 6px;
+  border-radius: 8px;
   background: var(--volt);
   color: var(--on-volt);
   font-size: var(--text-small);
-  font-weight: 600;
+  font-weight: 800;
 }
 
-/* Bottom bar: Quests, Board, Shop, Profile. */
+/* Bottom bar: icons only (founder, Nov 1). Quests, Board, Shop, Profile photo. */
 .bottom-nav {
   position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
   background: var(--ground);
-  border-top: 1px solid var(--line);
+  border-top: 2px solid var(--line);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 .bottom-nav ul {
   display: flex;
   max-width: 480px;
   margin: 0 auto;
-  padding: 0;
+  padding: 6px var(--space-1);
   list-style: none;
+  gap: var(--space-1);
 }
 .bottom-nav li {
   flex: 1;
@@ -246,14 +271,38 @@ select {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 56px;
+  min-height: 52px;
+  border-radius: 14px;
+  border: 2px solid transparent;
   color: var(--ink-muted);
   text-decoration: none;
-  font-weight: 600;
+  transition: transform 0.1s ease-out;
+}
+.bottom-nav a:active {
+  transform: scale(0.92);
 }
 .bottom-nav a[aria-current="page"] {
   color: var(--volt);
-  box-shadow: inset 0 3px 0 var(--volt);
+  background: rgb(206 255 0 / 0.08);
+  border-color: rgb(206 255 0 / 0.35);
+}
+.avatar {
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  padding: 2px;
+  border: 2px solid transparent;
+}
+.avatar img,
+.avatar svg {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.bottom-nav a[aria-current="page"] .avatar {
+  border-color: var(--volt); /* Instagram-style ring on the active profile */
 }
 
 .tabs {
@@ -268,6 +317,7 @@ select {
   background: var(--volt);
   border-color: var(--volt);
   color: var(--on-volt);
+  box-shadow: 0 4px 0 var(--volt-deep);
 }
 
 .checklist li {
@@ -336,12 +386,16 @@ select {
   background: #ffffff;
   border-color: #ffffff;
   color: #1f1f1f;
+  box-shadow: 0 4px 0 #b9b9b9;
+  text-transform: none;
+  letter-spacing: 0;
 }
 /* Strava's own orange for "Connect with Strava" (their brand guidelines). */
 .button-strava {
   background: #fc4c02;
   border-color: #fc4c02;
   color: #ffffff;
+  box-shadow: 0 4px 0 #b33600;
 }
 .button-strava:visited {
   color: #ffffff;
@@ -349,6 +403,9 @@ select {
 .button-quiet {
   border-color: transparent;
   background: transparent;
+  box-shadow: none;
+  text-transform: none;
+  letter-spacing: 0;
   color: var(--ink-muted);
   font-weight: 400;
   margin-top: var(--space-1);
@@ -423,4 +480,178 @@ select {
 }
 .ok {
   color: var(--volt);
+}
+
+/* ---------- Duolingo-style pieces (founder, Nov 1) ---------- */
+
+/* Top stats: streak flame and embers. */
+.stat-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-1);
+}
+.stat-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 0 14px 0 10px;
+  border-radius: 999px;
+  border: 2px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 22px;
+  box-shadow: 0 3px 0 var(--line-strong);
+}
+.stat-pill:visited {
+  color: var(--ink);
+}
+.stat-pill.streak svg {
+  color: #ff9f1a; /* the flame is the one warm color, like Duolingo's */
+}
+.stat-pill.streak.cold svg {
+  color: var(--ink-muted);
+}
+.stat-pill.embers svg {
+  color: var(--volt);
+}
+.nudge {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  border: 2px solid #ff9f1a;
+  color: var(--ink);
+  font-weight: 700;
+}
+.nudge svg {
+  color: #ff9f1a;
+  flex: none;
+}
+
+/* Quest cards: sport badge, limit, progress to double embers. */
+.quest-cards {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+.quest-cards a {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+  border-radius: 20px;
+  border: 2px solid var(--line-strong);
+  background: var(--surface);
+  box-shadow: 0 4px 0 var(--line-strong);
+  text-decoration: none;
+  color: var(--ink);
+  transition: transform 0.06s ease-out, box-shadow 0.06s ease-out;
+}
+.quest-cards a:visited {
+  color: var(--ink);
+}
+.quest-cards a:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--line-strong);
+}
+.quest-cards .go {
+  color: var(--ink-muted);
+}
+.sport-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--volt);
+  color: var(--on-volt);
+  box-shadow: 0 3px 0 var(--volt-deep);
+}
+.quest-text {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.quest-name {
+  font-weight: 800;
+  font-size: 17px;
+}
+.progress {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: 6px;
+}
+.progress-track {
+  flex: 1;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--line-strong);
+  overflow: hidden;
+}
+.progress-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--volt);
+}
+.progress-label {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+
+/* Board: rank badges like a league table. */
+.board-who {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.rank {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--surface-2);
+  font-family: var(--font-display), sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+}
+.rank.top {
+  background: var(--volt);
+  color: var(--on-volt);
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
 }

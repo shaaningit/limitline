@@ -28,10 +28,18 @@ Dark only, matte: no glows, gloss or gradients. One accent, volt, used for the m
 
 The share image uses the same colors: matte black ground, volt wordmark and +%.
 
+## Feel (founder, Nov 1: "give it a Duolingo sort of feel")
+
+- **Chunky and pressable.** Buttons and quest cards have a solid bottom edge (`--line-strong`, or `--volt-deep` under volt) and sink 3px when pressed. Corners are round (`--radius` 16px, cards 20px). Button labels are bold capitals.
+- **Game stats on top.** My quests opens with a weekly streak flame (the one warm color, `#FF9F1A`) and the embers counter. A missed-week nudge appears when the streak needs an activity before Sunday.
+- **Progress you can see.** Each quest card shows a bar toward double embers (4 efforts), then "2× unlocked".
+- **Icons over words.** The bottom bar is icons only: Quests (flag on a peak), Board (trophy), Shop (bag), and Profile as the athlete's photo, or a silhouette when there's none, like Instagram. Names stay available to screen readers.
+- **One celebration.** A new +% result pops in (0.45 s, slight overshoot). Off under reduced motion.
+
 ## Type
 
 - **Display and numbers:** Barlow Condensed, 600 weight, with tabular (equal-width) digits so times and percentages line up. The share image uses a bundled `.ttf` of the same font.
-- **Body and UI:** IBM Plex Sans, 400 and 600.
+- **Body and UI:** Nunito, 500 / 700 / 800: rounded and friendly, for the Duolingo-style feel (replaced IBM Plex Sans on Nov 1).
 - Body text is at least 16px.
 
 | Token | Size / line height | Font | Use |
@@ -39,14 +47,14 @@ The share image uses the same colors: matte black ground, volt wordmark and +%.
 | `--text-hero` | 56px / 1.0 | Barlow Condensed | +% beyond your limit (the anchor of any screen it's on) |
 | `--text-h1` | 32px / 1.1 | Barlow Condensed | Page titles |
 | `--text-h2` | 22px / 1.2 | Barlow Condensed | Section titles |
-| `--text-body` | 16px / 1.5 | IBM Plex Sans | Everything else |
-| `--text-small` | 14px / 1.4 | IBM Plex Sans | Labels and hints only, never paragraphs |
+| `--text-body` | 16px / 1.5 | Nunito | Everything else |
+| `--text-small` | 14px / 1.4 | Nunito | Labels and hints only, never paragraphs |
 
 ## Space, shape, motion
 
 - Spacing on an 8px grid: `--space-1` 8px, `--space-2` 16px, `--space-3` 24px, `--space-4` 32px, `--space-6` 48px. A heading has more space above it than below it.
-- One corner radius: `--radius` 10px.
-- No decorative cards or shadows. The result card is the only card, because it's the thing you act on.
+- Corner radius: `--radius` 16px; cards 20px; pills fully round.
+- Cards are for things you tap or act on: quest cards and the result card. Plain lists stay as rows. No soft drop shadows; the only "shadow" is the solid pressable edge.
 - One motion moment: the result card counts up its +% and embers over about 0.6 s with an ease-out curve. It's switched off under `prefers-reduced-motion`. (First in the cut order if time runs short.)
 
 ## Browser details
@@ -57,7 +65,7 @@ The share image uses the same colors: matte black ground, volt wordmark and +%.
 
 ## Layout and accessibility (12A, 13A)
 
-- Athlete screens are phone-first from 360px wide: one column with the bottom bar (left to right: Quests, Board, Shop, Profile). Wider screens stay centered, capped at 480px.
+- Athlete screens are phone-first from 360px wide: one column with the icon-only bottom bar (left to right: Quests, Board, Shop, Profile photo). Wider screens stay centered, capped at 480px.
 - Admin is laptop-first: queue on the left, entry form on the right. Below 768px it becomes one column.
 - Tap targets are at least 44×44px.
 - Every field has a visible label above it. Placeholder text is never the only label.

@@ -7,6 +7,7 @@ import {
   embersBalance,
   embersExplainer,
   questRules,
+  weeklyStreak,
   evaluate,
   evaluateAll,
   limitBefore,
@@ -264,5 +265,28 @@ describe("questRules (longer counts, shorter is rejected)", () => {
     expect(questRules("swim400").counts).toContain("pool swim of 400 m");
     expect(questRules("swim1500").rejected).toContain("Shorter than 1500 m");
     expect(questRules("bike20").counts).toContain("20 minutes or more");
+  });
+});
+
+describe("weeklyStreak (Duolingo-style, Monday-to-Sunday weeks)", () => {
+  const tz = "Europe/London";
+  const d = (iso: string) => new Date(iso);
+  const now = d("2026-11-25T12:00:00Z"); // Wednesday of the week starting Mon Nov 23
+
+  it("counts consecutive weeks ending this week", () => {
+    const dates = [d("2026-11-24T07:00:00Z"), d("2026-11-17T07:00:00Z"), d("2026-11-15T07:00:00Z"), d("2026-11-09T07:00:00Z")];
+    expect(weeklyStreak(dates, now, tz)).toEqual({ weeks: 3, activeThisWeek: true });
+  });
+  it("keeps last week's streak alive until this week ends", () => {
+    expect(weeklyStreak([d("2026-11-18T07:00:00Z"), d("2026-11-10T07:00:00Z")], now, tz)).toEqual({ weeks: 2, activeThisWeek: false });
+  });
+  it("is broken by a missed week", () => {
+    expect(weeklyStreak([d("2026-11-10T07:00:00Z")], now, tz)).toEqual({ weeks: 0, activeThisWeek: false });
+    expect(weeklyStreak([d("2026-11-24T07:00:00Z"), d("2026-11-10T07:00:00Z")], now, tz)).toEqual({ weeks: 1, activeThisWeek: true });
+  });
+  it("uses the pilot time zone for the Monday boundary", () => {
+    // Sunday 23:30 in London is still the previous week.
+    expect(weeklyStreak([d("2026-11-22T23:30:00Z")], d("2026-11-23T08:00:00Z"), tz)).toEqual({ weeks: 1, activeThisWeek: false });
+    expect(weeklyStreak([], now, tz)).toEqual({ weeks: 0, activeThisWeek: false });
   });
 });

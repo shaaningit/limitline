@@ -47,10 +47,17 @@ export default async function BoardPage({ searchParams }: PageProps<"/board">) {
         <ol className="rows" aria-label={`${LABELS[sport]} board`}>
           {board.rows.map((row) => (
             <li key={row.athleteId} className={row.isMe ? "me" : undefined}>
-              <span>
-                <span className="num">{row.rank}</span> · {row.displayName}
-                {row.isMe && <span className="visually-hidden"> (you)</span>}
-                <span className="muted small"> · {row.questLabel}</span>
+              <span className="board-who">
+                <span className={`rank${row.rank <= 3 ? " top" : ""}`}>
+                  <span className="visually-hidden">Rank </span>
+                  {row.rank}
+                </span>
+                <span>
+                  {row.displayName}
+                  {row.isMe && <span className="visually-hidden"> (you)</span>}
+                  <br />
+                  <span className="muted small">{row.questLabel}</span>
+                </span>
               </span>
               <span className="num">{formatPercent(row.percent)}</span>
             </li>
