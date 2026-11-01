@@ -39,6 +39,12 @@ Still to do:
 
 **Priority:** P2, after the pilot's first brand conversation
 
+### Content race: grow Instagram (founder, Nov 1: "we need Instagram followers")
+
+**What:** A high volume of brand-aligned motivation videos with catchy captions, posted to Instagram to attract followers before and during the pilot. The share card (`/api/share-card/<id>`) is already story-sized and on-brand, so athletes' results can feed the same feed.
+
+**Priority:** P1 (the founder's next focus, outside the app)
+
 ### Tone down the volt (founder: "sort of too bright, we can work on that later")
 
 **What:** Try a slightly softer volt than `#CEFF00` on matte black and pick one with the founder. Change DESIGN.md first, then `app/globals.css`, `app/icon.svg` and the share card.
