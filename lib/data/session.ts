@@ -27,7 +27,9 @@ export async function getSession() {
     .select("*")
     .eq("id", userId)
     .maybeSingle<Profile>();
-  return { supabase, userId, profile };
+  // Supabase puts the login phone in the session token (empty when none is linked).
+  const phone = typeof data.claims.phone === "string" && data.claims.phone ? `+${data.claims.phone.replace(/^\+/, "")}` : null;
+  return { supabase, userId, profile, phone };
 }
 
 // For athlete pages: signed in with a profile, otherwise sent to login or profile setup.

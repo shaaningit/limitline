@@ -20,7 +20,7 @@ You'll end with: a Supabase project (the database and logins), a verified email 
    ```html
    <a href="{{ .RedirectTo }}?token_hash={{ .TokenHash }}&type=email">Log in to LIMITLINE</a>
    ```
-6. **Allow your web address.** In **Authentication → URL Configuration**, set **Site URL** to `https://YOUR-DOMAIN` and add `https://YOUR-DOMAIN/auth/confirm` under **Redirect URLs**.
+6. **Allow your web address.** In **Authentication → URL Configuration**, set **Site URL** to `https://YOUR-DOMAIN` and add `https://YOUR-DOMAIN/auth/confirm` and `https://YOUR-DOMAIN/auth/callback` under **Redirect URLs**.
 7. **Add yourself first.** In **Authentication → Users → Add user → Create new user**, enter your email and tick **Auto confirm**. Log in to the app once (after step 3), complete the welcome step, then in **SQL Editor** run, with your email:
 
    ```sql
@@ -30,6 +30,25 @@ You'll end with: a Supabase project (the database and logins), a verified email 
 
    This is the only way to become the founder. Nobody can do it from the app.
 8. **Add each pilot athlete** the same way (**Add user**, Auto confirm). They log in with their email and pick their board name.
+
+### Google login (optional, ~15 min, free)
+
+Athletes tap **Continue with Google** instead of waiting for an email. It still only lets in people you added: their Google account's email must match the email you added in step 8.
+
+1. Go to [console.cloud.google.com](https://console.cloud.google.com), create a project called LIMITLINE.
+2. **APIs & Services → OAuth consent screen:** choose **External**, app name LIMITLINE, your support email, and add your domain under authorized domains. Publish the app (no Google review is needed for basic email login).
+3. **APIs & Services → Credentials → Create credentials → OAuth client ID:** type **Web application**. Under **Authorized redirect URIs**, paste the **Callback URL** shown in Supabase at **Authentication → Sign In / Providers → Google** (it looks like `https://YOUR-PROJECT.supabase.co/auth/v1/callback`).
+4. Copy the **Client ID** and **Client secret** into that Supabase Google page and turn Google on. The client secret is secret: paste it only into Supabase.
+5. In Vercel, set `NEXT_PUBLIC_LOGIN_GOOGLE=on` and redeploy. The Google button appears on the landing screen.
+
+### Phone login (optional, ~20 min, costs per text)
+
+Athletes get a 6-digit code by text. Each text costs a few cents, depending on the country, paid to the SMS company.
+
+1. Sign up with an SMS company Supabase supports (Twilio is the most common) and get its account ID, auth token and a sending number or Messaging Service.
+2. In Supabase **Authentication → Sign In / Providers → Phone**, turn it on, pick the SMS company and paste its details. The auth token is secret: paste it only into Supabase.
+3. In Vercel, set `NEXT_PUBLIC_LOGIN_PHONE=on` and redeploy. The phone button appears on the landing screen, and **Profile** gets a "Log in with your phone" section.
+4. Athletes log in once with email or Google, then add their number in **Profile** (they confirm it with a texted code). After that, the phone button works for them. Phone login never creates new accounts.
 
 ## 2. Resend: email from your domain (~30 min, D1)
 
@@ -43,13 +62,14 @@ Free plan limits: 100 emails a day, 3,000 a month. That's plenty for 10 athletes
 ## 3. Vercel: put the app online (~10 min)
 
 1. Sign up at [vercel.com](https://vercel.com) with your GitHub account, then **Add New → Project** and import `shaaningit/limitline`.
-2. Under **Environment Variables**, add every name from `.env.example` with your real values. `RESEND_API_KEY` is secret; the rest are settings. Set `PILOT_TIME_ZONE` to your city's zone, for example `Europe/London` or `Asia/Kolkata`.
+2. Under **Environment Variables**, add every name from `.env.example` with your real values. `RESEND_API_KEY` is secret; the rest are settings. Leave `NEXT_PUBLIC_LOGIN_GOOGLE` and `NEXT_PUBLIC_LOGIN_PHONE` empty until you've done their optional steps above. Set `PILOT_TIME_ZONE` to your city's zone, for example `Europe/London` or `Asia/Kolkata`.
 3. Deploy. Then, in **Settings → Domains**, add your domain and follow the DNS steps.
 4. From now on, every push to `main` redeploys automatically.
 
 ## 4. Before the pilot (by Fri Nov 13, the launch check)
 
 - [ ] Log in on an iPhone (Mail app), with Gmail, and on Android, by tapping the email link (D23 test).
+- [ ] If they're on: log in with Google and with your phone, and check that a Google account or phone number you didn't add is turned away.
 - [ ] Add a test athlete. Paste a link, check it in **Admin**, and confirm the result email arrives and the board updates. This is the Nov 13 go/no-go check.
 - [ ] Enter seed limits for each athlete in **Admin → Athletes & seeds** (their best from the last 8 weeks, plus how many efforts you saw).
 - [ ] Set the embers amount in `lib/rules/config.ts` (`EMBERS.base`, currently a placeholder of 10) if you want a different number, and add shop items in **Admin → Shop**.

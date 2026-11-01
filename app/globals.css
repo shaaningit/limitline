@@ -26,6 +26,7 @@
   --text-small: 14px;
 
   color-scheme: dark;
+  accent-color: var(--volt); /* checkboxes and radios */
 }
 
 * {
@@ -319,6 +320,36 @@ select {
   font-weight: 600;
   letter-spacing: 0.08em;
   line-height: 1;
+}
+
+.logo-stacked {
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* Login buttons: icon + label, Google in its own white style (Google's branding rules). */
+.button-icon {
+  flex: none;
+  margin-right: 10px;
+}
+.button-google {
+  background: #ffffff;
+  border-color: #ffffff;
+  color: #1f1f1f;
+}
+.button-quiet {
+  border-color: transparent;
+  background: transparent;
+  color: var(--ink-muted);
+  font-weight: 400;
+  margin-top: var(--space-1);
+}
+
+/* Top bar on athlete screens so the logo is always visible. */
+.app-bar {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: var(--space-2) var(--space-2) 0;
 }
 
 /* Landing: the logo first, login options under it. */

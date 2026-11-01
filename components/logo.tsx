@@ -1,5 +1,6 @@
 // LIMITLINE logo: a volt line breaking up through the limit line, plus the wordmark.
-// Stand-in drawn in code until the real logo file arrives; swap the <svg> for it then.
+// Stand-in drawn in code until the founder's logo file arrives; swap the <svg> here
+// (and app/icon.svg) and every screen, the app icon and the share card follow.
 export function LogoMark({ size = 32 }: { size?: number }) {
   return (
     <svg
@@ -21,10 +22,11 @@ export function LogoMark({ size = 32 }: { size?: number }) {
   );
 }
 
-export function Logo({ size = 32, wordmark = true }: { size?: number; wordmark?: boolean }) {
+// `stacked` puts a large mark above the wordmark (landing screen); otherwise they sit side by side.
+export function Logo({ size = 32, wordmark = true, stacked = false }: { size?: number; wordmark?: boolean; stacked?: boolean }) {
   return (
-    <span className="logo" role="img" aria-label="LIMITLINE">
-      <LogoMark size={size} />
+    <span className={stacked ? "logo logo-stacked" : "logo"} role="img" aria-label="LIMITLINE">
+      <LogoMark size={stacked ? size * 2 : size} />
       {wordmark && (
         <span className="logo-word" style={{ fontSize: size }} aria-hidden="true">
           LIMITLINE

@@ -272,6 +272,10 @@ Asked for by the founder after seeing the first build. These override the earlie
 - **Quest first, then the link:** My quests lists the quests; each quest has its own page (`/quests/<quest>`) with the paste-link box. The old `/submit` screen and its quest picker are gone (old links redirect to My quests). Replaces 2A.
 - **Longer counts, shorter doesn't:** a 10 km run pasted on the 5 km quest counts as a 5 km, timed on its fastest 5 km. A 5 km run on the 10 km quest is rejected ("Quest distance or time not completed"). Same for swims (fastest 400 m / 1500 m) and the bike (best 20-minute power from a ride of 20+ minutes). The rule text comes from `questRules()` in `lib/rules`, shown to athletes and to the founder in admin.
 - **Bottom bar:** left to right, Quests · Board · Shop · Profile. Replaces 1A/15A's three tabs; the initials button on My quests is gone.
+- **More ways to log in:** Continue with Google, Continue with phone (texted 6-digit code), Continue with email, all under the logo. Still invite-only: Google works only for an email the founder added, and a phone works only after the athlete links it in Profile. Google and phone each switch on with a setting once set up (SETUP.md).
+- **Logo always visible:** a small logo bar on every athlete screen, a large stacked logo on the landing, and the logo as the browser and home-screen icon.
+- **Approvals:** the founder chose the Strava route. Next step is automatic checking through Strava's official API (TODOS.md), not AI screenshot reading and not a bot opening Strava pages.
+- **Later (in TODOS.md):** brand quests and content challenges; a softer volt.
 
 ## Reviewer Concerns
 

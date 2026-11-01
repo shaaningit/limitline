@@ -1,12 +1,14 @@
 import Link from "next/link";
+import { LOGIN_OPTIONS } from "@/lib/auth-options";
 import { requireAthlete } from "@/lib/data/session";
 import { logOut, saveSettings } from "./actions";
+import { PhoneLinkForm } from "./phone-link-form";
 
 const FOUNDER_EMAIL = process.env.NEXT_PUBLIC_FOUNDER_EMAIL ?? "";
 
 // Profile sheet (15A): name, board and share-card privacy, data deletion, log out.
 export default async function ProfilePage({ searchParams }: PageProps<"/profile">) {
-  const { profile } = await requireAthlete();
+  const { profile, phone } = await requireAthlete();
   const { saved } = await searchParams;
   const deletion = `mailto:${FOUNDER_EMAIL}?subject=${encodeURIComponent("Delete my LIMITLINE data")}&body=${encodeURIComponent(
     `Please delete my account and data. Name on LIMITLINE: ${profile.display_name}`,
@@ -49,6 +51,13 @@ export default async function ProfilePage({ searchParams }: PageProps<"/profile"
           </button>
         </p>
       </form>
+
+      {LOGIN_OPTIONS.phone && (
+        <>
+          <h2>Log in with your phone</h2>
+          <PhoneLinkForm current={phone} />
+        </>
+      )}
 
       <h2>Your data</h2>
       <p>
