@@ -132,3 +132,11 @@ export async function getShop(session: Session) {
     balance: Number(balanceRes.data ?? 0),
   };
 }
+
+// The athlete's own Strava connection (never the tokens), or null.
+export async function getMyStrava(session: Session): Promise<{ name: string | null; connectedAt: string } | null> {
+  const { data, error } = await session.supabase.rpc("my_strava");
+  if (error) return null;
+  const row = (data as { strava_name: string | null; connected_at: string }[] | null)?.[0];
+  return row ? { name: row.strava_name, connectedAt: row.connected_at } : null;
+}

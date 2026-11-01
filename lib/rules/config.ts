@@ -58,6 +58,8 @@ export const REJECT_REASONS = {
   not_outdoor: "Outdoor activities only",
   not_own: "This activity isn't yours",
   not_completed: "Quest distance or time not completed",
+  wrong_sport: "Wrong sport for this quest",
+  manual_entry: "Typed-in activities don't count, record it with a watch or phone",
 } as const;
 
 export type RejectReason = keyof typeof REJECT_REASONS;

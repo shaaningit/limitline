@@ -337,6 +337,15 @@ select {
   border-color: #ffffff;
   color: #1f1f1f;
 }
+/* Strava's own orange for "Connect with Strava" (their brand guidelines). */
+.button-strava {
+  background: #fc4c02;
+  border-color: #fc4c02;
+  color: #ffffff;
+}
+.button-strava:visited {
+  color: #ffffff;
+}
 .button-quiet {
   border-color: transparent;
   background: transparent;

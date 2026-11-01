@@ -1,4 +1,5 @@
 import "server-only";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { after } from "next/server";
 import { correctionEmail, resultEmail, sendEmail, type ResultFacts } from "@/lib/email";
 import type { Evaluation, Seed } from "@/lib/rules";
@@ -10,7 +11,15 @@ type Session = Awaited<ReturnType<typeof requireFounder>>;
 type Supabase = Session["supabase"];
 
 const ENTRY_COLUMNS =
-  "id, athlete_id, quest_id, link, status, reject_reason, strava_activity_id, activity_at, value, percent, beat_limit, embers, submitted_at, email_status";
+  "id, athlete_id, quest_id, link, status, reject_reason, strava_activity_id, activity_at, value, percent, beat_limit, embers, submitted_at, email_status, checked_by, strava_note, suggested";
+
+// The automatic Strava check's numbers, for the founder to approve in one step.
+export interface Suggested {
+  quest_id: QuestId;
+  strava_activity_id: string;
+  activity_at: string;
+  value: number;
+}
 
 export interface AdminEntry extends DbEntry {
   athlete_id: string;
@@ -18,6 +27,9 @@ export interface AdminEntry extends DbEntry {
   reject_reason: RejectReason | null;
   submitted_at: string;
   email_status: "pending" | "sent" | "failed" | null;
+  checked_by: "founder" | "strava" | null;
+  strava_note: string | null;
+  suggested: Suggested | null;
   profiles?: { display_name: string; signed_up_at: string } | null;
 }
 
@@ -77,27 +89,34 @@ export async function applyChange(session: Session, athleteId: string, change: C
 
   if (plan.preview?.needsConfirm && !confirmed) return { status: "needs_confirm", preview: plan.preview };
 
-  const { error } = await supabase.rpc("founder_update_entries", { p_rows: plan.rows });
+  // The founder's decision replaces any Strava suggestion for this entry.
+  const rows = plan.rows.map((r) => (r.id === change.id ? { ...r, checked_by: "founder", suggested: null } : r));
+  const { error } = await supabase.rpc("founder_update_entries", { p_rows: rows });
   if (error?.code === "23505") return { status: "error", message: "That Strava activity is already counted" };
   if (error) return { status: "error", message: "Couldn't save, nothing was changed" };
 
   const embersBefore = new Map(entries.map((e) => [e.id, e.embers === null ? null : Number(e.embers)]));
-  after(() => sendNotices(supabase, plan.notices, embersBefore));
+  after(() =>
+    sendNotices(supabase, plan.notices, embersBefore, (rows) => supabase.rpc("founder_update_entries", { p_rows: rows })),
+  );
   return { status: "saved" };
 }
 
-async function sendNotices(
-  supabase: Supabase,
+// Sends result/correction emails one by one and records each outcome with `saveStatus`
+// (the founder's save, or the Strava check's writer). Also used by lib/strava/run.ts.
+export async function sendNotices(
+  client: SupabaseClient,
   notices: { entryId: string; type: "result" | "correction" }[],
   embersBefore: Map<string, number | null>,
+  saveStatus: (rows: Record<string, unknown>[]) => PromiseLike<unknown>,
 ) {
   for (const notice of notices) {
-    const ok = await sendOne(supabase, notice.entryId, notice.type, embersBefore.get(notice.entryId) ?? null);
-    await supabase.rpc("founder_update_entries", { p_rows: [{ id: notice.entryId, email_status: ok ? "sent" : "failed" }] });
+    const ok = await sendOne(client, notice.entryId, notice.type, embersBefore.get(notice.entryId) ?? null);
+    await saveStatus([{ id: notice.entryId, email_status: ok ? "sent" : "failed" }]);
   }
 }
 
-async function sendOne(supabase: Supabase, entryId: string, type: "result" | "correction", embersBefore: number | null) {
+async function sendOne(supabase: SupabaseClient, entryId: string, type: "result" | "correction", embersBefore: number | null) {
   const { data } = await supabase
     .from("entries")
     .select("quest_id, status, value, percent, beat_limit, embers, reject_reason, profiles(email)")

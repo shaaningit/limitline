@@ -255,4 +255,80 @@ do $$ begin
 end $$;
 reset role;
 
+-- ---------- Strava connection and automatic checks (20261101000000_strava.sql) ----------
+insert into public.strava_connections (athlete_id, strava_athlete_id, strava_name, access_token, refresh_token, expires_at, scope)
+values ('00000000-0000-0000-0000-00000000000a', 9001, 'Priya R', 'secret-access', 'secret-refresh', now() + interval '6 hours', 'read,activity:read');
+insert into public.entries (id, athlete_id, quest_id, link, strava_activity_id)
+values ('10000000-0000-0000-0000-0000000000a3', '00000000-0000-0000-0000-00000000000a', 'run10k',
+        'https://www.strava.com/activities/9555', '9555');
+
+do $$
+begin
+  -- Tokens: no direct privileges for signed-in or logged-out users.
+  if has_table_privilege('authenticated', 'public.strava_connections', 'SELECT, INSERT, UPDATE, DELETE')
+     or has_table_privilege('anon', 'public.strava_connections', 'SELECT, INSERT, UPDATE, DELETE') then
+    raise exception 'TEST FAIL: users have privileges on strava_connections';
+  end if;
+  if has_function_privilege('authenticated', 'public.apply_entry_rows(jsonb)', 'EXECUTE')
+     or has_function_privilege('anon', 'public.apply_entry_rows(jsonb)', 'EXECUTE') then
+    raise exception 'TEST FAIL: users can call apply_entry_rows';
+  end if;
+  if not has_function_privilege('service_role', 'public.apply_entry_rows(jsonb)', 'EXECUTE') then
+    raise exception 'TEST FAIL: server role cannot call apply_entry_rows';
+  end if;
+end $$;
+
+set role authenticated;
+set app.uid = '00000000-0000-0000-0000-00000000000a';
+do $$ begin
+  begin perform 1 from public.strava_connections; raise exception 'TEST FAIL: athlete read tokens';
+  exception when insufficient_privilege then null; end;
+  if (select count(*) from public.my_strava()) <> 1 or (select strava_athlete_id from public.my_strava()) <> 9001 then
+    raise exception 'TEST FAIL: athlete cannot see own Strava connection';
+  end if;
+  -- Approving your own entry: not through the writer, not by insert, not by update.
+  begin
+    perform public.apply_entry_rows('[{"id": "10000000-0000-0000-0000-0000000000a3", "status": "rejected", "reject_reason": "not_own"}]');
+    raise exception 'TEST FAIL: athlete called apply_entry_rows';
+  exception when insufficient_privilege then null; end;
+  begin
+    insert into public.entries (athlete_id, quest_id, link, checked_by)
+      values ('00000000-0000-0000-0000-00000000000a', 'run5k', 'https://www.strava.com/activities/7556', 'strava');
+    raise exception 'TEST FAIL: athlete inserted checked_by';
+  exception when insufficient_privilege then null; end;
+  begin
+    update public.entries set checked_by = 'strava', suggested = '{"value": 1}'
+      where id = '10000000-0000-0000-0000-0000000000a3';
+    raise exception 'TEST FAIL: athlete set checked_by';
+  exception when raise_exception then if sqlerrm like 'TEST FAIL%' then raise; end if; end;
+end $$;
+reset role;
+
+set role authenticated;
+set app.uid = '00000000-0000-0000-0000-00000000000b';
+do $$ begin
+  if (select count(*) from public.my_strava()) <> 0 then
+    raise exception 'TEST FAIL: athlete B sees A''s Strava connection';
+  end if;
+end $$;
+reset role;
+
+-- The server's Strava check (service_role, no signed-in user) can write a result in one step.
+set role service_role;
+set app.uid = '';
+do $$ begin
+  perform public.apply_entry_rows('[{"id": "10000000-0000-0000-0000-0000000000a3", "status": "verified",
+    "activity_at": "2026-11-26T07:00:00Z", "value": 2950, "percent": 1.0, "beat_limit": true, "embers": 20,
+    "verified_at": "2026-11-26T08:00:00Z", "checked_by": "strava", "strava_note": "10 km best effort 49:10",
+    "suggested": {"value": 2950}}]');
+  if (select (status, checked_by, (suggested ->> 'value')::int) from public.entries
+      where id = '10000000-0000-0000-0000-0000000000a3') is distinct from ('verified'::text, 'strava'::text, 2950) then
+    raise exception 'TEST FAIL: Strava check result not written';
+  end if;
+  -- The new reject reasons are accepted.
+  perform public.apply_entry_rows('[{"id": "10000000-0000-0000-0000-0000000000a3", "status": "rejected",
+    "reject_reason": "wrong_sport", "percent": null, "beat_limit": null, "embers": null}]');
+end $$;
+reset role;
+
 \echo ALL ACCESS-RULE TESTS PASSED

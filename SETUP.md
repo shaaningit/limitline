@@ -11,9 +11,10 @@ You'll end with: a Supabase project (the database and logins), a verified email 
    1. `20261031000000_init.sql`
    2. `20261031000100_founder_save.sql`
    3. `20261031000200_profile_email.sql`
+   4. `20261101000000_strava.sql`
 
    Never run anything from `supabase/tests/`. Those files are only for local tests.
-3. **Copy the keys.** In **Project Settings → API**, note the **Project URL** and the **publishable key**. You'll paste them into Vercel in step 3. The app needs no secret "service role" key.
+3. **Copy the keys.** In **Project Settings → API**, note the **Project URL** and the **publishable key**. You'll paste them into Vercel in step 3. If you'll use automatic Strava checking (below), also copy the **secret key** (`sb_secret_...`). It's secret: paste it only into Vercel, never into the app's code or a chat.
 4. **Make logins invite-only.** In **Authentication → Sign In / Providers**, keep **Email** on and turn off **Allow new users to sign up**. Only people you add can log in, so boards stay members-only.
 5. **Make the login link work in any browser** (this prevents the stuck-in-the-mail-app problem from D23). In **Authentication → Email Templates**, change the link in both **Magic Link** and **Confirm signup** to:
 
@@ -50,6 +51,19 @@ Athletes get a 6-digit code by text. Each text costs a few cents, depending on t
 3. In Vercel, set `NEXT_PUBLIC_LOGIN_PHONE=on` and redeploy. The phone button appears on the landing screen, and **Profile** gets a "Log in with your phone" section.
 4. Athletes log in once with email or Google, then add their number in **Profile** (they confirm it with a texted code). After that, the phone button works for them. Phone login never creates new accounts.
 
+### Strava: automatic checking (~20 min, free)
+
+Athletes tap **Connect with Strava** once. After that, every link they paste is checked against Strava's own numbers in seconds: their account, the date, the sport, outdoor or not, the distance, and the time (fastest 5 km / 10 km for runs, best 20-minute power for rides, fastest 400 m / 1500 m for pool swims). Jumps of more than 10% beyond an athlete's limit, and anything unclear, still come to you in **Admin** with the numbers already filled in. Athletes who don't connect keep the old way: you check their link by hand.
+
+1. Log in to Strava and go to [strava.com/settings/api](https://www.strava.com/settings/api). Create an app:
+   - **Application name:** LIMITLINE. **Category:** Training. **Website:** `https://YOUR-DOMAIN`.
+   - **Authorization Callback Domain:** `YOUR-DOMAIN` (just the domain, no `https://`). For testing on your own computer you can use `localhost`.
+   - Upload the LIMITLINE icon (`app/icon.svg` as a PNG).
+2. Copy the **Client ID** (a number) and the **Client Secret**. The secret is secret: paste it only into Vercel.
+3. In Vercel, set `STRAVA_CLIENT_ID`, `STRAVA_CLIENT_SECRET` and `SUPABASE_SECRET_KEY` (from step 3 above), then redeploy. The **Connect with Strava** buttons appear in My quests, on each quest and in Profile.
+4. **Go past 1 athlete.** A new Strava app can connect only its owner (you) at first. Connect yourself and try a few of your own activities. Then fill in Strava's developer program form (linked from your API settings page) to ask for more athletes; they review apps by hand, so allow a week or two [estimated]. Until then, other athletes' links simply wait for your check as before.
+5. **Ask Strava about the boards** in that same form: LIMITLINE shows each athlete's "% beyond their own limit" (not their times or routes) to the other pilot athletes. Strava's Nov 2024 terms limit showing a person's Strava data to other people, so get their answer in writing before relying on it.
+
 ## 2. Resend: email from your domain (~30 min, D1)
 
 1. Buy your domain (for example `limitline.app`) from any registrar.
@@ -62,13 +76,14 @@ Free plan limits: 100 emails a day, 3,000 a month. That's plenty for 10 athletes
 ## 3. Vercel: put the app online (~10 min)
 
 1. Sign up at [vercel.com](https://vercel.com) with your GitHub account, then **Add New → Project** and import `shaaningit/limitline`.
-2. Under **Environment Variables**, add every name from `.env.example` with your real values. `RESEND_API_KEY` is secret; the rest are settings. Leave `NEXT_PUBLIC_LOGIN_GOOGLE` and `NEXT_PUBLIC_LOGIN_PHONE` empty until you've done their optional steps above. Set `PILOT_TIME_ZONE` to your city's zone, for example `Europe/London` or `Asia/Kolkata`.
+2. Under **Environment Variables**, add every name from `.env.example` with your real values. `RESEND_API_KEY`, `SUPABASE_SECRET_KEY` and `STRAVA_CLIENT_SECRET` are secret; the rest are settings. Leave the Strava ones empty until you've done the Strava steps above. Leave `NEXT_PUBLIC_LOGIN_GOOGLE` and `NEXT_PUBLIC_LOGIN_PHONE` empty until you've done their optional steps above. Set `PILOT_TIME_ZONE` to your city's zone, for example `Europe/London` or `Asia/Kolkata`.
 3. Deploy. Then, in **Settings → Domains**, add your domain and follow the DNS steps.
 4. From now on, every push to `main` redeploys automatically.
 
 ## 4. Before the pilot (by Fri Nov 13, the launch check)
 
 - [ ] Log in on an iPhone (Mail app), with Gmail, and on Android, by tapping the email link (D23 test).
+- [ ] If Strava is on: connect your own Strava, paste one of your runs on the 5 km quest (approved in seconds), a 5 km run on the 10 km quest (rejected), and a ride on a run quest (rejected).
 - [ ] If they're on: log in with Google and with your phone, and check that a Google account or phone number you didn't add is turned away.
 - [ ] Add a test athlete. Paste a link, check it in **Admin**, and confirm the result email arrives and the board updates. This is the Nov 13 go/no-go check.
 - [ ] Enter seed limits for each athlete in **Admin → Athletes & seeds** (their best from the last 8 weeks, plus how many efforts you saw).

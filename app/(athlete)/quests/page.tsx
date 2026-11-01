@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { ShareButton } from "@/components/share-button";
-import { getMyQuests, type MyEntry } from "@/lib/data/athlete";
+import { StravaConnectButton, StravaReturnMessage } from "@/components/strava-connect";
+import { getMyQuests, getMyStrava, type MyEntry } from "@/lib/data/athlete";
 import { requireAthlete } from "@/lib/data/session";
 import { describeResult, formatPercent, formatValue } from "@/lib/format";
-import { EMBERS, QUESTS, REJECT_REASONS } from "@/lib/rules/config";
+import { EMBERS, QUESTS, REJECT_REASONS, type RejectReason } from "@/lib/rules/config";
+import { stravaEnabled } from "@/lib/strava/config";
 import { markSeen, tickChecklist } from "./actions";
 
 const FOUNDER_STRAVA = process.env.NEXT_PUBLIC_FOUNDER_STRAVA_NAME ?? "the founder";
@@ -19,10 +21,11 @@ function statusLine(e: MyEntry): string {
 }
 
 export default async function QuestsPage({ searchParams }: PageProps<"/quests">) {
-  const { submitted } = await searchParams;
+  const { submitted, reason, strava: stravaReturn } = await searchParams;
   const session = await requireAthlete();
   const { profile } = session;
-  const { entries, limits, balance, unseen, minEfforts } = await getMyQuests(session);
+  const [{ entries, limits, balance, unseen, minEfforts }, strava] = await Promise.all([getMyQuests(session), getMyStrava(session)]);
+  const offerStrava = stravaEnabled() && !strava;
   const firstRunDone = profile.checklist_followed && profile.checklist_visibility && entries.length > 0;
 
   return (
@@ -35,10 +38,18 @@ export default async function QuestsPage({ searchParams }: PageProps<"/quests">)
         </Link>
       </header>
 
-      {submitted === "1" && (
-        <p role="status" className="result-card" style={{ padding: "var(--space-2)" }}>
-          Got it! Waiting for check.
-        </p>
+      <SubmittedMessage submitted={submitted} reason={reason} offerStrava={offerStrava} />
+      <StravaReturnMessage status={stravaReturn} />
+
+      {/* Instant checks: shown until the athlete connects Strava */}
+      {offerStrava && (
+        <section className="result-card" aria-labelledby="strava-offer">
+          <h2 id="strava-offer" style={{ marginTop: 0 }}>
+            Get results in seconds
+          </h2>
+          <p className="muted">Connect Strava once and every link you paste is checked straight away, instead of waiting for the founder.</p>
+          <StravaConnectButton next="/quests" />
+        </section>
       )}
 
       {/* First run (7A): above everything else until done */}
@@ -116,6 +127,37 @@ export default async function QuestsPage({ searchParams }: PageProps<"/quests">)
       </section>
 
     </>
+  );
+}
+
+// What happened to the link just pasted (?submitted=verified|rejected|founder|skipped).
+function SubmittedMessage({
+  submitted,
+  reason,
+  offerStrava,
+}: {
+  submitted: string | string[] | undefined;
+  reason: string | string[] | undefined;
+  offerStrava: boolean;
+}) {
+  let text: string | null = null;
+  let ok = true;
+  if (submitted === "verified") text = "Checked with Strava. Your result is below.";
+  if (submitted === "rejected") {
+    ok = false;
+    const why = typeof reason === "string" && reason in REJECT_REASONS ? REJECT_REASONS[reason as RejectReason] : null;
+    text = `Checked with Strava: not approved${why ? `. ${why}` : ""}.`;
+  }
+  if (submitted === "founder") text = "Got it! This one needs a quick check by the founder. You'll get an email.";
+  if (submitted === "skipped" || submitted === "1") {
+    text = offerStrava ? "Got it! Waiting for check. Connect Strava below to get results in seconds." : "Got it! Waiting for check.";
+  }
+  if (!text) return null;
+  return (
+    <p role={ok ? "status" : "alert"} className="result-card" style={{ padding: "var(--space-2)" }}>
+      {ok ? <span className="ok">✓ </span> : <span className="error">✕ </span>}
+      {text}
+    </p>
   );
 }
 

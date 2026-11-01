@@ -5,6 +5,9 @@ import { redirect } from "next/navigation";
 import { requireAthlete } from "@/lib/data/session";
 import { normalizeCode, normalizePhone } from "@/lib/phone";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { stravaEnabled } from "@/lib/strava/config";
+import { removeConnection } from "@/lib/strava/connection";
 
 export async function saveSettings(formData: FormData) {
   const { supabase, userId } = await requireAthlete();
@@ -59,4 +62,12 @@ export async function addPhone(prev: AddPhoneState, formData: FormData): Promise
   }
   if (error) return { step: "number", message: "Couldn't send the text, try again", phone: typed };
   return { step: "code", message: "", phone: parsed.phone };
+}
+
+// Disconnect Strava: Strava is told to revoke access, and the stored tokens are deleted.
+export async function disconnectStrava() {
+  const { userId } = await requireAthlete();
+  if (stravaEnabled()) await removeConnection(createAdminClient(), userId);
+  revalidatePath("/", "layout");
+  redirect("/profile?strava_off=1");
 }

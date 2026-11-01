@@ -19,7 +19,8 @@ describe("database lists match lib/rules/config.ts", () => {
   });
 
   it("reject reasons", () => {
-    const checkBody = sql.match(/reject_reason in\s*\(([^)]*)\)/)![1];
+    // Later migrations redefine the list, so the last definition is the one in force.
+    const checkBody = [...sql.matchAll(/reject_reason in\s*\(([^)]*)\)/g)].at(-1)![1];
     expect(quoted(checkBody).sort()).toEqual(Object.keys(REJECT_REASONS).sort());
   });
 });

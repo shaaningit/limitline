@@ -50,6 +50,7 @@ export default async function AdminQueuePage({ searchParams }: PageProps<"/admin
                 <Link href={`/admin?entry=${e.id}`} aria-current={e.id === selectedId ? "true" : undefined}>
                   {e.profiles?.display_name} · {QUESTS[e.quest_id].label}
                 </Link>
+                {e.suggested && <span className="badge">From Strava</span>}
                 <span className="muted small">
                   {new Date(e.submitted_at).toLocaleString("en-GB", { timeZone: PILOT_TIME_ZONE, day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
                 </span>
@@ -88,9 +89,17 @@ export default async function AdminQueuePage({ searchParams }: PageProps<"/admin
             athleteName={`${selected.profiles?.display_name ?? "Athlete"}${selected.status === "waiting" ? "" : ` · correcting a ${selected.status} result`}`}
             link={selected.link}
             questId={selected.quest_id}
-            stravaId={selected.strava_activity_id ?? ""}
-            activityAt={selected.activity_at ? utcToZonedLocal(new Date(selected.activity_at), PILOT_TIME_ZONE) : ""}
-            value={selected.value === null ? null : Number(selected.value)}
+            stravaId={selected.strava_activity_id ?? selected.suggested?.strava_activity_id ?? ""}
+            activityAt={
+              selected.activity_at
+                ? utcToZonedLocal(new Date(selected.activity_at), PILOT_TIME_ZONE)
+                : selected.suggested
+                  ? utcToZonedLocal(new Date(selected.suggested.activity_at), PILOT_TIME_ZONE)
+                  : ""
+            }
+            value={selected.value !== null ? Number(selected.value) : selected.suggested ? Number(selected.suggested.value) : null}
+            stravaNote={selected.strava_note}
+            checkedBy={selected.checked_by}
             limits={limits}
             timeZone={PILOT_TIME_ZONE}
           />

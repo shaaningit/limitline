@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getMyQuests } from "@/lib/data/athlete";
+import { StravaConnectButton, StravaReturnMessage } from "@/components/strava-connect";
+import { getMyQuests, getMyStrava } from "@/lib/data/athlete";
 import { requireAthlete } from "@/lib/data/session";
 import { formatValue } from "@/lib/format";
 import { questRules } from "@/lib/rules";
 import { QUESTS, QUEST_IDS, type QuestId } from "@/lib/rules/config";
+import { stravaEnabled } from "@/lib/strava/config";
 import { LinkForm } from "./link-form";
 
 export function generateStaticParams() {
@@ -12,15 +14,17 @@ export function generateStaticParams() {
 }
 
 // Quest first, then the link: the athlete opens a quest and pastes an activity for it.
-export default async function QuestPage({ params }: PageProps<"/quests/[questId]">) {
+export default async function QuestPage({ params, searchParams }: PageProps<"/quests/[questId]">) {
   const { questId: raw } = await params;
+  const { strava: stravaReturn } = await searchParams;
   if (!QUEST_IDS.includes(raw as QuestId)) notFound();
   const questId = raw as QuestId;
   const quest = QUESTS[questId];
   const rules = questRules(questId);
 
   const session = await requireAthlete();
-  const { limits, minEfforts } = await getMyQuests(session);
+  const [{ limits, minEfforts }, strava] = await Promise.all([getMyQuests(session), getMyStrava(session)]);
+  const enabled = stravaEnabled();
   const limit = limits.find((l) => l.questId === questId)!;
 
   return (
@@ -53,10 +57,24 @@ export default async function QuestPage({ params }: PageProps<"/quests/[questId]
         <li>{rules.counts}</li>
         <li>{rules.timedOn}</li>
         <li>{rules.rejected}</li>
-        <li>Recorded after you signed up, set to Followers on Strava.</li>
+        <li>Recorded after you signed up, with a watch or phone (not typed in), visible to Everyone or Followers on Strava.</li>
       </ul>
 
-      <LinkForm questId={questId} />
+      <StravaReturnMessage status={stravaReturn} />
+      <LinkForm questId={questId} instant={enabled && Boolean(strava)} />
+
+      {enabled && strava && (
+        <p className="muted small" style={{ marginTop: "var(--space-2)" }}>
+          Checked with your Strava in seconds. Big jumps (over 10% beyond your limit) get a quick look from the founder.
+          Powered by Strava.
+        </p>
+      )}
+      {enabled && !strava && (
+        <div style={{ marginTop: "var(--space-3)" }}>
+          <p className="muted small">Without Strava connected, the founder checks your link by hand. Connect it for results in seconds.</p>
+          <StravaConnectButton next={`/quests/${questId}`} />
+        </div>
+      )}
     </>
   );
 }

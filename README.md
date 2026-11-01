@@ -1,6 +1,6 @@
 # LIMITLINE
 
-Quests for amateur triathletes that reward effort beyond your **own** limit. Paste a Strava activity link; the founder checks it; completing a quest earns embers, and beating your limit earns double. Spend embers in the shop, and see the weekly Run, Bike and Swim boards ranked by % beyond each athlete's own limit.
+Quests for amateur triathletes that reward effort beyond your **own** limit. Pick a quest and paste a Strava activity link; with Strava connected it's checked against Strava's numbers in seconds (otherwise the founder checks it); completing a quest earns embers, and beating your limit earns double. Spend embers in the shop, and see the weekly Run, Bike and Swim boards ranked by % beyond each athlete's own limit.
 
 - Product and decisions: [`docs/designs/limitline-mvp.md`](docs/designs/limitline-mvp.md)
 - Look and feel: [`DESIGN.md`](DESIGN.md)

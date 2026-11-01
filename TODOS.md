@@ -2,28 +2,23 @@
 
 ## Activity verification
 
-### Automatic checking through the Strava API (founder chose the Strava route, Nov 1)
+### Automatic checking through the Strava API: built Nov 1, finish before relying on it
 
-**What:** Let the app do the founder's checks itself. Each athlete taps "Connect Strava" once. When they paste a link, the server asks Strava's official API for that activity and checks, with exact numbers:
-- it belongs to them, and was recorded after they signed up
-- the sport matches the quest, it's outdoor (`trainer` false) and not typed in by hand (`manual` false)
-- the distance is at least the quest distance; runs use Strava's own fastest 5 km / 10 km (`best_efforts`), so a 10 km run on the 5 km quest is timed on its fastest 5 km and a 5 km run on the 10 km quest is rejected
-- bike: a real power meter (`device_watts`) and the best 20-minute power from the watts stream
-- swims: pool swim, distance, and the fastest 400 m / 1500 m from its laps (falls back to the founder if the watch didn't record laps)
+Built: Connect with Strava (`/strava/connect`, `/strava/callback`), tokens readable only by the server (`strava_connections`), the check itself (`lib/strava/check.ts`, every rule unit-tested), the flow after pasting a link (`lib/strava/auto-check.ts`), and Strava notes with filled-in numbers in Admin. How it decides:
+- rejects: someone else's activity, before sign-up, typed in by hand, wrong sport, indoor/virtual, e-bike, shorter than the quest, ride without a power meter
+- approves in seconds: everything else, timed on Strava's fastest 5 km / 10 km, best 20-minute power (from the power stream, stops count as 0 W), or fastest 400 m / 1500 m (whole swim, or consecutive laps that add up exactly)
+- sends to the founder with numbers filled in: more than 10% beyond the limit, beyond world-record pace (`PLAUSIBLE`), open-water-looking swims, no Strava best effort, laps that don't add up, or any Strava error
 
-Results that pass are approved in seconds. Results more than 10% beyond the limit, a first result, and anything unclear still go to the founder (the existing double-check, D17).
+Still to do:
+- **Live test.** This sandbox can't reach Strava, so the code has only been tested with sample activities shaped like Strava's documented API. Run the SETUP.md launch-check items with real activities before the pilot.
+- **Strava approval past 1 athlete**, and Strava's written answer on the boards (SETUP.md step 4-5).
+- **Strava's official button and logo.** Swap the hand-made "Connect with Strava" button and the "Powered by Strava" text for Strava's official image files (brand guidelines on developers.strava.com).
+- **Strava webhook** for an athlete who removes LIMITLINE on Strava's side or deletes an activity, so the app forgets their tokens and data straight away (today it notices at the next refresh).
+- **Admin: show which Strava account each athlete connected** (`strava_name`), so you can spot someone connecting a friend's faster account.
+- **Short links** (`strava.app.link`): the app follows the link one step to find the activity number. Not verified live; if it doesn't work, those links still reach the founder as before.
 
-**Why:** Founder checking doesn't scale past ~20 athletes (D13), and the founder wants approvals to be fast. This is plain code reading Strava's numbers, not AI guessing, so it can be exact and tested.
-
-**Not this:** having a bot open the public Strava page (scraping is against Strava's terms), or AI reading screenshots (screenshots can be faked; the founder asked for a check we can vouch for).
-
-**Before building, the founder needs to:**
-- create a free Strava API app (strava.com/settings/api) and apply to Strava to go past its 1-athlete limit for new apps
-- ask Strava whether the weekly boards (showing % beyond limit to other athletes) are allowed; since Nov 2024 Strava's terms say an app may show a user's Strava data only to that user. If not, boards would need a change
-- add a server-only Supabase secret key (or an Edge Function), because athletes must not be able to approve their own entries
-
-**Effort:** M-L
-**Priority:** P1 (founder's next pick after login)
+**Effort:** S (remaining)
+**Priority:** P1
 **Depends on:** Strava API app + capacity approval
 
 ### Automate activity checking before growing past ~20 athletes (older plan, superseded by the item above)

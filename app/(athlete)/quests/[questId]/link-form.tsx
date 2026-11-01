@@ -6,7 +6,7 @@ import { submitLink, type LinkState } from "./actions";
 
 const initial: LinkState = { message: "", link: "" };
 
-export function LinkForm({ questId }: { questId: QuestId }) {
+export function LinkForm({ questId, instant }: { questId: QuestId; instant: boolean }) {
   const [state, action, pending] = useActionState(submitLink.bind(null, questId), initial);
   return (
     <form action={action}>
@@ -32,7 +32,7 @@ export function LinkForm({ questId }: { questId: QuestId }) {
         </p>
       )}
       <button className="button button-primary button-block" type="submit" disabled={pending}>
-        {pending ? "Checking link…" : "Submit for check"}
+        {pending ? (instant ? "Checking with Strava…" : "Checking link…") : instant ? "Check it now" : "Submit for check"}
       </button>
     </form>
   );

@@ -15,6 +15,8 @@ export interface EntryFormProps {
   value: number | null;
   limits: Record<QuestId, string>; // current limit per quest, formatted
   timeZone: string;
+  stravaNote: string | null; // what the automatic Strava check found, if it ran
+  checkedBy: "founder" | "strava" | null;
 }
 
 function splitTime(value: number | null) {
@@ -59,6 +61,15 @@ export function EntryForm(props: EntryFormProps) {
           Open the activity on Strava ↗
         </a>
       </p>
+      {props.stravaNote && (
+        <p className="result-card" style={{ padding: "var(--space-2)" }}>
+          <strong>{props.checkedBy === "strava" ? "Checked by Strava: " : "Strava check: "}</strong>
+          {props.stravaNote}
+          {props.checkedBy !== "strava" && props.value !== null && (
+            <span className="muted small"> The numbers below are filled in from Strava; check them and save.</span>
+          )}
+        </p>
+      )}
 
       <form action={action} key={formKey}>
         <input type="hidden" name="entry_id" value={props.entryId} />
