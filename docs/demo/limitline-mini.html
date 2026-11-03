@@ -5,14 +5,14 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Nunito:wght@500;700;800&display=swap">
 <style>
 /* Layout: one phone-sized app; framed on wide screens, full screen on phones.
-   LIMITLINE's own system (DESIGN.md): volt on matte black, chunky Duolingo-style pieces. */
+   LIMITLINE's own system (DESIGN.md): volt on matte black, chunky pieces, premium finish. */
 :root {
   --ground: #121212;
-  --outside: #0a0a0a;
-  --surface: #1c1c1c;
-  --surface-2: #242424;
-  --line: #2e2e2e;
-  --line-strong: #3a3a3a;
+  --outside: #080808;
+  --surface: #1a1a1a;
+  --surface-2: #232323;
+  --line: #2b2b2b;
+  --line-strong: #383838;
   --ink: #f2f2ee;
   --muted: #a6a6a0;
   --volt: #ceff00;
@@ -21,62 +21,55 @@
   --flame: #ff9f1a;
   --danger: #ff6b6b;
   --strava: #fc4c02;
+  --gold: #e9c46a;
   --display: "Barlow Condensed", "Arial Narrow", sans-serif;
   --body: "Nunito", "Trebuchet MS", system-ui, sans-serif;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
 html, body { height: 100%; }
-body {
-  margin: 0;
-  background: var(--outside);
-  color: var(--ink);
-  font: 500 16px/1.5 var(--body);
-  display: grid;
-  place-items: center;
-}
+body { margin: 0; background: var(--outside); color: var(--ink); font: 500 16px/1.5 var(--body); display: grid; place-items: center; }
 button, input, select { font: inherit; color: inherit; }
 :focus-visible { outline: 3px solid var(--volt); outline-offset: 2px; }
 
-.device {
-  width: 100%;
-  height: 100%;
-  background: var(--ground);
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  overflow: hidden;
-}
+.device { width: 100%; height: 100%; background: var(--ground); display: flex; flex-direction: column; position: relative; overflow: hidden; }
 @media (min-width: 520px) {
-  body { padding-block: 16px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
-  .device { width: 390px; height: min(844px, 100%); border-radius: 44px; border: 10px solid #050505; box-shadow: 0 0 0 1px var(--line), 0 40px 100px rgb(0 0 0 / 0.6); }
+  body {
+    padding-block: 16px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+    background: radial-gradient(circle at 50% 30%, #161a0c 0%, var(--outside) 60%);
+  }
+  .device { width: 390px; height: min(844px, 100%); border-radius: 46px; border: 10px solid #040404; box-shadow: 0 0 0 1px #262626, 0 50px 120px rgb(0 0 0 / 0.7); }
 }
 
-.bar { flex: none; padding: 14px max(16px, env(safe-area-inset-right, 0px)) 6px max(16px, env(safe-area-inset-left, 0px)); display: flex; align-items: center; justify-content: space-between; }
-.screen { flex: 1; overflow-y: auto; overscroll-behavior: contain; padding-block: 4px 24px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.bar {
+  flex: none; display: flex; align-items: center; justify-content: space-between;
+  padding: 14px max(16px, env(safe-area-inset-right, 0px)) 8px max(16px, env(safe-area-inset-left, 0px));
+  background: linear-gradient(var(--ground), rgb(18 18 18 / 0.85)); border-bottom: 1px solid transparent;
+}
+.screen { flex: 1; overflow-y: auto; overscroll-behavior: contain; padding-block: 2px 28px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
 .screen::-webkit-scrollbar { width: 0; }
+.enter { animation: enter 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
 
 .logo { display: inline-flex; align-items: center; gap: 8px; color: var(--volt); background: none; border: 0; padding: 0; cursor: pointer; }
 .logo-word { font-family: var(--display); font-weight: 700; letter-spacing: 0.08em; line-height: 1; }
 .demo-tag { font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--line-strong); padding: 2px 8px; border-radius: 999px; }
 
-h1, h2 { font-family: var(--display); font-weight: 700; line-height: 1.05; margin: 0; text-wrap: balance; }
-h1 { font-size: 34px; margin-block: 14px 12px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.05; margin: 0; text-wrap: balance; }
+h1 { font-size: 34px; margin-block: 12px 12px; letter-spacing: 0.01em; }
 h2 { font-size: 23px; margin-block: 26px 10px; }
+h3 { font-size: 20px; }
 p { margin: 0 0 12px; }
 .muted { color: var(--muted); }
 .small { font-size: 14px; }
+.tiny { font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
 .num { font-family: var(--display); font-weight: 700; font-variant-numeric: tabular-nums; }
 .ok { color: var(--volt); }
 .bad { color: var(--danger); }
 
-/* Chunky pressable buttons */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-  min-height: 48px; padding: 0 18px; border-radius: 16px;
-  border: 2px solid var(--line-strong); background: var(--ground); color: var(--ink);
-  font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; font-size: 15px;
-  box-shadow: 0 4px 0 var(--line-strong); cursor: pointer;
+  min-height: 48px; padding: 0 18px; border-radius: 16px; border: 2px solid var(--line-strong); background: var(--ground); color: var(--ink);
+  font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; font-size: 15px; box-shadow: 0 4px 0 var(--line-strong); cursor: pointer;
   transition: transform 0.06s ease-out, box-shadow 0.06s ease-out;
 }
 .btn:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 var(--line-strong); }
@@ -85,72 +78,85 @@ p { margin: 0 0 12px; }
 .btn-volt:active:not(:disabled) { box-shadow: 0 1px 0 var(--volt-deep); }
 .btn-google { background: #fff; border-color: #fff; color: #1f1f1f; box-shadow: 0 4px 0 #b9b9b9; text-transform: none; letter-spacing: 0; }
 .btn-strava { background: var(--strava); border-color: var(--strava); color: #fff; box-shadow: 0 4px 0 #b33600; }
-.btn-quiet { border-color: transparent; box-shadow: none; background: none; color: var(--muted); text-transform: none; letter-spacing: 0; font-weight: 700; }
+.btn-ig { background: linear-gradient(45deg, #f9a43c, #e1306c 45%, #833ab4); border-color: transparent; color: #fff; box-shadow: 0 4px 0 #5e2483; }
 .btn-block { width: 100%; }
 .btn-sm { min-height: 40px; font-size: 13px; padding: 0 14px; border-radius: 12px; }
 .link { background: none; border: 0; padding: 0; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; font-size: 14px; }
 
-/* Stats */
 .stat-bar { display: flex; justify-content: flex-end; gap: 8px; }
-.pill {
-  display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px 0 10px;
-  border-radius: 999px; border: 2px solid var(--line-strong); background: var(--surface);
-  box-shadow: 0 3px 0 var(--line-strong); font-size: 22px; cursor: pointer; color: var(--ink);
-}
+.pill { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px 0 10px; border-radius: 999px; border: 2px solid var(--line-strong); background: var(--surface); box-shadow: 0 3px 0 var(--line-strong); font-size: 22px; cursor: pointer; color: var(--ink); }
 .pill .flame { color: var(--flame); }
 .pill.cold .flame { color: var(--muted); }
 .pill .ember { color: var(--volt); }
 .bump { animation: bump 0.5s cubic-bezier(0.2, 1.6, 0.4, 1); }
 
-/* Cards */
+.seg { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 5px; border-radius: 16px; background: var(--surface); border: 2px solid var(--line); margin-bottom: 14px; }
+.seg button { min-height: 40px; border-radius: 12px; border: 0; background: none; font-weight: 800; color: var(--muted); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.seg button[aria-pressed="true"] { background: var(--ground); color: var(--ink); box-shadow: 0 2px 0 var(--line-strong), inset 0 0 0 1px var(--line-strong); }
+.chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 12px; scrollbar-width: none; }
+.chips::-webkit-scrollbar { display: none; }
+.chip { flex: none; display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 14px; border-radius: 999px; border: 2px solid var(--line-strong); background: none; font-weight: 800; font-size: 14px; color: var(--muted); cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--volt); border-color: var(--volt); color: var(--on-volt); }
+
 .card { background: var(--surface); border: 2px solid var(--line); border-radius: 20px; padding: 18px 16px; margin-block: 12px; }
 .note { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 16px; border: 2px solid var(--line-strong); background: var(--surface); margin-block: 10px; font-weight: 700; }
 .note.warm { border-color: var(--flame); }
 .note.warm svg { color: var(--flame); flex: none; }
-.note.good svg { color: var(--volt); flex: none; }
 .note.badn { border-color: var(--danger); }
 .hero { font-family: var(--display); font-weight: 700; font-size: 60px; line-height: 1; color: var(--volt); font-variant-numeric: tabular-nums; margin-block: 6px; }
 .pop { animation: pop 0.45s cubic-bezier(0.2, 1.4, 0.4, 1) both; transform-origin: left center; }
 .badge { display: inline-block; padding: 2px 8px; border-radius: 8px; background: var(--volt); color: var(--on-volt); font-size: 14px; font-weight: 800; }
 
+/* Sponsored: a premium hero card with a gold hairline */
+.sponsor {
+  position: relative; overflow: hidden; border-radius: 22px; padding: 18px 16px 16px; margin-block: 12px;
+  background: radial-gradient(120% 90% at 100% 0%, rgb(206 255 0 / 0.14), transparent 55%), linear-gradient(160deg, #1d1d1d, #141414);
+  border: 1px solid #3b3a33; box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06);
+}
+.sponsor::before { content: ""; position: absolute; inset: 0 0 auto; height: 2px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+.sponsor .who { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+.brandmark { font-family: var(--display); font-weight: 700; letter-spacing: 0.22em; font-size: 15px; color: var(--ink); }
+.sample { white-space: nowrap; flex: none; font-size: 10px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); border: 1px solid rgb(233 196 106 / 0.5); padding: 2px 7px; border-radius: 999px; }
+.sponsor h3 { font-size: 26px; margin-bottom: 6px; }
+.prize { display: flex; align-items: center; gap: 8px; font-weight: 800; color: var(--gold); margin-bottom: 14px; }
+.scroller { display: grid; grid-auto-flow: column; grid-auto-columns: 86%; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin-inline: -2px; padding-inline: 2px; }
+.scroller::-webkit-scrollbar { display: none; }
+.scroller > * { scroll-snap-align: start; margin-block: 4px 12px; }
+
 .quests { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
 .quest {
-  width: 100%; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 14px; text-align: left;
-  padding: 14px; border-radius: 20px; border: 2px solid var(--line-strong); background: var(--surface);
-  box-shadow: 0 4px 0 var(--line-strong); cursor: pointer; transition: transform 0.06s ease-out, box-shadow 0.06s ease-out;
+  width: 100%; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 14px; text-align: left; padding: 14px;
+  border-radius: 20px; border: 2px solid var(--line-strong); background: var(--surface); box-shadow: 0 4px 0 var(--line-strong); cursor: pointer;
+  transition: transform 0.06s ease-out, box-shadow 0.06s ease-out;
 }
 .quest:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--line-strong); }
-.sport { display: inline-flex; align-items: center; justify-content: center; width: 52px; height: 52px; border-radius: 50%; background: var(--volt); color: var(--on-volt); box-shadow: 0 3px 0 var(--volt-deep); }
+.sport { display: inline-flex; align-items: center; justify-content: center; width: 52px; height: 52px; border-radius: 50%; background: var(--volt); color: var(--on-volt); box-shadow: 0 3px 0 var(--volt-deep); flex: none; }
+.sport.ig { background: linear-gradient(45deg, #f9a43c, #e1306c 45%, #833ab4); color: #fff; box-shadow: 0 3px 0 #5e2483; }
 .quest-text { display: grid; gap: 2px; min-width: 0; }
-.quest-name { font-weight: 800; font-size: 17px; }
+.quest-name { font-weight: 800; font-size: 17px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.quest-name .sample { font-size: 9px; }
 .progress { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
 .track { flex: 1; height: 10px; border-radius: 999px; background: var(--line-strong); overflow: hidden; }
-.fill { display: block; height: 100%; border-radius: 999px; background: var(--volt); transition: width 0.6s ease-out; }
+.fill { display: block; height: 100%; border-radius: 999px; background: var(--volt); }
 .plabel { font-size: 12px; font-weight: 800; color: var(--muted); white-space: nowrap; }
 .chev { color: var(--muted); }
+.group-h { display: flex; align-items: center; gap: 8px; margin-block: 22px 10px; }
+.group-h h2 { margin: 0; }
+.group-h .count { color: var(--muted); font-weight: 800; font-size: 14px; }
 
 .rows { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
 .rows li { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 48px; padding: 10px 0; border-bottom: 1px solid var(--line); }
 .rows li.me { font-weight: 800; }
 .rows .grow { min-width: 0; flex: 1; }
-
-.tabs { display: flex; gap: 8px; margin-bottom: 14px; }
-.tabs .btn { flex: 1; }
-.tabs .btn[aria-pressed="true"] { background: var(--volt); border-color: var(--volt); color: var(--on-volt); box-shadow: 0 4px 0 var(--volt-deep); }
 .rank { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; flex: none; border-radius: 50%; background: var(--surface-2); font-family: var(--display); font-weight: 700; font-size: 18px; }
 .rank.top { background: var(--volt); color: var(--on-volt); }
-.who { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.whorow { display: flex; align-items: center; gap: 12px; min-width: 0; }
 
 label.lbl { display: block; font-weight: 800; margin-bottom: 6px; }
-input[type="text"], input[type="url"], select {
-  width: 100%; min-height: 48px; padding: 0 12px; border-radius: 14px; border: 2px solid var(--line-strong); background: var(--surface); color: var(--ink);
-}
+input[type="text"], input[type="url"] { width: 100%; min-height: 48px; padding: 0 12px; border-radius: 14px; border: 2px solid var(--line-strong); background: var(--surface); color: var(--ink); }
 .rules { margin: 0 0 18px; padding-left: 22px; display: grid; gap: 6px; }
 .acts { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
-.act {
-  width: 100%; text-align: left; display: grid; grid-template-columns: 34px 1fr; gap: 10px; align-items: center;
-  padding: 10px 12px; border-radius: 14px; border: 2px solid var(--line-strong); background: var(--ground); cursor: pointer;
-}
+.act { width: 100%; text-align: left; display: grid; grid-template-columns: 34px 1fr; gap: 10px; align-items: center; padding: 10px 12px; border-radius: 14px; border: 2px solid var(--line-strong); background: var(--ground); cursor: pointer; }
 .act:hover { border-color: var(--muted); }
 .act.used { opacity: 0.45; }
 .act .ico { color: var(--strava); display: inline-flex; justify-content: center; }
@@ -159,8 +165,11 @@ input[type="text"], input[type="url"], select {
 .toggle { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 52px; border-bottom: 1px solid var(--line); font-weight: 800; cursor: pointer; }
 .toggle input { width: 24px; height: 24px; accent-color: var(--volt); }
 .avatar-lg { display: flex; align-items: center; gap: 14px; margin-block: 14px; }
+.steps-ig { list-style: none; margin: 0 0 16px; padding: 0; display: grid; gap: 10px; }
+.steps-ig li { display: grid; grid-template-columns: 30px 1fr; gap: 10px; align-items: start; }
+.steps-ig .n { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: var(--surface-2); font-family: var(--display); font-weight: 700; }
+.tag { display: inline-block; padding: 1px 8px; border-radius: 8px; background: var(--surface-2); font-weight: 800; font-size: 14px; }
 
-/* Bottom bar: icons only */
 .nav { flex: none; border-top: 2px solid var(--line); background: var(--ground); padding: 6px max(8px, env(safe-area-inset-right, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px)); display: flex; gap: 8px; }
 .nav button { flex: 1; min-height: 52px; border-radius: 14px; border: 2px solid transparent; background: none; color: var(--muted); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
 .nav button:active { transform: scale(0.92); }
@@ -168,11 +177,10 @@ input[type="text"], input[type="url"], select {
 .avatar { display: inline-flex; width: 32px; height: 32px; padding: 2px; border-radius: 50%; border: 2px solid transparent; }
 .nav button[aria-current="page"] .avatar { border-color: var(--volt); }
 
-/* Overlays: checking with Strava, results, share card */
-.overlay { position: absolute; inset: 0; background: var(--ground); z-index: 5; display: flex; flex-direction: column; padding: 28px max(20px, env(safe-area-inset-right, 0px)) calc(24px + env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 0px)); animation: rise 0.25s ease-out; }
+.overlay { position: absolute; inset: 0; background: var(--ground); z-index: 5; display: flex; flex-direction: column; padding: 28px max(20px, env(safe-area-inset-right, 0px)) calc(24px + env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 0px)); animation: enter 0.25s ease-out; }
 .overlay .middle { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 14px; }
 .trace { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
-.trace li { display: grid; grid-template-columns: 26px 1fr; gap: 8px; align-items: start; font-weight: 700; animation: rise 0.25s ease-out both; }
+.trace li { display: grid; grid-template-columns: 26px 1fr; gap: 8px; align-items: start; font-weight: 700; animation: enter 0.25s ease-out both; }
 .trace .m { font-weight: 800; }
 .trace .pass .m { color: var(--volt); }
 .trace .fail .m { color: var(--danger); }
@@ -191,14 +199,19 @@ input[type="text"], input[type="url"], select {
 .story .l { font-family: var(--display); font-weight: 700; font-size: 30px; }
 .story .q { font-family: var(--display); font-weight: 600; font-size: 22px; color: var(--muted); }
 
-.landing { height: 100%; display: flex; flex-direction: column; padding-block: 40px 28px; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
-.landing .middle { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; text-align: center; }
-.tagline { font-family: var(--display); font-weight: 700; font-size: 24px; text-transform: uppercase; letter-spacing: 0.06em; margin: 0; }
-.stack { display: grid; gap: 10px; }
+/* Landing: the evolution graphic first */
+.landing { height: 100%; display: flex; flex-direction: column; padding-block: 0 24px; }
+.intro { display: block; width: 100%; aspect-ratio: 13 / 9; max-height: 46%; flex: none; cursor: pointer; margin-top: 8px;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 14%, #000 82%, transparent); mask-image: linear-gradient(to bottom, transparent, #000 14%, #000 82%, transparent); }
+.landing .brand { text-align: center; display: grid; gap: 8px; padding-block: 4px 18px; margin-block: auto; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
+.landing .wordmark { font-family: var(--display); font-weight: 700; font-size: 54px; letter-spacing: 0.1em; line-height: 1; color: var(--volt); }
+.tagline { font-family: var(--display); font-weight: 700; font-size: 22px; text-transform: uppercase; letter-spacing: 0.06em; margin: 0; }
+.landing .stack { display: grid; gap: 10px; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); margin-top: auto; }
+.welcome { height: 100%; display: flex; flex-direction: column; justify-content: center; gap: 12px; padding-block: 24px; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
 
 @keyframes pop { 0% { transform: scale(0.6); opacity: 0; } 70% { transform: scale(1.08); opacity: 1; } 100% { transform: scale(1); } }
 @keyframes bump { 0% { transform: scale(1); } 40% { transform: scale(1.25); } 100% { transform: scale(1); } }
-@keyframes rise { from { transform: translateY(10px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes enter { from { transform: translateY(8px); opacity: 0; } to { transform: none; opacity: 1; } }
 @keyframes spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 </style>
@@ -206,65 +219,392 @@ input[type="text"], input[type="url"], select {
 <div class="device" id="device" aria-live="polite"></div>
 
 <script>
-// ===================== Icons (same set as the real app) =====================
-const ico = {
-  logo: (h = 22) => `<svg width="${h * 1.5}" height="${h}" viewBox="0 0 48 32" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 19H46" stroke-width="2.5" stroke-dasharray="4 4" opacity="0.6"/><path d="M3 28L15 23L22 25L32 12L44 4" stroke-width="3.5"/><path d="M37 4H44V11" stroke-width="3.5"/></svg>`,
-  s: (body, size = 24) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${body}</svg>`,
-};
+// "March of greatness": one figure evolves as it moves (all fours -> stooped -> upright ->
+// runner), leaving a lineup of earlier selves, then breaks through the volt limit line and
+// stands with arms raised. Canvas, articulated pictogram figure, ~6.5 s, tap to skip.
+// Exposes window.LimitlineIntro = { mount(canvas, opts) } and is framework-free so the same
+// code runs in the mini app and in the Next.js app.
+(function () {
+  const TAU = Math.PI * 2;
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+  const easeOut = (t) => 1 - Math.pow(1 - t, 3);
+
+  // Body plans. Angles in radians; limbs measured from straight down, + is forward.
+  // lean: torso from vertical, + is forward. Lengths are fractions of the figure size S.
+  const STAGES = [
+    // 0. On all fours (about 6 million years ago)
+    { lean: 1.02, headK: 0.62, torso: 0.3, arm: 0.46, leg: 0.36, tAmp: 0.3, kBase: 0.62, kAmp: 0.3, aBase: 0.32, aAmp: 0.3, aSplit: 0, eBase: 0.05, eAmp: 0.08, width: 1.0, bob: 0.006 },
+    // 1. Stooped walker (about 3 million years ago)
+    { lean: 0.62, headK: 0.6, torso: 0.3, arm: 0.36, leg: 0.42, tAmp: 0.36, kBase: 0.42, kAmp: 0.42, aBase: 0.18, aAmp: 0.3, aSplit: 0, eBase: 0.25, eAmp: 0.1, width: 1.0, bob: 0.008 },
+    // 2. Upright, the first long-distance walker and runner (about 2 million years ago)
+    { lean: 0.1, headK: 0.5, torso: 0.31, arm: 0.33, leg: 0.47, tAmp: 0.42, kBase: 0.1, kAmp: 0.6, aBase: 0.02, aAmp: 0.36, aSplit: 0, eBase: 0.3, eAmp: 0.15, width: 0.95, bob: 0.01 },
+    // 3. Runner (today)
+    { lean: 0.24, headK: 0.35, torso: 0.31, arm: 0.32, leg: 0.48, tAmp: 0.82, kBase: 0.5, kAmp: 1.25, aBase: 0.05, aAmp: 0.95, aSplit: 0, eBase: 1.5, eAmp: 0.15, width: 0.95, bob: 0.028 },
+    // 4. Beyond the limit: arms up
+    { lean: -0.06, headK: 2, torso: 0.31, arm: 0.32, leg: 0.48, tAmp: 0.18, kBase: 0.05, kAmp: 0.1, aBase: Math.PI - 0.12, aAmp: 0, aSplit: 0.36, eBase: -0.04, eAmp: 0, width: 0.95, bob: 0 },
+  ];
+  const LABELS = ["6M years ago", "3M years ago", "2M years ago", "Today", "You"];
+  const KEYS = Object.keys(STAGES[0]);
+
+  function stageAt(s) {
+    const i = clamp(Math.floor(s), 0, STAGES.length - 2);
+    const t = ease(clamp(s - i, 0, 1));
+    const a = STAGES[i], b = STAGES[i + 1], out = {};
+    for (const k of KEYS) out[k] = lerp(a[k], b[k], t);
+    return out;
+  }
+
+  // Joint positions for a pose at hip x, gait phase ph, figure size S, ground y G.
+  function pose(p, x, ph, S, G) {
+    const up = (ang, len, from) => ({ x: from.x + Math.sin(ang) * len * S, y: from.y - Math.cos(ang) * len * S });
+    const down = (ang, len, from) => ({ x: from.x + Math.sin(ang) * len * S, y: from.y + Math.cos(ang) * len * S });
+    const hip = { x: 0, y: 0 };
+    const neck = up(p.lean, p.torso, hip);
+    const head = up(p.lean * p.headK, 0.11, neck);
+    const shoulder = { x: lerp(hip.x, neck.x, 0.94), y: lerp(hip.y, neck.y, 0.94) };
+    const legs = [0, Math.PI].map((off) => {
+      const phi = ph + off;
+      const thigh = p.tAmp * Math.sin(phi);
+      const knee = p.kBase + p.kAmp * Math.max(0, Math.cos(phi)) * (p.kAmp > 0.9 ? 1 : 0.9);
+      const k = down(thigh, p.leg * 0.5, hip);
+      const f = down(thigh - knee, p.leg * 0.5, k);
+      return { k, f };
+    });
+    const arms = [0, Math.PI].map((off, i) => {
+      const phi = ph + off + Math.PI; // arms swing against legs
+      const upper = p.aBase + p.aAmp * Math.sin(phi) + (i === 0 ? -p.aSplit : p.aSplit);
+      const elbowBend = p.eBase + p.eAmp * Math.cos(phi);
+      const e = down(upper, p.arm * 0.5, shoulder);
+      const h = down(upper + elbowBend, p.arm * 0.5, e);
+      return { e, h };
+    });
+    // Stand on the lowest foot (and, on all fours, the lowest hand).
+    let low = Math.max(legs[0].f.y, legs[1].f.y);
+    const handWeight = clamp((p.lean - 0.75) / 0.25, 0, 1);
+    if (handWeight > 0) low = Math.max(low, lerp(low, Math.max(arms[0].h.y, arms[1].h.y), handWeight));
+    const dy = G - low - p.bob * S * Math.abs(Math.sin(ph));
+    const move = (pt) => ({ x: pt.x + x, y: Math.min(pt.y + dy, G) });
+    return {
+      hip: move(hip), neck: move(neck), head: move(head), shoulder: move(shoulder),
+      legs: legs.map((l) => ({ k: move(l.k), f: move(l.f) })),
+      arms: arms.map((a) => ({ e: move(a.e), h: move(a.h) })),
+    };
+  }
+
+  function drawFigure(ctx, P, S, colorNear, colorFar, alpha) {
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    const limb = (a, b, c, w, col) => {
+      ctx.strokeStyle = col;
+      ctx.lineWidth = w;
+      ctx.beginPath();
+      ctx.moveTo(a.x, a.y);
+      ctx.lineTo(b.x, b.y);
+      ctx.lineTo(c.x, c.y);
+      ctx.stroke();
+    };
+    const w = S * 0.075;
+    // far side first, a touch darker, for depth
+    limb(P.hip, P.legs[1].k, P.legs[1].f, w, colorFar);
+    limb(P.shoulder, P.arms[1].e, P.arms[1].h, w * 0.9, colorFar);
+    // torso
+    ctx.strokeStyle = colorNear;
+    ctx.lineWidth = S * 0.12;
+    ctx.beginPath();
+    ctx.moveTo(P.hip.x, P.hip.y);
+    ctx.lineTo(P.neck.x, P.neck.y);
+    ctx.stroke();
+    limb(P.hip, P.legs[0].k, P.legs[0].f, w, colorNear);
+    // head
+    ctx.fillStyle = colorNear;
+    ctx.beginPath();
+    ctx.arc(P.head.x, P.head.y, S * 0.068, 0, TAU);
+    ctx.fill();
+    limb(P.shoulder, P.arms[0].e, P.arms[0].h, w * 0.9, colorNear);
+    ctx.restore();
+  }
+
+  function mount(canvas, opts = {}) {
+    const ctx = canvas.getContext("2d");
+    const colors = Object.assign({ volt: "#ceff00", ground: "#121212", ink: "#f2f2ee", muted: "#a6a6a0" }, opts.colors || {});
+    const reduced = opts.reducedMotion ?? window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const DUR = 6600;
+    let W = 0, H = 0, dpr = 1, start = null, raf = 0, done = false, ghosts = [], sparks = [], crossed = false, grain = null;
+
+    function size() {
+      const r = canvas.getBoundingClientRect();
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = Math.max(1, r.width);
+      H = Math.max(1, r.height);
+      canvas.width = Math.round(W * dpr);
+      canvas.height = Math.round(H * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      grain = makeGrain();
+    }
+    function makeGrain() {
+      const g = document.createElement("canvas");
+      g.width = g.height = 128;
+      const gc = g.getContext("2d"), img = gc.createImageData(128, 128);
+      for (let i = 0; i < img.data.length; i += 4) {
+        const v = Math.random() * 255;
+        img.data[i] = img.data[i + 1] = img.data[i + 2] = v;
+        img.data[i + 3] = 10;
+      }
+      gc.putImageData(img, 0, 0);
+      return ctx.createPattern(g, "repeat");
+    }
+
+    // Layout: figure size, ground, the limit line, and where each stage is reached.
+    const L = () => {
+      const S = Math.min(H * 0.6, W * 0.25);
+      const G = H * 0.8;
+      const x0 = W * 0.12, line = W * 0.8, xEnd = W * 0.9;
+      return { S, G, x0, line, xEnd };
+    };
+    // Position and stage over time: travel to the line evolving 0 -> 3, then cross and rise to 4.
+    function state(t) {
+      const { x0, line, xEnd } = L();
+      const travelEnd = 0.8;
+      if (t < travelEnd) {
+        const u = t / travelEnd;
+        const x = lerp(x0, line + 4, u);
+        const s = clamp(u * 3.6, 0, 3);
+        return { x, s };
+      }
+      const u = easeOut(clamp((t - travelEnd) / (1 - travelEnd), 0, 1));
+      return { x: lerp(line + 4, xEnd, u), s: 3 + u };
+    }
+
+    // Where the figure was when it was purely stage k (the lineup spacing).
+    function xAtStage(k) { const { x0, line } = L(); return lerp(x0, line + 4, (k / 3.6)); }
+
+    function frame(now) {
+      if (start === null) start = now;
+      const t = done ? 1 : clamp((now - start) / DUR, 0, 1);
+      draw(t);
+      if (t < 1 && !done) raf = requestAnimationFrame(frame);
+      else { done = true; opts.onDone && opts.onDone(); }
+    }
+
+    function draw(t) {
+      const { S, G, line } = L();
+      ctx.clearRect(0, 0, W, H);
+      // spotlight behind the finish
+      const glow = ctx.createRadialGradient(line, G - S * 0.6, 0, line, G - S * 0.6, W * 0.55);
+      const lit = crossed || t >= 0.8 ? 0.16 : 0.06 + 0.06 * t;
+      glow.addColorStop(0, `rgba(206,255,0,${lit})`);
+      glow.addColorStop(1, "rgba(206,255,0,0)");
+      ctx.fillStyle = glow;
+      ctx.fillRect(0, 0, W, H);
+
+      // ground
+      const gg = ctx.createLinearGradient(0, 0, W, 0);
+      gg.addColorStop(0, "rgba(242,242,238,0)");
+      gg.addColorStop(0.15, "rgba(242,242,238,0.22)");
+      gg.addColorStop(0.85, "rgba(242,242,238,0.22)");
+      gg.addColorStop(1, "rgba(242,242,238,0)");
+      ctx.fillStyle = gg;
+      ctx.fillRect(0, G, W, 1.5);
+
+      // the limit line
+      const st = state(t);
+      if (!crossed && st.x >= line) { crossed = true; burst(line, G - S * 0.55, S); }
+      const lineTop = G - S * 1.25;
+      ctx.save();
+      ctx.strokeStyle = colors.volt;
+      ctx.lineWidth = crossed ? 3 : 2;
+      ctx.globalAlpha = crossed ? 1 : 0.55 + 0.3 * Math.sin(t * 40);
+      if (!crossed) ctx.setLineDash([6, 6]);
+      if (crossed) { ctx.shadowColor = colors.volt; ctx.shadowBlur = 18; }
+      ctx.beginPath();
+      ctx.moveTo(line, G + 6);
+      ctx.lineTo(line, lineTop);
+      ctx.stroke();
+      ctx.restore();
+      ctx.fillStyle = crossed ? colors.volt : colors.muted;
+      ctx.font = `800 ${Math.max(9, S * 0.085)}px Nunito, system-ui, sans-serif`;
+      ctx.textAlign = "center";
+      ctx.fillText("YOUR LIMIT", line, lineTop - 8);
+
+      // ghosts: earlier selves left behind as the figure moves past each stage
+      for (let k = ghosts.length; k < 4; k++) {
+        if (st.s >= k + 0.5 || (k === 3 && crossed)) ghosts.push({ k, x: xAtStage(k), born: t });
+        else break;
+      }
+      const greys = ["#3d3d3a", "#55554f", "#74746d", "#9a9a92"];
+      for (const g of ghosts) {
+        const P = pose(stageAt(g.k), g.x, 0.9, S, G);
+        const a = clamp((t - g.born) * 6, 0, 1);
+        drawFigure(ctx, P, S, greys[g.k], greys[g.k], a);
+        ctx.globalAlpha = a;
+        ctx.fillStyle = colors.muted;
+        ctx.font = `700 ${Math.max(8, S * 0.075)}px Nunito, system-ui, sans-serif`;
+        ctx.fillText(LABELS[g.k].toUpperCase(), g.x, G + Math.max(14, S * 0.16));
+        ctx.globalAlpha = 1;
+      }
+
+      // the moving figure: grey while evolving, volt once it's a runner
+      const p = stageAt(st.s);
+      const phase = (st.x / S) * 2.3;
+      const S2 = S * (1 + 0.1 * clamp(st.s - 3, 0, 1)); // the athlete grows a little as they break through
+      const P = pose(p, st.x, st.s >= 3.9 ? 0.5 : phase, S2, G);
+      const voltMix = clamp(st.s - 2.2, 0, 1);
+      const near = mix("#bdbdb5", colors.volt, voltMix), far = mix("#8d8d86", "#8fb000", voltMix);
+      if (st.s > 3) { ctx.save(); ctx.shadowColor = colors.volt; ctx.shadowBlur = 24 * (st.s - 3); drawFigure(ctx, P, S2, near, far, 1); ctx.restore(); }
+      else drawFigure(ctx, P, S2, near, far, 1);
+      if (st.s > 3.6) {
+        ctx.globalAlpha = clamp((st.s - 3.6) * 2.5, 0, 1);
+        ctx.fillStyle = colors.volt;
+        ctx.font = `800 ${Math.max(8, S * 0.075)}px Nunito, system-ui, sans-serif`;
+        ctx.fillText(LABELS[4].toUpperCase(), st.x, G + Math.max(14, S * 0.16));
+        ctx.globalAlpha = 1;
+      }
+
+      // sparks from the break-through
+      for (const sp of sparks) {
+        const age = (t - sp.t0) * DUR / 1000;
+        if (age < 0 || age > sp.life) continue;
+        const k = 1 - age / sp.life;
+        ctx.globalAlpha = k;
+        ctx.fillStyle = colors.volt;
+        ctx.beginPath();
+        ctx.arc(sp.x + sp.vx * age, sp.y + sp.vy * age + 120 * age * age, sp.r * k, 0, TAU);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+
+      // film grain and vignette for a premium finish
+      if (grain) { ctx.fillStyle = grain; ctx.fillRect(0, 0, W, H); }
+      const vg = ctx.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.35, W / 2, H / 2, Math.max(W, H) * 0.75);
+      vg.addColorStop(0, "rgba(0,0,0,0)");
+      vg.addColorStop(1, "rgba(0,0,0,0.55)");
+      ctx.fillStyle = vg;
+      ctx.fillRect(0, 0, W, H);
+      lastT = t;
+    }
+    let lastT = 0;
+    function burst(x, y, S) {
+      for (let i = 0; i < 36; i++) {
+        const a = -Math.PI / 2 + (Math.random() - 0.5) * Math.PI * 1.4;
+        const v = S * (0.8 + Math.random() * 1.6);
+        sparks.push({ x, y: y + (Math.random() - 0.5) * S * 0.6, vx: Math.cos(a) * v, vy: Math.sin(a) * v, r: 1 + Math.random() * 2.2, life: 0.5 + Math.random() * 0.6, t0: lastT });
+      }
+      opts.onBreak && opts.onBreak();
+    }
+    function mix(a, b, t) {
+      const pa = [1, 3, 5].map((i) => parseInt(a.slice(i, i + 2), 16)), pb = [1, 3, 5].map((i) => parseInt(b.slice(i, i + 2), 16));
+      return "rgb(" + pa.map((v, i) => Math.round(lerp(v, pb[i], t))).join(",") + ")";
+    }
+
+    function finish() {
+      // jump to the resting frame: all ghosts, the volt figure past the line
+      const { S, G } = L();
+      done = true;
+      cancelAnimationFrame(raf);
+      crossed = true;
+      ghosts = [0, 1, 2, 3].map((k) => ({ k, x: xAtStage(k), born: -1 }));
+      sparks = [];
+      draw(1);
+      opts.onDone && opts.onDone();
+      return { S, G };
+    }
+    function replay() {
+      cancelAnimationFrame(raf);
+      done = false; crossed = false; ghosts = []; sparks = []; start = null; lastT = 0;
+      raf = requestAnimationFrame(frame);
+    }
+
+    size();
+    const ro = new ResizeObserver(() => { size(); if (done) finish(); });
+    ro.observe(canvas);
+    if (reduced) finish();
+    else raf = requestAnimationFrame(frame);
+    canvas.addEventListener("click", () => (done ? replay() : finish()));
+    return { finish, replay, destroy: () => { cancelAnimationFrame(raf); ro.disconnect(); }, _draw: draw };
+  }
+
+  window.LimitlineIntro = { mount, _pose: pose, _stageAt: stageAt };
+})();
+
+</script>
+<script>
+// ===================== Icons (the real app's set) =====================
+const svg = (body, size = 24) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${body}</svg>`;
 const I = {
-  quests: (f) => ico.s(`<path d="M3 20l6-9 4 5 3-4 5 8z" fill="${f ? "currentColor" : "none"}"/><path d="M13 9V3l5 2-5 2" fill="${f ? "currentColor" : "none"}"/>`, 28),
-  board: (f) => ico.s(`<path d="M7 4h10v5a5 5 0 0 1-10 0z" fill="${f ? "currentColor" : "none"}"/><path d="M7 6H4v1a3 3 0 0 0 3 3M17 6h3v1a3 3 0 0 1-3 3"/><path d="M12 14v3M8 21h8M9 21l1-4h4l1 4"/>`, 28),
-  shop: (f) => ico.s(`<path d="M5 8h14l-1 12H6z" fill="${f ? "currentColor" : "none"}"/><path d="M9 10V7a3 3 0 0 1 6 0v3"/>`, 28),
-  flame: (s = 22) => `<span class="flame">${ico.s(`<path d="M12 22c4 0 7-2.7 7-6.6 0-3.4-2.2-5.6-3.7-7.4-.4 1.7-1.3 2.8-2.5 3.3.3-3.3-1-6.5-3.8-8.3.2 3-1.6 5-3.2 7C4.6 11.5 5 13.2 5 15.4 5 19.3 8 22 12 22z" fill="currentColor" stroke="none"/>`, s)}</span>`,
-  ember: (s = 22) => `<span class="ember">${ico.s(`<path d="M12 3l7 6-7 12-7-12z" fill="currentColor" stroke="none"/><path d="M5 9h14M12 3l-2.5 6L12 21l2.5-12z" stroke="rgb(18 18 18 / 0.35)" stroke-width="1.4"/>`, s)}</span>`,
-  run: (s = 26) => ico.s(`<circle cx="15" cy="4.5" r="2" fill="currentColor" stroke="none"/><path d="M6 12l3-4 4 1 2 4 3 1M13 9l-2 5 3 3-1 4M11 14l-3 2-3-1"/>`, s),
-  bike: (s = 26) => ico.s(`<circle cx="6" cy="16" r="3.5"/><circle cx="18" cy="16" r="3.5"/><path d="M6 16l4-7h5l3 7M10 9l2 7h-6M14 6h3"/>`, s),
-  swim: (s = 26) => ico.s(`<circle cx="17" cy="6" r="2" fill="currentColor" stroke="none"/><path d="M4 12l5-3 3 2 3-2"/><path d="M2 17c2 0 2-1.5 4-1.5S8 17 10 17s2-1.5 4-1.5 2 1.5 4 1.5 2-1.5 4-1.5"/><path d="M2 21c2 0 2-1.5 4-1.5S8 21 10 21s2-1.5 4-1.5 2 1.5 4 1.5 2-1.5 4-1.5"/>`, s),
-  chev: () => `<span class="chev">${ico.s(`<path d="M9 5l7 7-7 7"/>`, 20)}</span>`,
-  back: () => ico.s(`<path d="M15 5l-7 7 7 7"/>`, 20),
+  logo: (h = 22) => `<svg width="${h * 1.5}" height="${h}" viewBox="0 0 48 32" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 19H46" stroke-width="2.5" stroke-dasharray="4 4" opacity="0.6"/><path d="M3 28L15 23L22 25L32 12L44 4" stroke-width="3.5"/><path d="M37 4H44V11" stroke-width="3.5"/></svg>`,
+  quests: (f) => svg(`<path d="M3 20l6-9 4 5 3-4 5 8z" fill="${f ? "currentColor" : "none"}"/><path d="M13 9V3l5 2-5 2" fill="${f ? "currentColor" : "none"}"/>`, 28),
+  board: (f) => svg(`<path d="M7 4h10v5a5 5 0 0 1-10 0z" fill="${f ? "currentColor" : "none"}"/><path d="M7 6H4v1a3 3 0 0 0 3 3M17 6h3v1a3 3 0 0 1-3 3"/><path d="M12 14v3M8 21h8M9 21l1-4h4l1 4"/>`, 28),
+  shop: (f) => svg(`<path d="M5 8h14l-1 12H6z" fill="${f ? "currentColor" : "none"}"/><path d="M9 10V7a3 3 0 0 1 6 0v3"/>`, 28),
+  flame: (s = 22) => `<span class="flame">${svg(`<path d="M12 22c4 0 7-2.7 7-6.6 0-3.4-2.2-5.6-3.7-7.4-.4 1.7-1.3 2.8-2.5 3.3.3-3.3-1-6.5-3.8-8.3.2 3-1.6 5-3.2 7C4.6 11.5 5 13.2 5 15.4 5 19.3 8 22 12 22z" fill="currentColor" stroke="none"/>`, s)}</span>`,
+  ember: (s = 22) => `<span class="ember">${svg(`<path d="M12 3l7 6-7 12-7-12z" fill="currentColor" stroke="none"/><path d="M5 9h14M12 3l-2.5 6L12 21l2.5-12z" stroke="rgb(18 18 18 / 0.35)" stroke-width="1.4"/>`, s)}</span>`,
+  run: (s = 26) => svg(`<circle cx="15" cy="4.5" r="2" fill="currentColor" stroke="none"/><path d="M6 12l3-4 4 1 2 4 3 1M13 9l-2 5 3 3-1 4M11 14l-3 2-3-1"/>`, s),
+  bike: (s = 26) => svg(`<circle cx="6" cy="16" r="3.5"/><circle cx="18" cy="16" r="3.5"/><path d="M6 16l4-7h5l3 7M10 9l2 7h-6M14 6h3"/>`, s),
+  swim: (s = 26) => svg(`<circle cx="17" cy="6" r="2" fill="currentColor" stroke="none"/><path d="M4 12l5-3 3 2 3-2"/><path d="M2 17c2 0 2-1.5 4-1.5S8 17 10 17s2-1.5 4-1.5 2 1.5 4 1.5 2-1.5 4-1.5"/><path d="M2 21c2 0 2-1.5 4-1.5S8 21 10 21s2-1.5 4-1.5 2 1.5 4 1.5 2-1.5 4-1.5"/>`, s),
+  hike: (s = 26) => svg(`<circle cx="11" cy="4" r="2" fill="currentColor" stroke="none"/><path d="M10 8l-2 6 3 3-1 4M10 8l3 3 2 1M8 14l-3 6M17 9l-1.5 12"/><path d="M8 8.5L6 13" stroke-width="3"/>`, s),
+  ig: (s = 24) => svg(`<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>`, s),
+  trophy: (s = 18) => svg(`<path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4v1a3 3 0 0 0 3 3M17 6h3v1a3 3 0 0 1-3 3M12 14v3M8 21h8"/>`, s),
+  chev: () => `<span class="chev">${svg(`<path d="M9 5l7 7-7 7"/>`, 20)}</span>`,
   avatar: (s = 28) => `<svg width="${s}" height="${s}" viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="14" fill="#3a3a3a"/><circle cx="14" cy="11" r="5" fill="#8a8a85"/><path d="M4.5 23.5a10.5 8 0 0 1 19 0A13.9 13.9 0 0 1 14 28a13.9 13.9 0 0 1-9.5-4.5z" fill="#8a8a85"/></svg>`,
   strava: (s = 18) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M15.39 17.94l-2.09-4.12h-3.07L15.39 24l5.15-10.18h-3.08" opacity="0.7"/><path d="M10.12 0L3.24 13.82h4.06l2.82-5.57 2.8 5.57h4.03"/></svg>`,
   google: () => `<svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>`,
 };
 
-// ===================== Rules (mirrors lib/rules and lib/strava/check.ts) =====================
+// ===================== Quests and rules (mirror lib/rules + lib/strava/check.ts) =====================
+const SPORTS = { run: { label: "Run", icon: I.run }, bike: { label: "Ride", icon: I.bike }, swim: { label: "Swim", icon: I.swim }, hike: { label: "Hike", icon: I.hike } };
 const QUESTS = {
-  run5k: { sport: "run", label: "Run 5 km", measure: "time", meters: 5000, effort: "5k", plausible: 750 },
-  run10k: { sport: "run", label: "Run 10 km", measure: "time", meters: 10000, effort: "10k", plausible: 1560 },
-  bike20: { sport: "bike", label: "Bike 20-min power", measure: "power", seconds: 1200, plausible: 500 },
-  swim400: { sport: "swim", label: "Swim 400 m", measure: "time", meters: 400, plausible: 220 },
-  swim1500: { sport: "swim", label: "Swim 1500 m", measure: "time", meters: 1500, plausible: 870 },
+  run1mile: { sport: "run", label: "Run 1 mile", measure: "time", meters: 1609, d: "1 mile", plausible: 230 },
+  run5k: { sport: "run", label: "Run 5 km", measure: "time", meters: 5000, d: "5 km", plausible: 750 },
+  run10k: { sport: "run", label: "Run 10 km", measure: "time", meters: 10000, d: "10 km", plausible: 1560, sponsor: "haldo" },
+  runHalf: { sport: "run", label: "Run a half marathon", measure: "time", meters: 21097, d: "21.1 km", plausible: 3480 },
+  bike20: { sport: "bike", label: "Bike 20-min power", measure: "power", plausible: 500 },
+  bike40k: { sport: "bike", label: "Ride 40 km", measure: "time", meters: 40000, d: "40 km", plausible: 2700 },
+  bike100k: { sport: "bike", label: "Ride 100 km", measure: "time", meters: 100000, d: "100 km", plausible: 7200 },
+  swim400: { sport: "swim", label: "Swim 400 m", measure: "time", meters: 400, d: "400 m", plausible: 220 },
+  swim1500: { sport: "swim", label: "Swim 1500 m", measure: "time", meters: 1500, d: "1500 m", plausible: 870 },
+  swim3800: { sport: "swim", label: "Swim 3.8 km", measure: "time", meters: 3800, d: "3.8 km", plausible: 2400 },
+  hike10k: { sport: "hike", label: "Hike 10 km", measure: "time", meters: 10000, d: "10 km", plausible: 3600 },
+  hikeUp1000: { sport: "hike", label: "Climb 1000 m", measure: "elevation", minUp: 1000, plausible: 4000, sponsor: "moxa" },
+  hikeUp2000: { sport: "hike", label: "Climb 2000 m", measure: "elevation", minUp: 2000, plausible: 4000 },
+  run5kTrail: { sport: "run", label: "Trail run 5 km", measure: "time", meters: 5000, d: "5 km", plausible: 840, trail: true },
 };
 const QIDS = Object.keys(QUESTS);
+const SPONSORS = {
+  haldo: { name: "HALDO", what: "hydration", quest: "run10k", title: "Run 10 km Week", prize: "3-month HALDO supply for the best % beyond their limit", ends: "Ends Sunday" },
+  moxa: { name: "MOXA TRAIL", what: "trail shoes", quest: "hikeUp1000", title: "Climb 1000 m", prize: "MOXA trail shoes for the biggest climb this month", ends: "Ends Nov 30" },
+};
 const EMBERS = { base: 10, multiplier: 2, minEfforts: 4 };
 const CONFIRM_ABOVE = 10;
 const REASONS = {
-  cant_view: "Can't view: set activity to Followers", before_signup: "Before your sign-up, doesn't count",
-  needs_power: "Bike quest needs power data", not_outdoor: "Outdoor activities only", not_own: "This activity isn't yours",
-  not_completed: "Quest distance or time not completed", wrong_sport: "Wrong sport for this quest",
-  manual_entry: "Typed-in activities don't count, record it with a watch or phone",
+  cant_view: "Can't view: set activity to Followers", before_signup: "Before your sign-up, doesn't count", needs_power: "Bike quest needs power data",
+  not_outdoor: "Outdoor activities only", not_own: "This activity isn't yours", not_completed: "Quest distance or time not completed",
+  wrong_sport: "Wrong sport for this quest", manual_entry: "Typed-in activities don't count, record it with a watch or phone",
+  not_trail: "Trail quests need a trail run",
 };
-const DAY = 86400000;
+const CONTENT_REASONS = { not_public: "The post isn't public", no_tag: "Tag @limitline and use #CrossYourLimit", not_original: "Has to be your own content", off_brief: "Doesn't match the brief" };
+const DAY = 86400000, MIN = 60000;
 const NOW = Date.now();
 const SIGNED_UP = NOW - 20 * DAY;
-// Seeds: the founder's reading of the last 8 weeks (limit + effort count).
-const SEEDS = { run5k: { value: 1612, efforts: 3 }, run10k: { value: 3390, efforts: 3 }, bike20: { value: 240, efforts: 2 } };
+const SEEDS = { run5k: { value: 1612, efforts: 3 }, run10k: { value: 3390, efforts: 3 }, bike20: { value: 240, efforts: 2 }, run1mile: { value: 455, efforts: 2 } };
 
 const fmtTime = (sec) => { const t = Math.round(sec), h = Math.floor(t / 3600), m = Math.floor((t % 3600) / 60), s = t % 60; return (h ? h + ":" + String(m).padStart(2, "0") : m) + ":" + String(s).padStart(2, "0"); };
-const fmtVal = (q, v) => (QUESTS[q].measure === "power" ? Math.round(v) + " W" : fmtTime(v));
+const fmtVal = (q, v) => (QUESTS[q].measure === "power" ? Math.round(v) + " W" : QUESTS[q].measure === "elevation" ? Math.round(v).toLocaleString("en-GB") + " m up" : fmtTime(v));
 const fmtPct = (p) => (p > 0 ? "+" : "") + p.toFixed(1) + "%";
-const dist = (q) => (QUESTS[q].sport === "swim" ? QUESTS[q].meters + " m" : QUESTS[q].meters / 1000 + " km");
 const better = (q, a, b) => (QUESTS[q].measure === "time" ? a < b : a > b);
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+const km = (m) => (m / 1000).toFixed(2) + " km";
 
 function questRules(q) {
   const Q = QUESTS[q];
   if (Q.measure === "power") return ["Any outdoor ride of 20 minutes or more, with a power meter.", "We use your best 20-minute power from the ride.", "Shorter than 20 minutes, or no power data, won't be approved."];
-  const d = dist(q), kind = Q.sport === "run" ? "outdoor run" : "pool swim";
-  return [`Any ${kind} of ${d} or longer.`, `A longer one counts as ${d}, timed on its fastest ${d}.`, `Shorter than ${d} won't be approved.`];
+  if (Q.measure === "elevation") return [`Any hike with ${Q.minUp.toLocaleString("en-GB")} m of climbing or more.`, "We use the total climb Strava measured.", `Less than ${Q.minUp.toLocaleString("en-GB")} m up won't be approved.`];
+  const kind = { run: Q.trail ? "trail run" : "outdoor run", bike: "outdoor ride", swim: "pool swim", hike: "hike" }[Q.sport];
+  return [`Any ${kind} of ${Q.d} or longer.`, `A longer one counts as ${Q.d}, timed on its fastest ${Q.d}.`, `Shorter than ${Q.d} won't be approved.`];
 }
 
-// Limit and effort count just before `at`: the seed plus verified entries recorded earlier.
 function limitBefore(q, at, excludeId) {
   let limit = SEEDS[q] ? SEEDS[q].value : null, efforts = SEEDS[q] ? SEEDS[q].efforts : 0;
   for (const e of state.entries) {
@@ -277,27 +617,16 @@ function limitBefore(q, at, excludeId) {
 function evaluate(q, value, at, excludeId) {
   const b = limitBefore(q, at, excludeId);
   const percent = b.limit === null ? null : Math.round(((QUESTS[q].measure === "time" ? b.limit - value : value - b.limit) / b.limit) * 1000) / 10;
-  const beat = percent !== null && percent > 0;
-  const doubled = beat && b.efforts >= EMBERS.minEfforts;
+  const beat = percent !== null && percent > 0, doubled = beat && b.efforts >= EMBERS.minEfforts;
   return { limit: b.limit, efforts: b.efforts, percent, beat, doubled, embers: EMBERS.base * (doubled ? EMBERS.multiplier : 1) };
 }
-function currentLimit(q) { return limitBefore(q, Infinity); }
-// Corrections recompute later results (like the real app): re-evaluate every verified entry in date order.
+const currentLimit = (q) => limitBefore(q, Infinity);
 function recomputeAll() {
   for (const e of state.entries.filter((x) => x.status === "verified").sort((a, b) => a.at - b.at)) {
     const r = evaluate(e.quest, e.value, e.at, e.id);
     Object.assign(e, { percent: r.percent, beat: r.beat, doubled: r.doubled, embers: r.embers });
   }
 }
-// What the founder reads off Strava for a waiting entry.
-function founderValue(e) {
-  const a = actById(e.activity), r = stravaCheck(e.quest, a), Q = QUESTS[e.quest];
-  if (r.kind === "reject") return { value: null, reason: r.reason };
-  const v = r.value ?? (Q.measure === "power" ? (a.power ? a.best20 : null) : a.fastest && a.fastest[Q.meters]);
-  return { value: v || null, reason: v ? null : "not_completed" };
-}
-
-// Monday-to-Sunday weeks in the viewer's time zone.
 function weekKey(t) { const d = new Date(t); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return d.getTime(); }
 function streak() {
   const weeks = new Set(state.entries.filter((e) => e.status === "verified").map((e) => weekKey(e.at)));
@@ -306,10 +635,13 @@ function streak() {
   while (weeks.has(cursor)) { n += 1; cursor = weekKey(cursor - 3 * DAY); }
   return { weeks: n, active };
 }
-const balance = () => state.entries.filter((e) => e.status === "verified").reduce((a, e) => a + e.embers, 0) - state.redemptions.reduce((a, r) => a + r.price, 0);
+const balance = () =>
+  state.entries.filter((e) => e.status === "verified").reduce((a, e) => a + e.embers, 0) +
+  state.posts.filter((p) => p.status === "approved").reduce((a, p) => a + p.embers, 0) -
+  state.redemptions.reduce((a, r) => a + r.price, 0);
 
-// The automatic Strava check, step by step (returns the steps it passed for the animation).
-const RUN = ["Run", "TrailRun"], BIKE = ["Ride", "GravelRide", "MountainBikeRide"], INDOOR = { VirtualRun: "run", VirtualRide: "bike" };
+const TYPES = { run: ["Run", "TrailRun"], bike: ["Ride", "GravelRide", "MountainBikeRide"], swim: ["Swim"], hike: ["Hike"] };
+const INDOOR = { VirtualRun: "run", VirtualRide: "bike" };
 function stravaCheck(q, a) {
   const Q = QUESTS[q], steps = [];
   const pass = (t) => steps.push(["pass", t]);
@@ -320,8 +652,8 @@ function stravaCheck(q, a) {
   if (a.manual) return reject("manual_entry", "Typed in on Strava, not recorded");
   pass("Recorded with a watch or phone");
   if (INDOOR[a.type] === Q.sport) return reject("not_outdoor", "Strava says " + a.type + ": indoor");
-  const ok = Q.sport === "run" ? RUN.includes(a.type) : Q.sport === "bike" ? BIKE.includes(a.type) : a.type === "Swim";
-  if (!ok) return reject("wrong_sport", a.type === "EBikeRide" ? "E-bike rides don't count" : "It's a " + a.kind + ", not a " + Q.sport);
+  if (!TYPES[Q.sport].includes(a.type)) return reject("wrong_sport", a.type === "EBikeRide" ? "E-bike rides don't count" : "It's a " + a.kindLabel + ", not a " + SPORTS[Q.sport].label.toLowerCase());
+  if (Q.trail && a.type !== "TrailRun") return reject("not_trail", "Strava says road run, not trail");
   pass("Right sport for " + Q.label);
   if (Q.sport !== "swim" && a.trainer) return reject("not_outdoor", "Marked as indoor on Strava");
   if (Q.sport === "swim" && a.gps) return founder("Has GPS, so it may be open water. Quests are pool swims.");
@@ -329,156 +661,223 @@ function stravaCheck(q, a) {
   if (a.at < SIGNED_UP) return reject("before_signup", "Recorded before you signed up");
   pass("Recorded after you signed up");
   let value;
-  if (Q.sport === "bike") {
+  if (Q.measure === "power") {
     if (a.minutes < 20) return reject("not_completed", a.minutes + " min, short of 20 min");
     pass(a.minutes + " min ride");
     if (!a.power) return reject("needs_power", "No power meter on this ride");
     value = a.best20;
     pass("Best 20 minutes of power: " + value + " W");
+  } else if (Q.measure === "elevation") {
+    if (a.up < Q.minUp) return reject("not_completed", a.up.toLocaleString("en-GB") + " m up, short of " + Q.minUp.toLocaleString("en-GB") + " m");
+    value = a.up;
+    pass("Climbed " + a.up.toLocaleString("en-GB") + " m");
   } else {
-    if (a.meters < Q.meters - (Q.sport === "swim" ? 1 : 0)) {
-      return reject("not_completed", (Q.sport === "swim" ? a.meters + " m" : (a.meters / 1000).toFixed(2) + " km") + ", short of " + dist(q));
-    }
-    pass((Q.sport === "swim" ? a.meters + " m" : (a.meters / 1000).toFixed(2) + " km") + ", at least " + dist(q));
+    if (a.meters < Q.meters - (Q.sport === "swim" ? 1 : 0)) return reject("not_completed", (Q.sport === "swim" ? a.meters + " m" : km(a.meters)) + ", short of " + Q.d);
+    pass((Q.sport === "swim" ? a.meters + " m" : km(a.meters)) + ", at least " + Q.d);
     value = a.fastest && a.fastest[Q.meters];
-    if (!value) return founder("No fastest " + dist(q) + " found in it");
-    pass("Fastest " + dist(q) + " inside it: " + fmtTime(value));
+    if (!value) return founder("No fastest " + Q.d + " found in it");
+    pass("Fastest " + Q.d + " inside it: " + fmtTime(value));
   }
   const implausible = Q.measure === "time" ? value < Q.plausible : value > Q.plausible;
   if (implausible) return founder("Beyond what's humanly likely, so the founder looks", value);
   return { kind: "value", value, steps };
 }
 
-// ===================== Your sample Strava (stand-in for Strava's API) =====================
-const H = 3600000;
+// ===================== Your sample Strava =====================
+let k = 0;
+const today = () => NOW - (++k) * 3 * MIN;
+const A = (o) => ({ ...o, at: o.at ?? today(), kindLabel: { run: "run", bike: "ride", swim: "swim", hike: "hike", walk: "walk" }[o.kind] });
 const ACTIVITIES = [
-  { id: "16021001", title: "Sunday long run", kind: "run", type: "Run", at: NOW - 8 * 60000, meters: 10210, time: "50:40", fastest: { 5000: 1498, 10000: 3040 } },
-  { id: "16021002", title: "Parkrun", kind: "run", type: "Run", at: NOW - 12 * 60000, meters: 5020, time: "25:40", fastest: { 5000: 1540 } },
-  { id: "16021003", title: "Recovery jog", kind: "run", type: "Run", at: NOW - 16 * 60000, meters: 4800, time: "27:10", fastest: {} },
-  { id: "16021004", title: "Treadmill tempo", kind: "run", type: "Run", trainer: true, at: NOW - 20 * 60000, meters: 6000, time: "29:30", fastest: { 5000: 1450 } },
-  { id: "16021005", title: "Hill reps ride", kind: "ride", type: "Ride", at: NOW - 24 * 60000, minutes: 52, power: true, best20: 252, time: "52:00" },
-  { id: "16021006", title: "Commute", kind: "ride", type: "Ride", at: NOW - 28 * 60000, minutes: 24, power: false, time: "24:00" },
-  { id: "16021007", title: "Zwift race", kind: "ride", type: "VirtualRide", at: NOW - 32 * 60000, minutes: 40, power: true, best20: 270, time: "40:00" },
-  { id: "16021008", title: "E-bike tour", kind: "ride", type: "EBikeRide", at: NOW - 36 * 60000, minutes: 70, power: true, best20: 190, time: "1:10:00" },
-  { id: "16021009", title: "Pool 400 m test", kind: "swim", type: "Swim", at: NOW - 40 * 60000, meters: 400, time: "6:58", fastest: { 400: 418 } },
-  { id: "16021010", title: "Masters swim", kind: "swim", type: "Swim", at: NOW - 44 * 60000, meters: 1800, time: "36:20", fastest: { 400: 431, 1500: 1690 } },
-  { id: "16021011", title: "Lake swim", kind: "swim", type: "Swim", gps: true, at: NOW - 48 * 60000, meters: 1600, time: "33:00", fastest: { 400: 440, 1500: 1760 } },
-  { id: "16021012", title: "Dana's 10K (her account)", kind: "run", type: "Run", other: true, at: NOW - 52 * 60000, meters: 10050, time: "44:50", fastest: { 5000: 1320, 10000: 2690 } },
-  { id: "16021013", title: "October 10K race", kind: "run", type: "Run", at: NOW - 30 * DAY, meters: 10100, time: "52:30", fastest: { 5000: 1560, 10000: 3150 } },
+  A({ id: "16021001", title: "Sunday long run", kind: "run", type: "Run", meters: 10210, time: "50:40", fastest: { 1609: 459, 5000: 1498, 10000: 3040 } }),
+  A({ id: "16021002", title: "Parkrun", kind: "run", type: "Run", meters: 5020, time: "25:40", fastest: { 1609: 470, 5000: 1540 } }),
+  A({ id: "16021014", title: "Track mile", kind: "run", type: "Run", meters: 1650, time: "6:52", fastest: { 1609: 402 } }),
+  A({ id: "16021015", title: "City half marathon", kind: "run", type: "Run", meters: 21230, time: "1:53:10", fastest: { 1609: 480, 5000: 1530, 10000: 3120, 21097: 6720 } }),
+  A({ id: "16021016", title: "Forest trail loop", kind: "run", type: "TrailRun", meters: 7400, time: "41:20", fastest: { 1609: 500, 5000: 1690 } }),
+  A({ id: "16021003", title: "Recovery jog", kind: "run", type: "Run", meters: 4800, time: "27:10", fastest: { 1609: 540 } }),
+  A({ id: "16021004", title: "Treadmill tempo", kind: "run", type: "Run", trainer: true, meters: 6000, time: "29:30", fastest: { 1609: 440, 5000: 1450 } }),
+  A({ id: "16021005", title: "Hill reps ride", kind: "bike", type: "Ride", minutes: 52, meters: 26000, power: true, best20: 252, time: "52:00", fastest: {} }),
+  A({ id: "16021017", title: "Time trial practice", kind: "bike", type: "Ride", minutes: 69, meters: 41200, power: true, best20: 265, time: "1:09:00", fastest: { 40000: 4020 } }),
+  A({ id: "16021018", title: "Saturday 100", kind: "bike", type: "Ride", minutes: 208, meters: 102400, power: true, best20: 236, time: "3:28:00", fastest: { 40000: 4560, 100000: 12240 } }),
+  A({ id: "16021006", title: "Commute", kind: "bike", type: "Ride", minutes: 24, meters: 9000, power: false, time: "24:00", fastest: {} }),
+  A({ id: "16021007", title: "Zwift race", kind: "bike", type: "VirtualRide", minutes: 40, meters: 24000, power: true, best20: 270, time: "40:00", fastest: {} }),
+  A({ id: "16021008", title: "E-bike tour", kind: "bike", type: "EBikeRide", minutes: 70, meters: 32000, power: true, best20: 190, time: "1:10:00", fastest: {} }),
+  A({ id: "16021009", title: "Pool 400 m test", kind: "swim", type: "Swim", meters: 400, time: "6:58", fastest: { 400: 418 } }),
+  A({ id: "16021010", title: "Masters swim", kind: "swim", type: "Swim", meters: 1800, time: "36:20", fastest: { 400: 431, 1500: 1690 } }),
+  A({ id: "16021019", title: "Iron-distance pool set", kind: "swim", type: "Swim", meters: 3900, time: "1:16:30", fastest: { 400: 440, 1500: 1700, 3800: 4440 } }),
+  A({ id: "16021011", title: "Lake swim", kind: "swim", type: "Swim", gps: true, meters: 1600, time: "33:00", fastest: { 400: 440, 1500: 1760 } }),
+  A({ id: "16021020", title: "Ridge hike", kind: "hike", type: "Hike", meters: 10600, up: 1240, time: "2:05:00", fastest: { 10000: 7020 } }),
+  A({ id: "16021021", title: "Summit day", kind: "hike", type: "Hike", meters: 16400, up: 2150, time: "5:40:00", fastest: { 10000: 9300 } }),
+  A({ id: "16021022", title: "Hill walk", kind: "hike", type: "Hike", meters: 6200, up: 420, time: "1:30:00", fastest: {} }),
+  A({ id: "16021023", title: "Evening walk", kind: "walk", type: "Walk", meters: 5000, up: 40, time: "55:00", fastest: {} }),
+  A({ id: "16021012", title: "Dana's 10K (her account)", kind: "run", type: "Run", other: true, meters: 10050, time: "44:50", fastest: { 1609: 410, 5000: 1320, 10000: 2690 } }),
+  A({ id: "16021013", title: "October 10K race", kind: "run", type: "Run", at: NOW - 30 * DAY, meters: 10100, time: "52:30", fastest: { 1609: 470, 5000: 1560, 10000: 3150 } }),
 ];
 const actById = (id) => ACTIVITIES.find((a) => a.id === id);
-const actLine = (a) => (a.kind === "ride" ? a.minutes + " min" + (a.power ? " · power meter" : " · no power") : a.kind === "swim" ? a.meters + " m" : (a.meters / 1000).toFixed(2) + " km") + " · " + a.time + (a.trainer ? " · indoor" : "") + (a.gps && a.kind === "swim" ? " · GPS" : "") + (a.at < SIGNED_UP ? " · 30 days ago" : " · today");
+const actIcon = (a) => (SPORTS[a.kind] || SPORTS.hike).icon(22);
+const actLine = (a) => {
+  const bits = [];
+  if (a.kind === "bike") bits.push(km(a.meters), a.minutes + " min", a.power ? "power meter" : "no power");
+  else if (a.kind === "swim") bits.push(a.meters + " m");
+  else bits.push(km(a.meters));
+  if (a.up) bits.push(a.up.toLocaleString("en-GB") + " m up");
+  bits.push(a.time);
+  if (a.trainer) bits.push("indoor");
+  if (a.type === "TrailRun") bits.push("trail");
+  if (a.gps && a.kind === "swim") bits.push("GPS");
+  bits.push(a.at < SIGNED_UP ? "30 days ago" : "today");
+  return bits.join(" · ");
+};
 
-// Other pilot athletes on this week's boards (sample).
+// ===================== Content quests (Instagram) and brand challenges =====================
+const CONTENT = [
+  { id: "c-win", title: "Share your win", embers: 15, brief: "Post your LIMITLINE share card to your Instagram story.", format: "Story" },
+  { id: "c-finish", title: "Film the finish", embers: 40, brief: "A 10 to 20 second Reel of you crossing your limit: the finish line, the watch beep, the summit.", format: "Reel" },
+  { id: "c-why", title: "Why I train", embers: 40, brief: "15 to 30 seconds to camera: what you're chasing and why.", format: "Reel" },
+  { id: "c-then", title: "Then vs now", embers: 25, brief: "A carousel: your limit when you started, and where it is now.", format: "Carousel" },
+  { id: "c-kit", title: "Kit check", embers: 20, brief: "Your race or training kit laid out, in one photo.", format: "Post" },
+];
+const CHALLENGES = [
+  { id: "b-climb", sponsor: "moxa", title: "Show your climb", embers: 50, brief: "A 15-second Reel from a hike: the steepest part, the view at the top.", prize: "MOXA picks one winner: trail shoes and an affiliate code", tags: "@limitline @moxatrail #CrossYourLimit", format: "Reel" },
+  { id: "b-hydrate", sponsor: "haldo", title: "Refuel ritual", embers: 30, brief: "Show how you refuel after a hard session.", prize: "HALDO reposts the top 3 and sends a 3-month supply", tags: "@limitline @haldo #CrossYourLimit", format: "Reel or story" },
+];
+const contentById = (id) => CONTENT.find((c) => c.id === id) || CHALLENGES.find((c) => c.id === id);
+
 const OTHERS = {
   run: [["Dana K.", "Run 10 km", 4.1], ["Sam O.", "Run 5 km", 1.2], ["Lee W.", "Run 5 km", -0.6]],
-  bike: [["Marco T.", "Bike 20-min power", 5.1], ["Ana P.", "Bike 20-min power", 2.0]],
+  bike: [["Marco T.", "Bike 20-min power", 5.1], ["Ana P.", "Ride 40 km", 2.0]],
   swim: [["Kim J.", "Swim 400 m", 3.0], ["Tom R.", "Swim 1500 m", -1.1]],
+  hike: [["Ravi S.", "Climb 1000 m", 6.4], ["Mia L.", "Hike 10 km", 1.9]],
 };
 const SHOP = [
   { id: "gel", name: "Energy gel 6-pack", price: 30, stock: 4 },
   { id: "socks", name: "Race socks", price: 60, stock: 2 },
   { id: "tri", name: "10% off at the local tri shop", price: 120, stock: 10 },
+  { id: "haldo", name: "HALDO electrolyte 12-pack", price: 80, stock: 6, sponsor: "haldo" },
+  { id: "moxa", name: "MOXA trail socks", price: 50, stock: 5, sponsor: "moxa" },
 ];
 
 // ===================== State =====================
+let state;
 function freshState() {
-  const s = {
-    screen: "landing", tab: "quests", quest: null, sport: "run", name: "", showOnBoards: true, showName: true, strava: true,
-    entries: [], redemptions: [], stock: Object.fromEntries(SHOP.map((i) => [i.id, i.stock])), flash: null, overlay: null, linkDraft: "", linkError: "",
+  state = {
+    screen: "landing", tab: "quests", seg: "training", filter: "all", quest: null, content: null, sport: "run", showOther: false,
+    name: "", showOnBoards: true, showName: true, strava: true,
+    entries: [], posts: [], redemptions: [], stock: Object.fromEntries(SHOP.map((i) => [i.id, i.stock])),
+    flash: null, overlay: null, linkDraft: "", linkError: "", igDraft: "", igError: "",
   };
-  // Your history from the last two weeks (verified by the founder), so the streak is alive.
-  const hist = [["h1", "run5k", 1590, NOW - 14 * DAY], ["h2", "run5k", 1558, NOW - 7 * DAY], ["h3", "bike20", 236, NOW - 7 * DAY - 2 * H]];
-  state = s;
+  const hist = [["h1", "run5k", 1590, NOW - 14 * DAY], ["h2", "run5k", 1558, NOW - 7 * DAY], ["h3", "bike20", 236, NOW - 7 * DAY - 2 * 3600000]];
   for (const [id, q, v, at] of hist) {
     const r = evaluate(q, v, at, id);
-    s.entries.push({ id, quest: q, activity: null, status: "verified", value: v, at, percent: r.percent, beat: r.beat, embers: r.embers, doubled: r.doubled, seen: true, by: "founder" });
+    state.entries.push({ id, quest: q, activity: null, status: "verified", value: v, at, percent: r.percent, beat: r.beat, embers: r.embers, doubled: r.doubled, seen: true, by: "founder", submitted: at });
   }
-  return s;
+  return state;
 }
-let state;
-const KEY = "limitline-mini-v1";
-function load() {
-  try { const raw = localStorage.getItem(KEY); if (raw) { const s = JSON.parse(raw); if (s && Array.isArray(s.entries)) return s; } } catch (e) { /* storage blocked */ }
-  return null;
-}
-function save() { try { localStorage.setItem(KEY, JSON.stringify({ ...state, overlay: null })); } catch (e) { /* storage blocked */ } }
+const KEY = "limitline-mini-v2";
+function load() { try { const s = JSON.parse(localStorage.getItem(KEY) || "null"); if (s && Array.isArray(s.entries) && Array.isArray(s.posts)) return s; } catch (e) { /* blocked */ } return null; }
+function save() { try { localStorage.setItem(KEY, JSON.stringify({ ...state, overlay: null })); } catch (e) { /* blocked */ } }
 
 // ===================== Views =====================
 const $dev = document.getElementById("device");
-function render(bumpStats) {
+let intro = null;
+function render(bump) {
+  if (intro && state.screen !== "landing") { intro.destroy(); intro = null; }
   if (state.screen === "landing") return renderLanding();
   if (state.screen === "welcome") return renderWelcome();
-  const views = { quests: vQuests, quest: vQuest, embers: vEmbers, board: vBoard, shop: vShop, profile: vProfile, founder: vFounder };
-  const prevScroll = $dev.querySelector(".screen")?.scrollTop ?? 0;
-  const sameTab = $dev.dataset.tab === state.tab + (state.quest || "");
-  $dev.dataset.tab = state.tab + (state.quest || "");
+  const views = { quests: vQuests, quest: vQuest, content: vContent, embers: vEmbers, board: vBoard, shop: vShop, profile: vProfile, founder: vFounder };
+  const key = state.tab + (state.quest || "") + (state.content || "") + state.seg;
+  const same = $dev.dataset.key === key;
+  const prev = $dev.querySelector(".screen")?.scrollTop ?? 0;
+  $dev.dataset.key = key;
   $dev.innerHTML = `
-    <div class="bar"><button class="logo" data-act="tab" data-v="quests" aria-label="LIMITLINE, go to My quests">${ico.logo(20)}<span class="logo-word" style="font-size:20px">LIMITLINE</span></button><span class="demo-tag">Demo</span></div>
-    <main class="screen" id="screen">${views[state.tab]()}</main>
-    ${nav()}
-    ${state.overlay ? overlay() : ""}`;
+    <div class="bar"><button class="logo" data-act="tab" data-v="quests" aria-label="LIMITLINE, go to My quests">${I.logo(20)}<span class="logo-word" style="font-size:20px">LIMITLINE</span></button><span class="demo-tag">Demo</span></div>
+    <main class="screen"><div class="${same ? "" : "enter"}">${views[state.tab]()}</div></main>
+    ${nav()}${state.overlay ? overlay() : ""}`;
   const sc = $dev.querySelector(".screen");
-  if (sameTab) sc.scrollTop = prevScroll;
-  if (bumpStats) $dev.querySelectorAll(".pill").forEach((p) => p.classList.add("bump"));
+  if (same) sc.scrollTop = prev;
+  if (bump) $dev.querySelectorAll(".pill").forEach((p) => p.classList.add("bump"));
   save();
 }
 function nav() {
-  const t = state.tab, on = (x) => (x === t || (x === "quests" && (t === "quest" || t === "embers")) || (x === "profile" && t === "founder"));
-  const b = (x, label, svg) => `<button type="button" data-act="tab" data-v="${x}" aria-label="${label}" ${on(x) ? 'aria-current="page"' : ""}>${svg}</button>`;
+  const t = state.tab, on = (x) => x === t || (x === "quests" && ["quest", "content", "embers"].includes(t)) || (x === "profile" && t === "founder");
+  const b = (x, label, icon) => `<button type="button" data-act="tab" data-v="${x}" aria-label="${label}" ${on(x) ? 'aria-current="page"' : ""}>${icon}</button>`;
   return `<nav class="nav" aria-label="Main">${b("quests", "Quests", I.quests(on("quests")))}${b("board", "Board", I.board(on("board")))}${b("shop", "Shop", I.shop(on("shop")))}${b("profile", "Profile", `<span class="avatar">${I.avatar(24)}</span>`)}</nav>`;
 }
 function stats() {
   const st = streak();
-  return `<div class="stat-bar">
-    <button class="pill ${st.weeks ? "" : "cold"}" data-act="tab" data-v="embers" aria-label="${st.weeks}-week streak">${I.flame()}<span class="num">${st.weeks}</span></button>
+  return `<div class="stat-bar"><button class="pill ${st.weeks ? "" : "cold"}" data-act="tab" data-v="embers" aria-label="${st.weeks}-week streak">${I.flame()}<span class="num">${st.weeks}</span></button>
     <button class="pill" data-act="tab" data-v="embers" aria-label="${balance()} embers. How embers work">${I.ember()}<span class="num">${balance()}</span></button></div>`;
 }
 
 function renderLanding() {
-  $dev.dataset.tab = "";
+  $dev.dataset.key = "landing";
   $dev.innerHTML = `<div class="landing">
-    <div class="middle">
-      <div class="logo" style="flex-direction:column;gap:16px;cursor:default">${ico.logo(96)}<span class="logo-word" style="font-size:52px">LIMITLINE</span></div>
-      <p class="tagline">Cross your limit. Get rewarded.</p>
-      <p class="muted" style="max-width:300px;margin:0">Run, ride and swim quests. Beat your own best, earn embers, spend them in the shop.</p>
-    </div>
+    <canvas class="intro" id="intro" role="img" aria-label="Human evolution, from walking on all fours to an athlete breaking through their limit. Tap to replay."></canvas>
+    <div class="brand"><div class="wordmark">LIMITLINE</div><p class="tagline">Cross your limit. Get rewarded.</p>
+      <p class="muted small" style="margin:0">Run, ride, swim and hike quests. Beat your own best, earn embers, spend them in the shop.</p></div>
     <div class="stack">
       <button class="btn btn-google btn-block" data-act="login">${I.google()} Continue with Google</button>
       <button class="btn btn-block" data-act="login">Continue with phone</button>
       <button class="btn btn-block" data-act="login">Continue with email</button>
-      <p class="muted small" style="text-align:center;margin:6px 0 0">Demo: any button logs you in. No real account is used.</p>
+      <p class="muted small" style="text-align:center;margin:4px 0 0">Demo: any button logs you in. Tap the graphic to replay.</p>
     </div></div>`;
+  if (intro) intro.destroy();
+  intro = window.LimitlineIntro.mount(document.getElementById("intro"));
 }
 function renderWelcome() {
-  $dev.innerHTML = `<div class="landing"><div class="middle" style="align-items:stretch;text-align:left">
-    <h1 style="margin:0">Welcome to LIMITLINE</h1>
+  $dev.innerHTML = `<div class="welcome"><h1 style="margin:0">Welcome to LIMITLINE</h1>
     <p class="muted">Pick the name other athletes see on the boards. First name and last initial works well.</p>
-    <form id="welcome-form" class="stack">
-      <div><label class="lbl" for="name">Board name</label><input type="text" id="name" maxlength="40" value="${esc(state.name || "Alex M.")}" autocomplete="off"></div>
-      <button class="btn btn-volt btn-block" type="submit">Start</button>
-    </form></div></div>`;
+    <form id="welcome-form" style="display:grid;gap:12px"><div><label class="lbl" for="name">Board name</label><input type="text" id="name" maxlength="40" value="${esc(state.name || "Alex M.")}" autocomplete="off"></div>
+    <button class="btn btn-volt btn-block" type="submit">Start</button></form></div>`;
 }
 
 function vQuests() {
   const st = streak(), unseen = state.entries.filter((e) => e.status === "verified" && !e.seen);
   let h = stats() + `<h1>My quests</h1>`;
-  if (state.flash) h += `<div class="note ${state.flash.tone}">${state.flash.tone === "warm" ? I.flame(20) : ""}<span>${esc(state.flash.text)}</span></div>`;
+  if (state.flash) h += `<div class="note ${state.flash.tone || ""}"><span>${esc(state.flash.text)}</span></div>`;
   if (st.weeks > 0 && !st.active) h += `<div class="note warm">${I.flame(20)}<span>Keep your ${st.weeks}-week streak: log one activity before Sunday ends.</span></div>`;
-  for (const e of unseen) h += resultCard(e);
-  if (!state.strava) h += `<div class="card"><h2 style="margin-top:0">Get results in seconds</h2><p class="muted">Connect Strava and every link you paste is checked straight away.</p><button class="btn btn-strava" data-act="strava" data-v="on">${I.strava()} Connect with Strava</button></div>`;
-  h += `<h2>Quests</h2><ul class="quests">` + QIDS.map((q) => {
-    const Q = QUESTS[q], L = currentLimit(q), unlocked = L.efforts >= EMBERS.minEfforts;
-    const icon = Q.sport === "run" ? I.run() : Q.sport === "bike" ? I.bike() : I.swim();
-    return `<li><button class="quest" data-act="quest" data-v="${q}">
-      <span class="sport">${icon}</span>
-      <span class="quest-text"><span class="quest-name">${Q.label}</span>
-        <span class="muted small">${L.limit === null ? "No limit yet: your first one sets it" : `Limit <span class="num">${fmtVal(q, L.limit)}</span>`}</span>
-        <span class="progress"><span class="track"><span class="fill" style="width:${Math.min(100, (L.efforts / EMBERS.minEfforts) * 100)}%"></span></span><span class="plabel">${unlocked ? "2× unlocked" : L.efforts + "/" + EMBERS.minEfforts}</span></span>
-      </span>${I.chev()}</button></li>`;
-  }).join("") + `</ul>`;
-  const recent = [...state.entries].sort((a, b) => b.submitted - a.submitted || b.at - a.at).slice(0, 8);
-  h += `<h2>Your activities</h2><ul class="rows">` + recent.map((e) => `<li><span class="grow">${statusLine(e)}</span></li>`).join("") + `</ul>`;
+  for (const e of unseen.slice(-2).reverse()) h += resultCard(e);
+  if (unseen.length > 2) h += `<p class="muted small">${unseen.length - 2} more new results in Your activities. <button class="link" data-act="allseen">Mark all seen</button></p>`;
+  h += `<div class="seg" role="group" aria-label="Quest type">
+    <button data-act="seg" data-v="training" aria-pressed="${state.seg === "training"}">${I.run(18)} Training</button>
+    <button data-act="seg" data-v="content" aria-pressed="${state.seg === "content"}">${I.ig(18)} Content</button></div>`;
+  return h + (state.seg === "training" ? trainingList() : contentList());
+}
+function sponsorCard(key) {
+  const s = SPONSORS[key];
+  return `<article class="sponsor"><div class="who"><span class="brandmark">${s.name}</span><span class="sample">Sample sponsor</span></div>
+    <p class="tiny muted" style="margin:0 0 4px">Presents · ${esc(s.ends)}</p><h3>${esc(s.title)}</h3>
+    <p class="prize">${I.trophy()} ${esc(s.prize)}</p>
+    <button class="btn btn-volt btn-sm" data-act="quest" data-v="${s.quest}">Join quest</button></article>`;
+}
+function trainingList() {
+  let h = `<div class="scroller" aria-label="Sponsored quests">${sponsorCard("haldo")}${sponsorCard("moxa")}</div>`;
+  h += `<div class="chips" role="group" aria-label="Sport">${[["all", "All"], ["run", "Run"], ["bike", "Ride"], ["swim", "Swim"], ["hike", "Hike"]].map(([v, l]) => `<button class="chip" data-act="filter" data-v="${v}" aria-pressed="${state.filter === v}">${l}</button>`).join("")}</div>`;
+  const sports = state.filter === "all" ? Object.keys(SPORTS) : [state.filter];
+  for (const sp of sports) {
+    const qs = QIDS.filter((q) => QUESTS[q].sport === sp);
+    h += `<div class="group-h"><h2>${SPORTS[sp].label}</h2><span class="count">${qs.length} quests</span></div><ul class="quests">${qs.map(questCard).join("")}</ul>`;
+  }
+  const recent = [...state.entries].sort((a, b) => (b.submitted || 0) - (a.submitted || 0)).slice(0, 8);
+  h += `<h2>Your activities</h2><ul class="rows">${recent.map((e) => `<li><span class="grow">${statusLine(e)}</span></li>`).join("")}</ul>`;
+  return h;
+}
+function questCard(q) {
+  const Q = QUESTS[q], L = currentLimit(q), unlocked = L.efforts >= EMBERS.minEfforts;
+  return `<li><button class="quest" data-act="quest" data-v="${q}"><span class="sport">${SPORTS[Q.sport].icon()}</span>
+    <span class="quest-text"><span class="quest-name">${Q.label}${Q.sponsor ? ` <span class="sample">${SPONSORS[Q.sponsor].name}</span>` : ""}</span>
+      <span class="muted small">${L.limit === null ? "No limit yet: your first one sets it" : `Limit <span class="num">${fmtVal(q, L.limit)}</span>`}</span>
+      <span class="progress"><span class="track"><span class="fill" style="width:${Math.min(100, (L.efforts / EMBERS.minEfforts) * 100)}%"></span></span><span class="plabel">${unlocked ? "2× unlocked" : L.efforts + "/" + EMBERS.minEfforts}</span></span>
+    </span>${I.chev()}</button></li>`;
+}
+function contentList() {
+  const count = (id) => state.posts.filter((p) => p.cid === id && p.status !== "rejected").length;
+  let h = `<p class="muted">Post on Instagram, tag <b class="ok">@limitline</b>, paste the link here. Approved posts earn embers, and the best ones get reposted on LIMITLINE's account.</p>`;
+  h += `<div class="group-h"><h2>Brand challenges</h2></div><div class="scroller">${CHALLENGES.map((c) => `<article class="sponsor"><div class="who"><span class="brandmark">${SPONSORS[c.sponsor].name}</span><span class="sample">Sample sponsor</span></div>
+    <p class="tiny muted" style="margin:0 0 4px">Content challenge · ${esc(c.format)}</p><h3>${esc(c.title)}</h3><p class="prize">${I.trophy()} ${esc(c.prize)}</p>
+    <button class="btn btn-volt btn-sm" data-act="content" data-v="${c.id}">Enter · +${c.embers}</button></article>`).join("")}</div>`;
+  h += `<div class="group-h"><h2>Content quests</h2><span class="count">${CONTENT.length} quests</span></div><ul class="quests">${CONTENT.map((c) => `<li><button class="quest" data-act="content" data-v="${c.id}">
+    <span class="sport ig">${I.ig(24)}</span><span class="quest-text"><span class="quest-name">${esc(c.title)}</span><span class="muted small">${esc(c.format)} · +${c.embers} embers${count(c.id) ? " · " + count(c.id) + " submitted" : ""}</span></span>${I.chev()}</button></li>`).join("")}</ul>`;
+  if (state.posts.length) h += `<h2>Your posts</h2><ul class="rows">${[...state.posts].reverse().map((p) => `<li><span class="grow">${esc(contentById(p.cid).title)} · ${p.status === "review" ? '<span class="muted">In review</span>' : p.status === "approved" ? `<span class="ok">Approved · +${p.embers} embers</span>` : `<span class="bad">${esc(CONTENT_REASONS[p.reason])}</span>`}</span></li>`).join("")}</ul>`;
   return h;
 }
 function statusLine(e) {
@@ -493,141 +892,168 @@ function resultCard(e) {
     <p class="muted small" style="margin:0">${QUESTS[e.quest].label} · ${fmtVal(e.quest, e.value)}${e.by === "strava" ? " · checked with Strava" : ""}</p>
     ${e.beat ? `<div class="hero pop">${fmtPct(e.percent)}</div><p>beyond your limit <span class="badge">${e.doubled ? "2× embers · +" + e.embers : "+" + e.embers + " embers"}</span></p>`
       : `<p style="margin:8px 0 12px">${e.percent === null ? "Quest done. This sets your first limit." : "Quest done, " + Math.abs(e.percent).toFixed(1) + "% short of your limit."} <span class="badge">+${e.embers} embers</span></p>`}
-    <div style="display:flex;gap:10px;flex-wrap:wrap">${e.beat ? `<button class="btn btn-volt btn-sm" data-act="share" data-v="${e.id}">Share</button>` : ""}<button class="btn btn-sm" data-act="seen" data-v="${e.id}">Got it</button></div>
-  </section>`;
+    <div style="display:flex;gap:10px;flex-wrap:wrap">${e.beat ? `<button class="btn btn-volt btn-sm" data-act="share" data-v="${e.id}">Share</button>` : ""}<button class="btn btn-sm" data-act="seen" data-v="${e.id}">Got it</button></div></section>`;
 }
 
 function vQuest() {
-  const q = state.quest, Q = QUESTS[q], L = currentLimit(q);
+  const q = state.quest, Q = QUESTS[q], L = currentLimit(q), sp = Q.sponsor && SPONSORS[Q.sponsor];
   const used = new Set(state.entries.map((e) => e.activity).filter(Boolean));
+  const kindOf = (a) => (a.kind === "walk" ? "hike" : a.kind);
+  const mine = ACTIVITIES.filter((a) => kindOf(a) === Q.sport), others = ACTIVITIES.filter((a) => kindOf(a) !== Q.sport);
+  const actBtn = (a) => `<li><button type="button" class="act ${used.has(a.id) ? "used" : ""}" data-act="pick" data-v="${a.id}"><span class="ico">${actIcon(a)}</span><span><b>${esc(a.title)}${used.has(a.id) ? " · submitted" : ""}</b><span>${actLine(a)}</span></span></button></li>`;
   return `<p style="margin:6px 0 0"><button class="link" data-act="tab" data-v="quests">← My quests</button></p>
+    ${sp ? `<div class="sponsor" style="padding:12px 14px"><div class="who" style="margin:0"><span class="brandmark">${sp.name} PRESENTS</span><span class="sample">Sample sponsor</span></div><p class="prize" style="margin:8px 0 0">${I.trophy()} ${esc(sp.prize)}</p></div>` : ""}
     <h1>${Q.label}</h1>
-    <p>Your limit: ${L.limit === null ? '<span class="muted">none yet. Your first one sets it.</span>' : `<span class="num ok" style="font-size:20px">${fmtVal(q, L.limit)}</span>`}
-      ${L.limit !== null && L.efforts < EMBERS.minEfforts ? `<span class="muted small"> · ${L.efforts} of ${EMBERS.minEfforts} efforts</span>` : ""}</p>
-    <h2>What counts</h2>
-    <ul class="rules">${questRules(q).map((r) => `<li>${r}</li>`).join("")}<li>Recorded after you signed up, with a watch or phone (not typed in).</li></ul>
-    <form id="link-form" novalidate>
-      <label class="lbl" for="link">Strava activity link</label>
+    <p>Your limit: ${L.limit === null ? '<span class="muted">none yet. Your first one sets it.</span>' : `<span class="num ok" style="font-size:20px">${fmtVal(q, L.limit)}</span>`}${L.limit !== null && L.efforts < EMBERS.minEfforts ? `<span class="muted small"> · ${L.efforts} of ${EMBERS.minEfforts} efforts</span>` : ""}</p>
+    <h2>What counts</h2><ul class="rules">${questRules(q).map((r) => `<li>${r}</li>`).join("")}<li>Recorded after you signed up, with a watch or phone (not typed in).</li></ul>
+    <form id="link-form" novalidate><label class="lbl" for="link">Strava activity link</label>
       <input type="url" id="link" inputmode="url" placeholder="https://www.strava.com/activities/…" value="${esc(state.linkDraft)}" aria-describedby="link-hint">
-      <p id="link-hint" class="muted small" style="margin:6px 0 12px">In the Strava app: Share → Copy link. Or tap one of your activities below to fill it in.</p>
+      <p id="link-hint" class="muted small" style="margin:6px 0 12px">In the Strava app: Share → Copy link. Or tap one of your activities below.</p>
       ${state.linkError ? `<p class="bad" role="alert" style="font-weight:700">${esc(state.linkError)}</p>` : ""}
-      <button class="btn btn-volt btn-block" type="submit">${state.strava ? "Check it now" : "Submit for check"}</button>
-    </form>
-    <p class="muted small" style="margin-top:12px">${state.strava ? "Checked with your Strava in seconds. Jumps over 10% beyond your limit get a quick look from the founder. Powered by Strava." : "Strava isn't connected, so the founder checks this link by hand."}</p>
-    <h2>Your recent Strava activities <span class="muted small" style="font-family:var(--body);font-weight:700">(sample)</span></h2>
-    <ul class="acts">${ACTIVITIES.map((a) => `<li><button type="button" class="act ${used.has(a.id) ? "used" : ""}" data-act="pick" data-v="${a.id}">
-      <span class="ico">${a.kind === "run" ? I.run(22) : a.kind === "ride" ? I.bike(22) : I.swim(22)}</span>
-      <span><b>${esc(a.title)}${used.has(a.id) ? " · submitted" : ""}</b><span>${actLine(a)}</span></span></button></li>`).join("")}</ul>`;
+      <button class="btn btn-volt btn-block" type="submit">${state.strava ? "Check it now" : "Submit for check"}</button></form>
+    <p class="muted small" style="margin-top:12px">${state.strava ? "Checked with your Strava in seconds. Jumps over 10% get a quick look from the founder. Powered by Strava." : "Strava isn't connected, so the founder checks this by hand."}</p>
+    <h2>Your recent ${SPORTS[Q.sport].label.toLowerCase()}s <span class="muted small" style="font-family:var(--body);font-weight:700">(sample)</span></h2>
+    <ul class="acts">${mine.map(actBtn).join("")}</ul>
+    <p style="margin-top:12px"><button class="link" data-act="other">${state.showOther ? "Hide" : "Show"} other activities (to try the wrong sport)</button></p>
+    ${state.showOther ? `<ul class="acts">${others.map(actBtn).join("")}</ul>` : ""}`;
+}
+
+function vContent() {
+  const c = contentById(state.content), sp = c.sponsor && SPONSORS[c.sponsor];
+  const tags = c.tags || "@limitline #CrossYourLimit";
+  return `<p style="margin:6px 0 0"><button class="link" data-act="tab" data-v="quests">← My quests</button></p>
+    ${sp ? `<div class="sponsor" style="padding:12px 14px"><div class="who" style="margin:0"><span class="brandmark">${sp.name} CHALLENGE</span><span class="sample">Sample sponsor</span></div><p class="prize" style="margin:8px 0 0">${I.trophy()} ${esc(c.prize)}</p></div>` : ""}
+    <h1>${esc(c.title)}</h1><p><span class="tag">${esc(c.format)}</span> <span class="tag ok">+${c.embers} embers</span></p>
+    <p style="font-size:18px;font-weight:700">${esc(c.brief)}</p>
+    <h2>How it works</h2>
+    <ol class="steps-ig"><li><span class="n">1</span><span>Post it on Instagram as a public ${esc(c.format.toLowerCase())}.</span></li>
+      <li><span class="n">2</span><span>Tag <b class="ok">${esc(tags)}</b> in the caption.</span></li>
+      <li><span class="n">3</span><span>Copy the post's link (… → Copy link) and paste it below.</span></li>
+      <li><span class="n">4</span><span>The founder reviews it, usually the same day. ${sp ? "The brand picks its winner when the challenge ends." : "The best posts get reposted on LIMITLINE's account."}</span></li></ol>
+    <form id="ig-form" novalidate><label class="lbl" for="ig">Instagram post link</label>
+      <input type="url" id="ig" inputmode="url" placeholder="https://www.instagram.com/reel/…" value="${esc(state.igDraft)}">
+      ${state.igError ? `<p class="bad" role="alert" style="font-weight:700;margin-top:8px">${esc(state.igError)}</p>` : ""}
+      <p style="margin:8px 0 12px"><button type="button" class="link" data-act="igsample">Use a sample post link</button></p>
+      <button class="btn btn-ig btn-block" type="submit">${I.ig(20)} Submit post</button></form>
+    <p class="muted small" style="margin-top:12px">By submitting you let LIMITLINE${sp ? " and " + sp.name : ""} repost it with credit to you.</p>`;
 }
 
 function vEmbers() {
   return `<p style="margin:6px 0 0"><button class="link" data-act="tab" data-v="quests">← My quests</button></p><h1>How embers work</h1>
-    <ul class="rows">
-      <li>Complete a quest: ${EMBERS.base} embers.</li>
-      <li>Beat your own limit: ${EMBERS.base * EMBERS.multiplier} embers (double).</li>
-      <li>Doubling starts once you have ${EMBERS.minEfforts} efforts of a quest type.</li>
-      <li>Spend embers in the Shop.</li>
-      <li>Log at least one activity every week (Monday to Sunday) to grow your streak.</li></ul>`;
+    <ul class="rows"><li>Complete a quest: ${EMBERS.base} embers.</li><li>Beat your own limit: ${EMBERS.base * EMBERS.multiplier} embers (double).</li>
+    <li>Doubling starts once you have ${EMBERS.minEfforts} efforts of a quest type.</li><li>Content quests: 15 to 50 embers per approved post.</li>
+    <li>Spend embers in the Shop.</li><li>Log at least one activity every week (Monday to Sunday) to grow your streak.</li></ul>`;
 }
 
 function vBoard() {
   const sport = state.sport;
-  const mine = state.entries.filter((e) => e.status === "verified" && QUESTS[e.quest].sport === sport && weekKey(e.at) === weekKey(NOW) && e.percent !== null);
-  const best = mine.sort((a, b) => b.percent - a.percent)[0];
+  const mine = state.entries.filter((e) => e.status === "verified" && QUESTS[e.quest].sport === sport && weekKey(e.at) === weekKey(NOW) && e.percent !== null).sort((a, b) => b.percent - a.percent);
   const people = OTHERS[sport].map(([n, q, p]) => ({ n, q, p, me: false }));
-  if (best && state.showOnBoards) people.push({ n: state.name, q: QUESTS[best.quest].label, p: best.percent, me: true });
-  const rows = people.filter((x) => x.p > 0).sort((a, b) => b.p - a.p);
-  const others = people.filter((x) => x.p <= 0 && !x.me).length;
-  const meRank = rows.findIndex((x) => x.me) + 1;
-  return `<h1>This week</h1><p class="muted">Ranked by % beyond each athlete's own limit. Resets every Monday.</p>
-    <div class="tabs">${["run", "bike", "swim"].map((s) => `<button class="btn btn-sm" data-act="sport" data-v="${s}" aria-pressed="${s === sport}">${s}</button>`).join("")}</div>
-    ${!state.showOnBoards ? `<p class="muted">You're hidden from boards (change in Profile).</p>` : meRank ? `<div class="card" style="padding:14px 16px">You: #${meRank} · ${esc(rows[meRank - 1].q)} · <span class="num ok">${fmtPct(rows[meRank - 1].p)}</span></div>` : `<div class="card" style="padding:14px 16px" >Beat your ${sport} limit this week to get on this board.</div>`}
-    <ol class="rows" aria-label="${sport} board">${rows.map((x, i) => `<li class="${x.me ? "me" : ""}"><span class="who"><span class="rank ${i < 3 ? "top" : ""}">${i + 1}</span><span>${esc(x.n)}${x.me ? " (you)" : ""}<br><span class="muted small">${esc(x.q)}</span></span></span><span class="num" style="font-size:20px">${fmtPct(x.p)}</span></li>`).join("")}</ol>
+  if (mine[0] && state.showOnBoards) people.push({ n: state.name, q: QUESTS[mine[0].quest].label, p: mine[0].percent, me: true });
+  const rows = people.filter((x) => x.p > 0).sort((a, b) => b.p - a.p), others = people.filter((x) => x.p <= 0 && !x.me).length, meRank = rows.findIndex((x) => x.me) + 1;
+  return `<h1>This week</h1><p class="muted">Ranked by % beyond each athlete's own limit, so a beginner can top it. Resets every Monday.</p>
+    <div class="chips">${Object.keys(SPORTS).map((s) => `<button class="chip" data-act="sport" data-v="${s}" aria-pressed="${s === sport}">${SPORTS[s].label}</button>`).join("")}</div>
+    ${!state.showOnBoards ? `<p class="muted">You're hidden from boards (change in Profile).</p>` : meRank ? `<div class="card" style="padding:14px 16px">You: #${meRank} · ${esc(rows[meRank - 1].q)} · <span class="num ok">${fmtPct(rows[meRank - 1].p)}</span></div>` : `<div class="card" style="padding:14px 16px">Beat your ${SPORTS[sport].label.toLowerCase()} limit this week to get on this board.</div>`}
+    <ol class="rows">${rows.map((x, i) => `<li class="${x.me ? "me" : ""}"><span class="whorow"><span class="rank ${i < 3 ? "top" : ""}">${i + 1}</span><span>${esc(x.n)}${x.me ? " (you)" : ""}<br><span class="muted small">${esc(x.q)}</span></span></span><span class="num" style="font-size:20px">${fmtPct(x.p)}</span></li>`).join("")}</ol>
     ${others ? `<p class="muted" style="margin-top:12px">${others} other ${others === 1 ? "athlete" : "athletes"} completed quests this week</p>` : ""}`;
 }
 
 function vShop() {
   const bal = balance();
+  const row = (i) => { const left = state.stock[i.id], can = bal >= i.price && left > 0;
+    return `<li><span class="grow">${esc(i.name)}${i.sponsor ? ` <span class="sample">${SPONSORS[i.sponsor].name}</span>` : ""}<br><span class="muted small"><span class="num">${i.price}</span> embers${left < 1 ? " · Sold out" : bal < i.price ? " · " + (i.price - bal) + " embers to go" : " · " + left + " left"}</span></span><button class="btn btn-volt btn-sm" data-act="redeem" data-v="${i.id}" ${can ? "" : "disabled"}>Redeem</button></li>`; };
   return `<div class="stat-bar" style="justify-content:space-between;align-items:center;margin-top:14px"><h1 style="margin:0">Shop</h1><span class="pill" aria-label="${bal} embers">${I.ember()}<span class="num">${bal}</span></span></div>
-    ${state.flash && state.flash.where === "shop" ? `<div class="note good"><span>${esc(state.flash.text)}</span></div>` : ""}
-    <ul class="rows" style="margin-top:16px">${SHOP.map((i) => {
-      const left = state.stock[i.id], can = bal >= i.price && left > 0;
-      return `<li><span class="grow">${esc(i.name)}<br><span class="muted small"><span class="num">${i.price}</span> embers${left < 1 ? " · Sold out" : bal < i.price ? " · " + (i.price - bal) + " embers to go" : " · " + left + " left"}</span></span>
-        <button class="btn btn-volt btn-sm" data-act="redeem" data-v="${i.id}" ${can ? "" : "disabled"}>Redeem</button></li>`;
-    }).join("")}</ul>
+    ${state.flash && state.flash.where === "shop" ? `<div class="note"><span>${esc(state.flash.text)}</span></div>` : ""}
+    <div class="sponsor"><div class="who"><span class="brandmark">FROM OUR PARTNERS</span><span class="sample">Sample sponsors</span></div><ul class="rows" style="border-top:0">${SHOP.filter((i) => i.sponsor).map(row).join("")}</ul></div>
+    <h2>Rewards</h2><ul class="rows">${SHOP.filter((i) => !i.sponsor).map(row).join("")}</ul>
     ${state.redemptions.length ? `<h2>Your rewards</h2><ul class="rows">${state.redemptions.map((r) => `<li><span>${esc(r.name)}</span><span class="small muted">Requested</span></li>`).join("")}</ul>` : ""}`;
 }
 
 function vProfile() {
+  const waiting = state.entries.filter((e) => e.status === "waiting").length + state.posts.filter((p) => p.status === "review").length;
   return `<div class="avatar-lg">${I.avatar(64)}<div><h1 style="margin:0">${esc(state.name)}</h1><span class="muted small">No photo: Google login adds yours</span></div></div>
     <label class="toggle" for="t-boards">Show me on boards <input type="checkbox" id="t-boards" data-act="toggle" data-v="showOnBoards" ${state.showOnBoards ? "checked" : ""}></label>
     <label class="toggle" for="t-name">Show my name on share cards <input type="checkbox" id="t-name" data-act="toggle" data-v="showName" ${state.showName ? "checked" : ""}></label>
-    <h2>Strava</h2>
-    ${state.strava ? `<p><span class="ok">✓</span> Connected. Links you paste are checked in seconds.</p><button class="btn btn-sm" data-act="strava" data-v="off">Disconnect Strava</button>`
-      : `<p class="muted">Not connected: your links wait for the founder.</p><button class="btn btn-strava" data-act="strava" data-v="on">${I.strava()} Connect with Strava</button>`}
-    <h2>Founder view</h2><p class="muted small">See the queue the founder works from. In the real app only the founder's account can open it.</p>
-    <button class="btn btn-sm" data-act="tab" data-v="founder">Open founder queue (${state.entries.filter((e) => e.status === "waiting").length})</button>
-    <h2>Demo</h2>
-    <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn btn-sm" data-act="reset">Reset demo</button><button class="btn btn-sm" data-act="logout">Log out</button></div>`;
+    <h2>Strava</h2>${state.strava ? `<p><span class="ok">✓</span> Connected. Links you paste are checked in seconds.</p><button class="btn btn-sm" data-act="strava" data-v="off">Disconnect Strava</button>` : `<p class="muted">Not connected: your links wait for the founder.</p><button class="btn btn-strava" data-act="strava" data-v="on">${I.strava()} Connect with Strava</button>`}
+    <h2>Founder view</h2><p class="muted small">The queue the founder works from. In the real app only the founder's account can open it.</p>
+    <button class="btn btn-sm" data-act="tab" data-v="founder">Open founder queue (${waiting})</button>
+    <h2>Demo</h2><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn btn-sm" data-act="reset">Reset demo</button><button class="btn btn-sm" data-act="logout">Log out</button></div>`;
 }
 
+function founderValue(e) {
+  const a = actById(e.activity), r = stravaCheck(e.quest, a), Q = QUESTS[e.quest];
+  if (r.kind === "reject") return { value: null, reason: r.reason };
+  const v = r.value ?? (Q.measure === "power" ? (a.power ? a.best20 : null) : Q.measure === "elevation" ? a.up : a.fastest && a.fastest[Q.meters]);
+  return { value: v || null, reason: v ? null : "not_completed" };
+}
 function vFounder() {
-  const waiting = state.entries.filter((e) => e.status === "waiting");
+  const waiting = state.entries.filter((e) => e.status === "waiting"), posts = state.posts.filter((p) => p.status === "review");
   return `<p style="margin:6px 0 0"><button class="link" data-act="tab" data-v="profile">← Profile</button></p><h1>Founder queue</h1>
-    ${waiting.length === 0 ? `<p class="muted">Nothing waiting. Paste a big jump (try "Sunday long run" on Run 10 km), or disconnect Strava, to see one here.</p>` : waiting.map((e) => {
-      const a = actById(e.activity), fv = founderValue(e), value = fv.value;
-      return `<div class="card"><p style="margin:0 0 4px"><b>${esc(state.name)}</b> · ${QUESTS[e.quest].label}</p>
-        <p class="muted small">${esc(a.title)} · ${actLine(a)}</p>
-        <p class="small"><b>Strava check:</b> ${esc(e.note || (fv.reason ? REASONS[fv.reason] : "Measured " + fmtVal(e.quest, value)))}</p>
-        <div style="display:flex;gap:10px;flex-wrap:wrap">
-          ${value ? `<button class="btn btn-volt btn-sm" data-act="approve" data-v="${e.id}">Approve ${fmtVal(e.quest, value)}</button>` : ""}
-          <button class="btn btn-sm" data-act="reject" data-v="${e.id}">Reject${fv.reason ? ": " + esc(REASONS[fv.reason]) : ""}</button></div></div>`;
+    <h2>Activities (${waiting.length})</h2>
+    ${waiting.length === 0 ? `<p class="muted">Nothing waiting. Try "Sunday long run" on Run 10 km (a big jump), or "Lake swim" on a swim quest.</p>` : waiting.map((e) => {
+      const a = actById(e.activity), fv = founderValue(e);
+      return `<div class="card"><p style="margin:0 0 4px"><b>${esc(state.name)}</b> · ${QUESTS[e.quest].label}</p><p class="muted small">${esc(a.title)} · ${actLine(a)}</p>
+        <p class="small"><b>Strava check:</b> ${esc(e.note || (fv.reason ? REASONS[fv.reason] : "Measured " + fmtVal(e.quest, fv.value)))}</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">${fv.value ? `<button class="btn btn-volt btn-sm" data-act="approve" data-v="${e.id}">Approve ${fmtVal(e.quest, fv.value)}</button>` : ""}<button class="btn btn-sm" data-act="reject" data-v="${e.id}">Reject${fv.reason ? ": " + esc(REASONS[fv.reason]) : ""}</button></div></div>`;
+    }).join("")}
+    <h2>Instagram posts (${posts.length})</h2>
+    ${posts.length === 0 ? `<p class="muted">No posts to review. Submit one from My quests → Content.</p>` : posts.map((p) => {
+      const c = contentById(p.cid);
+      return `<div class="card"><p style="margin:0 0 4px"><b>${esc(state.name)}</b> · ${esc(c.title)}${c.sponsor ? ` <span class="sample">${SPONSORS[c.sponsor].name}</span>` : ""}</p><p class="muted small" style="word-break:break-all">${esc(p.link)}</p>
+        <p class="small">Check: public, tags ${esc(c.tags || "@limitline #CrossYourLimit")}, own content, matches the brief.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn btn-volt btn-sm" data-act="papprove" data-v="${p.id}">Approve +${p.embers}</button><button class="btn btn-sm" data-act="preject" data-v="${p.id}">Reject: no tag</button></div></div>`;
     }).join("")}`;
 }
 
-// ===================== Overlays =====================
 function overlay() {
   const o = state.overlay;
   if (o.type === "checking") {
-    return `<div class="overlay" role="dialog" aria-label="Checking with Strava"><div class="middle">
-      <div class="spinner" aria-hidden="true"></div><h1 style="margin:0">Checking with Strava…</h1>
-      <ol class="trace">${o.steps.slice(0, o.shown).map(([k, t]) => `<li class="${k}"><span class="m">${k === "pass" ? "✓" : k === "fail" ? "✕" : "→"}</span><span>${esc(t)}</span></li>`).join("")}</ol></div></div>`;
+    return `<div class="overlay" role="dialog" aria-label="Checking with Strava"><div class="middle"><div class="spinner" aria-hidden="true"></div><h1 style="margin:0">Checking with Strava…</h1>
+      <ol class="trace">${o.steps.slice(0, o.shown).map(([kk, t]) => `<li class="${kk}"><span class="m">${kk === "pass" ? "✓" : kk === "fail" ? "✕" : "→"}</span><span>${esc(t)}</span></li>`).join("")}</ol></div></div>`;
   }
   if (o.type === "result") {
     const e = state.entries.find((x) => x.id === o.id);
     let body;
     if (e.status === "verified") {
-      body = `<p class="muted" style="margin:0;font-weight:800;letter-spacing:.06em;text-transform:uppercase">${QUESTS[e.quest].label} · ${fmtVal(e.quest, e.value)}</p>
-        <div class="big-verdict pop">${e.percent === null ? "Done!" : e.beat ? fmtPct(e.percent) : "Done!"}</div>
+      body = `<p class="tiny muted" style="margin:0">${QUESTS[e.quest].label} · ${fmtVal(e.quest, e.value)}</p>
+        <div class="big-verdict pop">${e.beat ? fmtPct(e.percent) : "Done!"}</div>
         <p style="font-size:19px;font-weight:800;margin:0">${e.percent === null ? "Quest done. That's your first limit." : e.beat ? "beyond your limit" + (e.doubled ? ", double embers!" : "!") : "Quest done, " + Math.abs(e.percent).toFixed(1) + "% short of your limit."}</p>
-        <div class="reward-row"><div class="reward"><div class="t">Embers</div><div class="v">${I.ember(26)}+${e.embers}</div></div>
-        ${o.streakUp ? `<div class="reward" style="border-color:var(--flame)"><div class="t">Streak extended</div><div class="v">${I.flame(26)}${o.streakUp} weeks</div></div>` : ""}</div>
+        <div class="reward-row"><div class="reward"><div class="t">Embers</div><div class="v">${I.ember(26)}+${e.embers}</div></div>${o.streakUp ? `<div class="reward" style="border-color:var(--flame)"><div class="t">Streak extended</div><div class="v">${I.flame(26)}${o.streakUp} weeks</div></div>` : ""}</div>
+        ${QUESTS[e.quest].sponsor ? `<p class="prize" style="margin:0">${I.trophy()} You're in the ${SPONSORS[QUESTS[e.quest].sponsor].name} prize draw this week.</p>` : ""}
         ${!e.doubled && e.beat ? `<p class="muted small">Double embers unlock after ${EMBERS.minEfforts} efforts on this quest.</p>` : ""}`;
     } else if (e.status === "rejected") {
       body = `<div class="big-verdict" style="color:var(--danger);font-size:56px">Not approved</div><p style="font-size:19px;font-weight:800">${esc(REASONS[e.reason])}</p><p class="muted">Checked with Strava in seconds. Try another activity.</p>`;
     } else {
-      body = `<div class="big-verdict" style="color:var(--ink);font-size:56px">Sent to the founder</div><p style="font-size:18px;font-weight:800">${esc(e.note || "Waiting for check")}</p><p class="muted">The numbers are filled in for the founder already. Try approving it in Profile → Founder queue.</p>`;
+      body = `<div class="big-verdict" style="color:var(--ink);font-size:56px">Sent to the founder</div><p style="font-size:18px;font-weight:800">${esc(e.note || "Waiting for check")}</p><p class="muted">The numbers are already filled in for the founder. Approve it yourself in Profile → Founder queue.</p>`;
     }
     return `<div class="overlay" role="dialog" aria-label="Result"><div class="middle">${body}</div><button class="btn btn-volt btn-block" data-act="continue">Continue</button></div>`;
+  }
+  if (o.type === "posted") {
+    const c = contentById(o.cid);
+    return `<div class="overlay" role="dialog" aria-label="Post submitted"><div class="middle"><span class="sport ig" style="width:64px;height:64px">${I.ig(32)}</span>
+      <div class="big-verdict" style="font-size:56px;color:var(--ink)">Post submitted</div><p style="font-size:18px;font-weight:800">${esc(c.title)} · +${c.embers} embers once it's approved.</p>
+      <p class="muted">The founder checks it's public, tagged and yours. ${c.sponsor ? SPONSORS[c.sponsor].name + " picks its winner when the challenge ends." : "Great posts get reposted on LIMITLINE's Instagram."}</p></div>
+      <button class="btn btn-volt btn-block" data-act="close-posted">Continue</button></div>`;
   }
   if (o.type === "share") {
     const e = state.entries.find((x) => x.id === o.id);
     return `<div class="overlay" role="dialog" aria-label="Share card"><div class="middle" style="justify-content:flex-start">
       <div class="story"><div class="w">LIMITLINE</div><div><div class="p">${fmtPct(e.percent)}</div><div class="l">beyond my limit</div><div class="q">${QUESTS[e.quest].label}</div></div><div class="q">${state.showName ? esc(state.name.split(" ")[0]) : "&nbsp;"}</div></div>
-      <p class="muted small" style="text-align:center">Story-sized for Instagram (1080 × 1920). Only the %, never your time.</p></div>
+      <p class="muted small" style="text-align:center">Story-sized for Instagram. Post it, then claim "Share your win" in Content for +15 embers.</p></div>
       <button class="btn btn-volt btn-block" data-act="close">Close</button></div>`;
   }
   return "";
 }
 
 // ===================== Actions =====================
+const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 function parseLink(v) {
-  const s = v.trim();
-  const m = s.match(/^https?:\/\/(www\.)?strava\.com\/activities\/(\d{1,20})\/?$/i);
+  const s = v.trim(), m = s.match(/^https?:\/\/(www\.)?strava\.com\/activities\/(\d{1,20})\/?$/i);
   if (m) return { id: m[2] };
   if (/^https:\/\/strava\.app\.link\/\S+$/i.test(s)) return { short: true };
   return null;
 }
+const isInstagram = (v) => /^https:\/\/(www\.)?instagram\.com\/(p|reel|reels|stories)\/[\w.\-/]+\/?(\?\S*)?$/i.test(v.trim());
 function submitLink(raw) {
   state.linkDraft = raw;
   const p = parseLink(raw);
@@ -635,50 +1061,51 @@ function submitLink(raw) {
   if (p.short) { state.linkError = "Share links need the real Strava connection. In this demo, tap one of your activities below."; return render(); }
   const a = actById(p.id);
   if (!a) { state.linkError = "That activity isn't in this demo's sample Strava. Tap one of your activities below."; return render(); }
-  const dup = state.entries.find((e) => e.activity === a.id);
-  if (dup) { state.linkError = "Already submitted today"; return render(); }
-  state.linkError = "";
-  state.linkDraft = "";
+  if (state.entries.find((e) => e.activity === a.id)) { state.linkError = "Already submitted today"; return render(); }
+  state.linkError = ""; state.linkDraft = "";
   const id = "e" + Math.random().toString(36).slice(2, 9);
   const entry = { id, quest: state.quest, activity: a.id, status: "waiting", value: null, at: a.at, percent: null, beat: null, embers: 0, seen: false, submitted: Date.now(), by: null };
   state.entries.push(entry);
-
-  if (!state.strava) {
-    state.flash = { tone: "good", text: "Got it! Waiting for the founder's check. Connect Strava to get results in seconds." };
-    state.tab = "quests";
-    return render();
-  }
-  const r = stravaCheck(state.quest, a);
-  const before = streak();
-  let outcome;
-  if (r.kind === "reject") { Object.assign(entry, { status: "rejected", reason: r.reason, by: "strava", seen: true }); outcome = r.steps; }
-  else if (r.kind === "founder") { entry.note = r.note; outcome = r.steps; }
+  if (!state.strava) { state.flash = { text: "Got it! Waiting for the founder's check. Connect Strava to get results in seconds." }; state.tab = "quests"; state.quest = null; return render(); }
+  const before = streak(), r = stravaCheck(state.quest, a);
+  let steps = r.steps;
+  if (r.kind === "reject") Object.assign(entry, { status: "rejected", reason: r.reason, by: "strava", seen: true });
+  else if (r.kind === "founder") entry.note = r.note;
   else {
     const ev = evaluate(state.quest, r.value, a.at, id);
     if (ev.percent !== null && ev.percent > CONFIRM_ABOVE) {
       entry.note = fmtVal(state.quest, r.value) + " is " + fmtPct(ev.percent) + " beyond your limit. The founder double-checks big jumps.";
-      outcome = [...r.steps, ["hold", fmtPct(ev.percent) + " beyond your limit: the founder double-checks big jumps"]];
+      steps = [...steps, ["hold", fmtPct(ev.percent) + " beyond your limit: the founder double-checks big jumps"]];
     } else {
-      Object.assign(entry, { status: "verified", value: r.value, percent: ev.percent, beat: ev.beat, doubled: ev.doubled, embers: ev.embers, by: "strava" });
+      Object.assign(entry, { status: "verified", value: r.value, by: "strava" });
       recomputeAll();
-      outcome = [...r.steps, ["pass", ev.percent === null ? "Sets your first limit" : fmtPct(ev.percent) + (ev.beat ? " beyond your limit" : " vs your limit")]];
+      steps = [...steps, ["pass", ev.percent === null ? "Sets your first limit" : fmtPct(ev.percent) + (ev.beat ? " beyond your limit" : " vs your limit")]];
     }
   }
   const after = streak();
-  const streakUp = !before.active && after.active ? after.weeks : 0;
-  playChecking(outcome, { type: "result", id, streakUp });
+  playChecking(steps, { type: "result", id, streakUp: !before.active && after.active ? after.weeks : 0 });
 }
-const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+function submitPost(raw) {
+  state.igDraft = raw;
+  if (!isInstagram(raw)) { state.igError = "That's not an Instagram post link. In Instagram: … → Copy link."; return render(); }
+  if (state.posts.find((p) => p.link === raw.trim())) { state.igError = "You've already submitted this post"; return render(); }
+  const c = contentById(state.content);
+  state.posts.push({ id: "p" + Math.random().toString(36).slice(2, 9), cid: c.id, link: raw.trim(), status: "review", embers: c.embers });
+  state.igDraft = ""; state.igError = "";
+  state.overlay = { type: "posted", cid: c.id };
+  render();
+}
 function playChecking(steps, then) {
   state.overlay = { type: "checking", steps, shown: 0 };
   render();
   const tick = () => {
     if (!state.overlay || state.overlay.type !== "checking") return;
-    if (state.overlay.shown < steps.length) { state.overlay.shown += 1; render(); setTimeout(tick, reduced ? 60 : 260); }
-    else setTimeout(() => { state.overlay = then; render(true); }, reduced ? 100 : 500);
+    if (state.overlay.shown < steps.length) { state.overlay.shown += 1; render(); setTimeout(tick, reduced ? 60 : 240); }
+    else setTimeout(() => { state.overlay = then; render(true); }, reduced ? 100 : 450);
   };
-  setTimeout(tick, reduced ? 50 : 400);
+  setTimeout(tick, reduced ? 50 : 380);
 }
+const toTop = () => $dev.querySelector(".screen")?.scrollTo(0, 0);
 
 document.addEventListener("click", (ev) => {
   const el = ev.target.closest("[data-act]");
@@ -686,56 +1113,49 @@ document.addEventListener("click", (ev) => {
   const v = el.dataset.v;
   switch (el.dataset.act) {
     case "login": state.screen = state.name ? "app" : "welcome"; render(); break;
-    case "tab": state.tab = v; state.flash = null; state.linkError = ""; if (v !== "quest") state.quest = null; render(); $dev.querySelector(".screen")?.scrollTo(0, 0); break;
-    case "quest": state.tab = "quest"; state.quest = v; state.flash = null; state.linkError = ""; state.linkDraft = ""; render(); $dev.querySelector(".screen")?.scrollTo(0, 0); break;
-    case "pick": state.linkDraft = "https://www.strava.com/activities/" + v; state.linkError = ""; render(); { document.getElementById("link-form")?.scrollIntoView({ block: "center", behavior: reduced ? "auto" : "smooth" }); } break;
+    case "tab": Object.assign(state, { tab: v, flash: null, linkError: "", igError: "", quest: v === "quest" ? state.quest : null, content: null }); render(); toTop(); break;
+    case "seg": state.seg = v; state.flash = null; render(); break;
+    case "filter": state.filter = v; render(); break;
+    case "quest": Object.assign(state, { tab: "quest", quest: v, flash: null, linkError: "", linkDraft: "", showOther: false }); render(); toTop(); break;
+    case "content": Object.assign(state, { tab: "content", content: v, flash: null, igError: "", igDraft: "" }); render(); toTop(); break;
+    case "pick": state.linkDraft = "https://www.strava.com/activities/" + v; state.linkError = ""; render(); document.getElementById("link-form")?.scrollIntoView({ block: "center", behavior: reduced ? "auto" : "smooth" }); break;
+    case "other": state.showOther = !state.showOther; render(); break;
+    case "igsample": state.igDraft = "https://www.instagram.com/reel/C" + Math.random().toString(36).slice(2, 11) + "/"; state.igError = ""; render(); break;
+    case "allseen": state.entries.forEach((e) => { e.seen = true; }); render(); break;
     case "seen": { const e = state.entries.find((x) => x.id === v); if (e) e.seen = true; render(); break; }
     case "share": state.overlay = { type: "share", id: v }; render(); break;
     case "close": state.overlay = null; render(); break;
+    case "close-posted": Object.assign(state, { overlay: null, tab: "quests", seg: "content", content: null, flash: null }); render(true); toTop(); break;
     case "continue": {
       const e = state.entries.find((x) => x.id === state.overlay.id);
-      state.overlay = null;
-      state.tab = "quests"; state.quest = null;
-      state.flash = e.status === "verified" ? null : e.status === "rejected" ? { tone: "badn", text: "Checked with Strava: not approved. " + REASONS[e.reason] + "." } : { tone: "good", text: "This one needs a quick check by the founder." };
-      render(true); $dev.querySelector(".screen")?.scrollTo(0, 0); break;
+      Object.assign(state, { overlay: null, tab: "quests", quest: null, seg: "training" });
+      state.flash = e.status === "verified" ? null : e.status === "rejected" ? { tone: "badn", text: "Checked with Strava: not approved. " + REASONS[e.reason] + "." } : { text: "This one needs a quick check by the founder." };
+      render(true); toTop(); break;
     }
     case "sport": state.sport = v; render(); break;
     case "redeem": {
       const item = SHOP.find((i) => i.id === v);
-      if (balance() >= item.price && state.stock[v] > 0) { state.stock[v] -= 1; state.redemptions.push({ id: v, name: item.name, price: item.price }); state.flash = { where: "shop", text: "Requested! The founder will hand it over." }; }
+      if (balance() >= item.price && state.stock[v] > 0) { state.stock[v] -= 1; state.redemptions.push({ id: v, name: item.name, price: item.price }); state.flash = { where: "shop", text: "Requested! " + (item.sponsor ? SPONSORS[item.sponsor].name + " ships it to you." : "The founder will hand it over.") }; }
       render(true); break;
     }
     case "strava": state.strava = v === "on"; render(); break;
-    case "approve": {
-      const e = state.entries.find((x) => x.id === v), fv = founderValue(e);
-      Object.assign(e, { status: "verified", value: fv.value, by: "founder", seen: false, note: null });
-      recomputeAll();
-      state.tab = "quests"; state.flash = { tone: "good", text: "Approved by the founder. Your result is below." }; render(true); break;
-    }
-    case "reject": {
-      const e = state.entries.find((x) => x.id === v), fv = founderValue(e);
-      Object.assign(e, { status: "rejected", reason: fv.reason || "not_completed", by: "founder" }); recomputeAll(); render(); break;
-    }
-    case "reset": try { localStorage.removeItem(KEY); } catch (e) { /* ignore */ } state = freshState(); state.screen = "landing"; render(); break;
+    case "approve": { const e = state.entries.find((x) => x.id === v), fv = founderValue(e); Object.assign(e, { status: "verified", value: fv.value, by: "founder", seen: false, note: null }); recomputeAll(); Object.assign(state, { tab: "quests", seg: "training", flash: { text: "Approved by the founder. Your result is below." } }); render(true); break; }
+    case "reject": { const e = state.entries.find((x) => x.id === v), fv = founderValue(e); Object.assign(e, { status: "rejected", reason: fv.reason || "not_completed", by: "founder" }); recomputeAll(); render(); break; }
+    case "papprove": { const p = state.posts.find((x) => x.id === v); p.status = "approved"; Object.assign(state, { tab: "quests", seg: "content", flash: { text: "Post approved: +" + p.embers + " embers." } }); render(true); break; }
+    case "preject": { const p = state.posts.find((x) => x.id === v); p.status = "rejected"; p.reason = "no_tag"; render(); break; }
+    case "reset": try { localStorage.removeItem(KEY); } catch (e) { /* ignore */ } freshState(); render(); break;
     case "logout": state.screen = "landing"; state.tab = "quests"; render(); break;
   }
 });
-document.addEventListener("change", (ev) => {
-  const el = ev.target;
-  if (el.dataset && el.dataset.act === "toggle") { state[el.dataset.v] = el.checked; render(); }
-});
-document.addEventListener("input", (ev) => { if (ev.target.id === "link") state.linkDraft = ev.target.value; });
+document.addEventListener("change", (ev) => { const el = ev.target; if (el.dataset && el.dataset.act === "toggle") { state[el.dataset.v] = el.checked; render(); } });
+document.addEventListener("input", (ev) => { if (ev.target.id === "link") state.linkDraft = ev.target.value; if (ev.target.id === "ig") state.igDraft = ev.target.value; });
 document.addEventListener("submit", (ev) => {
   ev.preventDefault();
-  if (ev.target.id === "welcome-form") {
-    const n = document.getElementById("name").value.trim();
-    state.name = n.slice(0, 40) || "Alex M.";
-    state.screen = "app"; state.tab = "quests"; render();
-  }
+  if (ev.target.id === "welcome-form") { state.name = document.getElementById("name").value.trim().slice(0, 40) || "Alex M."; Object.assign(state, { screen: "app", tab: "quests" }); render(); }
   if (ev.target.id === "link-form") submitLink(document.getElementById("link").value);
+  if (ev.target.id === "ig-form") submitPost(document.getElementById("ig").value);
 });
 
-// Boot: keep progress across reloads and page updates (this browser only).
 function start(data) {
   state = (data && data.state) || load() || freshState();
   if (state.overlay && state.overlay.type === "checking") state.overlay = null;

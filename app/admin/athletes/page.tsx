@@ -49,8 +49,9 @@ export default async function AthletesPage({ searchParams }: PageProps<"/admin/a
             <h3>Seed limits (best of the last 8 weeks)</h3>
             {QUEST_IDS.map((q) => {
               const seed = history.seeds.find((s) => s.questId === q);
-              const isPower = QUESTS[q].measure === "power";
-              const t = seed && !isPower ? Math.round(seed.value) : 0;
+              const measure = QUESTS[q].measure;
+              const isAmount = measure !== "time"; // watts, or metres climbed
+              const t = seed && !isAmount ? Math.round(seed.value) : 0;
               return (
                 <form key={q} action={saveSeed} className="field" style={{ borderBottom: "1px solid var(--line)", paddingBottom: "var(--space-2)" }}>
                   <input type="hidden" name="athlete_id" value={selected.id} />
@@ -60,10 +61,18 @@ export default async function AthletesPage({ searchParams }: PageProps<"/admin/a
                     {seed ? ` · now ${formatValue(q, seed.value)}, ${seed.effortCount} efforts` : " · no seed"}
                   </p>
                   <div className="time-inputs">
-                    {isPower ? (
+                    {isAmount ? (
                       <div style={{ gridColumn: "span 2" }}>
-                        <label htmlFor={`${q}-watts`}>Watts</label>
-                        <input id={`${q}-watts`} name="watts" type="number" min={50} max={2000} defaultValue={seed ? Math.round(seed.value) : ""} required />
+                        <label htmlFor={`${q}-amount`}>{measure === "power" ? "Watts" : "Metres climbed"}</label>
+                        <input
+                          id={`${q}-amount`}
+                          name="amount"
+                          type="number"
+                          min={measure === "power" ? 50 : 100}
+                          max={measure === "power" ? 2000 : 9000}
+                          defaultValue={seed ? Math.round(seed.value) : ""}
+                          required
+                        />
                       </div>
                     ) : (
                       <>

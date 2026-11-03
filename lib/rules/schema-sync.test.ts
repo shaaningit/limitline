@@ -10,12 +10,14 @@ const sql = readdirSync(migrationsDir)
   .map((f) => readFileSync(join(migrationsDir, f), "utf8"))
   .join("\n");
 
-const quoted = (text: string) => [...text.matchAll(/'([a-z0-9_]+)'/g)].map((m) => m[1]);
+const quoted = (text: string) => [...text.matchAll(/'([a-zA-Z0-9_]+)'/g)].map((m) => m[1]);
 
 describe("database lists match lib/rules/config.ts", () => {
   it("quest ids", () => {
+    // The first migration creates the list; later ones add to it.
     const enumBody = sql.match(/create type public\.quest_id as enum \(([^)]*)\)/)![1];
-    expect(quoted(enumBody)).toEqual(QUEST_IDS);
+    const added = [...sql.matchAll(/alter type public\.quest_id add value (?:if not exists )?'([a-zA-Z0-9_]+)'/g)].map((m) => m[1]);
+    expect([...quoted(enumBody), ...added].sort()).toEqual([...QUEST_IDS].sort());
   });
 
   it("reject reasons", () => {

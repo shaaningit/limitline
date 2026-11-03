@@ -31,3 +31,9 @@ describe("describeResult (screen readers)", () => {
     expect(describeResult(null, false, false)).toBe("Quest done, this sets your first limit");
   });
 });
+
+describe("climb values", () => {
+  it("shows metres climbed", () => {
+    expect(formatValue("hikeUp1000", 1240)).toBe("1,240 m up");
+  });
+});

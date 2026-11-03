@@ -34,6 +34,7 @@ The share image uses the same colors: matte black ground, volt wordmark and +%.
 - **Game stats on top.** My quests opens with a weekly streak flame (the one warm color, `#FF9F1A`) and the embers counter. A missed-week nudge appears when the streak needs an activity before Sunday.
 - **Progress you can see.** Each quest card shows a bar toward double embers (4 efforts), then "2× unlocked".
 - **Icons over words.** The bottom bar is icons only: Quests (flag on a peak), Board (trophy), Shop (bag), and Profile as the athlete's photo, or a silhouette when there's none, like Instagram. Names stay available to screen readers.
+- **The opening graphic.** The landing opens on "the march of greatness" (`lib/intro/evolution.ts`): one figure evolves as it walks, from all fours to upright to runner, leaving grey silhouettes of its earlier selves labelled 6M years ago, 3M, 2M and Today. Then it breaks through the volt "YOUR LIMIT" line, which turns solid with a burst of sparks, and stands with arms raised: "YOU". It runs about 6.6 s, tap to skip or replay, and with reduced motion it shows the finished lineup straight away. Pictogram style: round-capped strokes, film grain and a vignette.
 - **One celebration.** A new +% result pops in (0.45 s, slight overshoot). Off under reduced motion.
 
 ## Type

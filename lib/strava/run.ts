@@ -5,7 +5,7 @@ import type { DbEntry } from "@/lib/data/plan";
 import type { Seed } from "@/lib/rules";
 import type { QuestId } from "@/lib/rules/config";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { getActivity, getLaps, getWattsStream } from "./api";
+import { getActivity, getDistanceStream, getLaps, getWattsStream } from "./api";
 import { autoCheck, type AutoCheckOutcome } from "./auto-check";
 import { stravaEnabled } from "./config";
 import { accessToken, getConnection } from "./connection";
@@ -43,7 +43,7 @@ export async function runAutoCheck(athleteId: string, entryId: string): Promise<
         }));
         return { entries: (entriesRes.data ?? []) as DbEntry[], seeds, signedUpAt: new Date(profileRes.data.signed_up_at) };
       },
-      strava: { getActivity, getWattsStream, getLaps },
+      strava: { getActivity, getWattsStream, getLaps, getDistanceStream },
       write,
       now: () => new Date(),
     },

@@ -8,7 +8,7 @@ import { formatPercent } from "@/lib/format";
 import type { Seed } from "@/lib/rules";
 import { CONFIRM_ABOVE_PERCENT, type RejectReason } from "@/lib/rules/config";
 import { StravaError } from "./errors";
-import { checkActivity, extraDataNeeded, type StravaActivity, type StravaLap, type WattsStream } from "./check";
+import { checkActivity, extraDataNeeded, type DistanceStream, type StravaActivity, type StravaLap, type WattsStream } from "./check";
 
 export interface AutoCheckDeps {
   // The athlete's Strava connection, or null when they haven't connected.
@@ -18,6 +18,7 @@ export interface AutoCheckDeps {
     getActivity(token: string, id: string): Promise<StravaActivity>;
     getWattsStream(token: string, id: string): Promise<WattsStream | null>;
     getLaps(token: string, id: string): Promise<StravaLap[]>;
+    getDistanceStream(token: string, id: string): Promise<DistanceStream | null>;
   };
   write(rows: Record<string, unknown>[]): Promise<void>; // all-or-nothing (apply_entry_rows)
   now(): Date;
@@ -59,18 +60,20 @@ export async function autoCheck(deps: AutoCheckDeps, athleteId: string, entryId:
   let activity: StravaActivity;
   let watts: WattsStream | null = null;
   let laps: StravaLap[] | null = null;
+  let distance: DistanceStream | null = null;
   try {
     const token = await conn.token();
     activity = await deps.strava.getActivity(token, activityId);
     const extra = extraDataNeeded(entry.quest_id, activity);
     if (extra === "watts") watts = await deps.strava.getWattsStream(token, activityId).catch(() => null);
     if (extra === "laps") laps = await deps.strava.getLaps(token, activityId).catch(() => null);
+    if (extra === "distance") distance = await deps.strava.getDistanceStream(token, activityId).catch(() => null);
   } catch (e) {
     return toFounder(stravaProblem(e));
   }
 
   // 2. Check it.
-  const result = checkActivity(entry.quest_id, activity, { stravaAthleteId: conn.stravaAthleteId, signedUpAt, watts, laps });
+  const result = checkActivity(entry.quest_id, activity, { stravaAthleteId: conn.stravaAthleteId, signedUpAt, watts, laps, distance });
   if (result.kind === "founder") {
     return toFounder(result.note, result.value !== undefined ? { value: result.value, activityAt: result.activityAt! } : undefined);
   }

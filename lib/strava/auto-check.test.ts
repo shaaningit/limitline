@@ -72,6 +72,7 @@ function setup(opts: {
       },
       getWattsStream: async () => null,
       getLaps: async () => [],
+      getDistanceStream: async () => null,
     },
     write: async (rows) => {
       writes.push(rows);

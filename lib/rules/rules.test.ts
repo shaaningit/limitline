@@ -6,6 +6,7 @@ import {
   canRedeem,
   embersBalance,
   embersExplainer,
+  parseAmount,
   questRules,
   weeklyStreak,
   evaluate,
@@ -288,5 +289,27 @@ describe("weeklyStreak (Duolingo-style, Monday-to-Sunday weeks)", () => {
     // Sunday 23:30 in London is still the previous week.
     expect(weeklyStreak([d("2026-11-22T23:30:00Z")], d("2026-11-23T08:00:00Z"), tz)).toEqual({ weeks: 1, activeThisWeek: false });
     expect(weeklyStreak([], now, tz)).toEqual({ weeks: 0, activeThisWeek: false });
+  });
+});
+
+describe("more quests (Nov 3)", () => {
+  it("climbs: higher is better, like watts", () => {
+    expect(percentBeyond("hikeUp1000", 1200, 1320)).toBe(10);
+    expect(percentBeyond("hikeUp1000", 1200, 1100)).toBe(-8.3);
+  });
+  it("rules read naturally for every new quest", () => {
+    expect(questRules("run1mile").counts).toBe("Any outdoor run of 1 mile or longer.");
+    expect(questRules("runHalf").timedOn).toContain("fastest 21.1 km");
+    expect(questRules("run5kTrail").counts).toContain("trail run of 5 km");
+    expect(questRules("bike40k").counts).toBe("Any outdoor ride of 40 km or longer.");
+    expect(questRules("swim3800").rejected).toBe("Shorter than 3.8 km won't be approved.");
+    expect(questRules("hike10k").counts).toBe("Any hike of 10 km or longer.");
+    expect(questRules("hikeUp1000").counts).toBe("Any hike with 1,000 m of climbing or more.");
+  });
+  it("climb amounts are checked like watts", () => {
+    expect(parseAmount("hikeUp1000", 1240)).toEqual({ ok: true, value: 1240 });
+    expect(parseAmount("hikeUp1000", 50).ok).toBe(false);
+    expect(parseAmount("hikeUp1000", 1240.5).ok).toBe(false);
+    expect(parseAmount("bike20", 250)).toEqual({ ok: true, value: 250 });
   });
 });

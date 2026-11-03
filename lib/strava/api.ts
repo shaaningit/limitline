@@ -1,5 +1,5 @@
 import "server-only";
-import type { StravaActivity, StravaLap, WattsStream } from "./check";
+import type { DistanceStream, StravaActivity, StravaLap, WattsStream } from "./check";
 import { StravaError } from "./errors";
 
 export { StravaError };
@@ -82,6 +82,16 @@ export async function getWattsStream(token: string, id: string): Promise<WattsSt
   const time = streams.time?.data;
   const watts = streams.watts?.data;
   return time && watts ? { time, watts } : null;
+}
+
+export async function getDistanceStream(token: string, id: string): Promise<DistanceStream | null> {
+  const streams = await get<Record<string, { data: number[] } | undefined>>(
+    token,
+    `/activities/${encodeURIComponent(id)}/streams?keys=time,distance&key_by_type=true`,
+  );
+  const time = streams.time?.data;
+  const distance = streams.distance?.data;
+  return time && distance ? { time, distance } : null;
 }
 
 export const getLaps = (token: string, id: string) => get<StravaLap[]>(token, `/activities/${encodeURIComponent(id)}/laps`);

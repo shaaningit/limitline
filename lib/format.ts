@@ -3,6 +3,7 @@ import { QUESTS, type QuestId } from "@/lib/rules/config";
 // "25:58", "1:02:03" for time quests; "250 W" for the bike quest.
 export function formatValue(questId: QuestId, value: number): string {
   if (QUESTS[questId].measure === "power") return `${Math.round(value)} W`;
+  if (QUESTS[questId].measure === "elevation") return `${Math.round(value).toLocaleString("en-GB")} m up`;
   const total = Math.round(value);
   const h = Math.floor(total / 3600);
   const m = Math.floor((total % 3600) / 60);

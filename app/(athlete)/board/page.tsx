@@ -2,9 +2,9 @@ import Link from "next/link";
 import { currentWeek, getBoard } from "@/lib/data/athlete";
 import { requireAthlete } from "@/lib/data/session";
 import { formatPercent } from "@/lib/format";
-import { BOARDS, type Sport } from "@/lib/rules/config";
+import { BOARDS, SPORT_LABELS, type Sport } from "@/lib/rules/config";
 
-const LABELS: Record<Sport, string> = { run: "Run", bike: "Bike", swim: "Swim" };
+const LABELS: Record<Sport, string> = SPORT_LABELS;
 
 // Weekly boards ranked by % beyond own limit; no raw times or watts (3A, D16).
 export default async function BoardPage({ searchParams }: PageProps<"/board">) {

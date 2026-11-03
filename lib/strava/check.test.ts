@@ -3,6 +3,7 @@ import {
   bestAveragePower,
   checkActivity,
   extraDataNeeded,
+  fastestDistanceWindow,
   fastestLapWindow,
   type CheckContext,
   type StravaActivity,
@@ -256,5 +257,109 @@ describe("extraDataNeeded", () => {
     expect(extraDataNeeded("bike20", ride())).toBe("watts");
     expect(extraDataNeeded("bike20", ride({ device_watts: false }))).toBeNull();
     expect(extraDataNeeded("swim400", swim())).toBeNull();
+  });
+});
+
+// ---------- More quests (Nov 3): mile, half, trail, ride and hike distances, climbs, 3.8 km swim ----------
+
+// A distance stream at a steady pace: one point per second, `mps` metres per second.
+function steadyDistance(seconds: number, mps: number) {
+  const time: number[] = [];
+  const distance: number[] = [];
+  for (let t = 0; t <= seconds; t++) {
+    time.push(t);
+    distance.push(t * mps);
+  }
+  return { time, distance };
+}
+
+describe("more run quests", () => {
+  const half = run({
+    distance: 21230,
+    best_efforts: [
+      { name: "1 mile", elapsed_time: 480, distance: 1609 },
+      { name: "5k", elapsed_time: 1530, distance: 5000 },
+      { name: "10k", elapsed_time: 3120, distance: 10000 },
+      { name: "Half-Marathon", elapsed_time: 6720, distance: 21097 },
+    ],
+  });
+  it("uses Strava's 1 mile and half-marathon best efforts", () => {
+    expect(checkActivity("run1mile", half, ctx)).toMatchObject({ kind: "value", value: 480 });
+    expect(checkActivity("runHalf", half, ctx)).toMatchObject({ kind: "value", value: 6720 });
+  });
+  it("a 10 km run is short of a half marathon", () => {
+    expect(checkActivity("runHalf", run(), ctx)).toMatchObject({ kind: "reject", reason: "not_completed" });
+  });
+  it("the trail quest needs a Strava trail run", () => {
+    expect(checkActivity("run5kTrail", run(), ctx)).toMatchObject({ kind: "reject", reason: "not_trail" });
+    expect(checkActivity("run5kTrail", run({ sport_type: "TrailRun" }), ctx)).toMatchObject({ kind: "value", value: 1498 });
+  });
+});
+
+describe("ride and hike distance quests (from the distance stream)", () => {
+  const longRide = ride({ distance: 41200, elapsed_time: 4200 });
+  it("times a ride on its fastest 40 km, power meter or not", () => {
+    const stream = steadyDistance(4200, 10); // 10 m/s: 40 km takes 4000 s
+    expect(extraDataNeeded("bike40k", longRide)).toBe("distance");
+    expect(checkActivity("bike40k", { ...longRide, device_watts: false }, { ...ctx, distance: stream })).toMatchObject({ kind: "value", value: 4000 });
+  });
+  it("a ride shorter than 40 km is rejected before any stream is needed", () => {
+    expect(checkActivity("bike40k", ride({ distance: 39900 }), ctx)).toMatchObject({ kind: "reject", reason: "not_completed" });
+  });
+  it("goes to the founder when the stream can't be read", () => {
+    expect(checkActivity("bike100k", ride({ distance: 101000 }), { ...ctx, distance: null }).kind).toBe("founder");
+  });
+  it("a 100 km ride faster than 2 hours goes to the founder", () => {
+    const stream = steadyDistance(6000, 17); // ~61 km/h
+    expect(checkActivity("bike100k", ride({ distance: 102000 }), { ...ctx, distance: stream }).kind).toBe("founder");
+  });
+  const hike = (over: Partial<StravaActivity> = {}) => ride({ sport_type: "Hike", distance: 10600, elapsed_time: 7500, device_watts: false, ...over });
+  it("times a hike on its fastest 10 km", () => {
+    const stream = steadyDistance(7500, 1.5); // 10 km in 6667 s
+    expect(checkActivity("hike10k", hike(), { ...ctx, distance: stream })).toMatchObject({ kind: "value", value: 6667 });
+  });
+  it("a walk or a run isn't a hike", () => {
+    expect(checkActivity("hike10k", hike({ sport_type: "Walk" }), ctx)).toMatchObject({ kind: "reject", reason: "wrong_sport" });
+    expect(checkActivity("hike10k", run(), ctx)).toMatchObject({ kind: "reject", reason: "wrong_sport" });
+  });
+});
+
+describe("climb quests", () => {
+  const hike = (gain: number) => ride({ sport_type: "Hike", distance: 14000, device_watts: false, total_elevation_gain: gain });
+  it("uses the total climb, rounded to whole metres", () => {
+    expect(checkActivity("hikeUp1000", hike(1240.6), ctx)).toMatchObject({ kind: "value", value: 1241 });
+    expect(checkActivity("hikeUp2000", hike(2150), ctx)).toMatchObject({ kind: "value", value: 2150 });
+  });
+  it("less than the quest's climb is rejected", () => {
+    expect(checkActivity("hikeUp1000", hike(980), ctx)).toMatchObject({ kind: "reject", reason: "not_completed" });
+    expect(checkActivity("hikeUp2000", hike(1999), ctx)).toMatchObject({ kind: "reject", reason: "not_completed" });
+  });
+  it("an implausible climb goes to the founder", () => {
+    expect(checkActivity("hikeUp2000", hike(4800), ctx).kind).toBe("founder");
+  });
+  it("needs no extra data from Strava", () => {
+    expect(extraDataNeeded("hikeUp1000", hike(1200))).toBeNull();
+  });
+});
+
+describe("3.8 km swim", () => {
+  it("uses the whole swim at exactly 3.8 km, laps when longer", () => {
+    expect(checkActivity("swim3800", swim({ distance: 3800, elapsed_time: 4500 }), ctx)).toMatchObject({ kind: "value", value: 4500 });
+    const laps = Array.from({ length: 39 }, () => ({ distance: 100, elapsed_time: 118 }));
+    expect(checkActivity("swim3800", swim({ distance: 3900 }), { ...ctx, laps })).toMatchObject({ kind: "value", value: 38 * 118 });
+  });
+});
+
+describe("fastestDistanceWindow", () => {
+  it("finds the fastest stretch, never shorter than the distance", () => {
+    // 1 km slow (5 m/s), 1 km fast (10 m/s), 1 km slow.
+    const time = [0, 200, 300, 500];
+    const distance = [0, 1000, 2000, 3000];
+    expect(fastestDistanceWindow({ time, distance }, 1000)).toBe(100);
+    expect(fastestDistanceWindow({ time, distance }, 2000)).toBe(300);
+  });
+  it("is null when the data covers less than the distance", () => {
+    expect(fastestDistanceWindow({ time: [0, 100], distance: [0, 900] }, 1000)).toBeNull();
+    expect(fastestDistanceWindow({ time: [], distance: [] }, 1000)).toBeNull();
   });
 });

@@ -118,6 +118,16 @@ export function SwimIcon({ size, className }: IconProps) {
   );
 }
 
+export function HikeIcon({ size, className }: IconProps) {
+  return (
+    <Svg size={size} className={className}>
+      <circle cx="11" cy="4" r="2" fill="currentColor" stroke="none" />
+      <path d="M10 8l-2 6 3 3-1 4M10 8l3 3 2 1M8 14l-3 6M17 9l-1.5 12" />
+      <path d="M8 8.5L6 13" strokeWidth="3" />
+    </Svg>
+  );
+}
+
 export function ChevronIcon({ size = 20, className }: IconProps) {
   return (
     <Svg size={size} className={className}>

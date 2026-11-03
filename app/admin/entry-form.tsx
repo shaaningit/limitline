@@ -30,8 +30,9 @@ function splitTime(value: number | null) {
 export function EntryForm(props: EntryFormProps) {
   const [state, action, pending] = useActionState(saveEntry, { status: "idle", message: "" } as EntryFormState);
   const [questId, setQuestId] = useState<QuestId>(props.questId);
-  const isPower = QUESTS[questId].measure === "power";
-  const time = splitTime(isPower ? null : props.value);
+  const measure = QUESTS[questId].measure;
+  const isAmount = measure !== "time"; // watts, or metres climbed
+  const time = splitTime(isAmount ? null : props.value);
   // React clears a form after its action runs; show what was submitted again instead.
   const v = state.values;
   const initial = {
@@ -40,7 +41,7 @@ export function EntryForm(props: EntryFormProps) {
     h: v?.h ?? (time.h || "0"),
     m: v?.m ?? time.m,
     s: v?.s ?? time.s,
-    watts: v?.watts ?? (isPower && props.value !== null ? String(Math.round(props.value)) : ""),
+    amount: v?.amount ?? (isAmount && props.value !== null ? String(Math.round(props.value)) : ""),
   };
   // A new key remounts the inputs so their defaults pick up the echoed values.
   const formKey = JSON.stringify(v ?? {}) + state.status;
@@ -102,10 +103,10 @@ export function EntryForm(props: EntryFormProps) {
           <input id="activity_at" name="activity_at" type="datetime-local" defaultValue={initial.activity_at} required />
         </div>
 
-        {isPower ? (
+        {isAmount ? (
           <div className="field">
-            <label htmlFor="watts">Best 20-minute power (watts)</label>
-            <input id="watts" name="watts" type="number" inputMode="numeric" min={50} max={2000} step={1} defaultValue={initial.watts} required />
+            <label htmlFor="amount">{measure === "power" ? "Best 20-minute power (watts)" : "Total climb (metres)"}</label>
+            <input id="amount" name="amount" type="number" inputMode="numeric" min={measure === "power" ? 50 : 100} max={measure === "power" ? 2000 : 9000} step={1} defaultValue={initial.amount} required />
           </div>
         ) : (
           <fieldset className="field" style={{ border: 0, padding: 0, margin: "0 0 var(--space-2)" }}>

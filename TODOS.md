@@ -25,6 +25,21 @@ Still to do:
 
 **Context:** The earlier fallback was file upload (.fit/.gpx read in the browser), designed in `docs/designs/limitline-mvp.md`, Section 1 of the engineering review. Keep it as plan B if Strava says no.
 
+## Content and sponsors (founder, Nov 3: "we need content too")
+
+### Content quests: ask for content in the app, post it on Instagram
+
+**Decision:** the content lives on Instagram (that's where followers come from); the app asks for it and rewards it. An athlete opens a content quest ("Film the finish", "Why I train", "Then vs now", "Kit check", "Share your win"), posts it publicly tagging @limitline and #CrossYourLimit, and pastes the post link. The founder reviews it (public, tagged, their own, on brief) and approves it for 15-50 embers; the best get reposted on LIMITLINE's account. Content embers don't count toward the weekly streak, which stays about training. Working version: the mini app demo (`docs/demo/limitline-mini.html`, My quests → Content).
+
+**To build in the real app:** a `content_quests` list in config (title, brief, format, embers, optional sponsor), a `posts` table (athlete, quest, Instagram link unique, status in review / approved / rejected, reason, embers), RLS like entries (athletes insert and read their own; only the founder approves), an Instagram link parser (instagram.com/p, /reel, /stories), a content tab on My quests, a posts section in the admin queue, and posts counted in `embers_balance`. Instagram's API can't confirm tags on personal accounts, so review stays manual.
+**Effort:** M  **Priority:** P1
+
+### Sponsor section (sample sponsors in the demo)
+
+**What:** a "Presents" card for sponsored quests at the top of My quests, a sponsor badge on the quest and its page, brand content challenges in the Content tab (the brand picks a winner), and a "From our partners" block in the Shop. The demo uses made-up sample brands (HALDO, MOXA TRAIL) marked "Sample sponsor"; the real app shows a brand only after its written agreement (`docs/business/revenue-plan.md`).
+**To build:** `sponsors` (name, logo, agreement date) and `sponsor_id` on quests, challenges and shop items, plus an end date and prize text.
+**Effort:** S-M  **Priority:** P2, after the first brand says yes
+
 ## Brand and money
 
 Full plan and order: `docs/business/revenue-plan.md` (brand deals first, coaching second, subscriptions last; nothing paid during the pilot).

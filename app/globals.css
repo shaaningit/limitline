@@ -425,7 +425,26 @@ select {
   flex-direction: column;
   max-width: 480px;
   margin: 0 auto;
-  padding: var(--space-6) var(--space-2) var(--space-4);
+  padding: var(--space-2) var(--space-2) var(--space-4);
+}
+/* The opening graphic: fills the width, fades into the ground at top and bottom. */
+.intro {
+  display: block;
+  width: calc(100% + 2 * var(--space-2));
+  margin: 0 calc(-1 * var(--space-2));
+  aspect-ratio: 13 / 9;
+  cursor: pointer;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 14%, #000 82%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 14%, #000 82%, transparent);
+}
+.wordmark {
+  font-family: var(--font-display), sans-serif;
+  font-weight: 700;
+  font-size: 54px;
+  letter-spacing: 0.1em;
+  line-height: 1;
+  color: var(--volt);
+  margin: 0;
 }
 .landing-hero {
   flex: 1;
@@ -434,7 +453,8 @@ select {
   align-items: center;
   justify-content: center;
   text-align: center;
-  gap: var(--space-3);
+  gap: 10px;
+  padding-block: var(--space-2);
 }
 .landing-tagline {
   font-family: var(--font-display), sans-serif;

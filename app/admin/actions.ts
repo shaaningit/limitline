@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { applyChange, getEntry, retryEmail } from "@/lib/data/admin";
 import { requireFounder } from "@/lib/data/session";
 import { formatPercent, formatValue } from "@/lib/format";
-import { parseDuration, parseWatts, type Evaluation } from "@/lib/rules";
+import { parseAmount, parseDuration, type Evaluation } from "@/lib/rules";
 import { PILOT_TIME_ZONE, QUESTS, QUEST_IDS, REJECT_REASONS, type QuestId, type RejectReason } from "@/lib/rules/config";
 import { zonedLocalToUtc } from "@/lib/time";
 
@@ -19,11 +19,11 @@ export interface EntryFormState {
   confirmToken?: string;
 }
 
-const FIELDS = ["quest", "strava_id", "activity_at", "h", "m", "s", "watts"];
+const FIELDS = ["quest", "strava_id", "activity_at", "h", "m", "s", "amount"];
 const echo = (formData: FormData) => Object.fromEntries(FIELDS.map((f) => [f, String(formData.get(f) ?? "")]));
 
 function readValue(questId: QuestId, formData: FormData) {
-  if (QUESTS[questId].measure === "power") return parseWatts(Number(formData.get("watts")));
+  if (QUESTS[questId].measure !== "time") return parseAmount(questId, Number(formData.get("amount")));
   return parseDuration(Number(formData.get("h") || 0), Number(formData.get("m") || 0), Number(formData.get("s") || 0));
 }
 

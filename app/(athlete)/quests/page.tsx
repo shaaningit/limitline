@@ -1,15 +1,17 @@
 import Link from "next/link";
-import { BikeIcon, ChevronIcon, EmberIcon, FlameIcon, RunIcon, SwimIcon } from "@/components/icons";
+import { BikeIcon, ChevronIcon, EmberIcon, FlameIcon, HikeIcon, RunIcon, SwimIcon } from "@/components/icons";
 import { ShareButton } from "@/components/share-button";
 import { StravaConnectButton, StravaReturnMessage } from "@/components/strava-connect";
 import { getMyQuests, getMyStrava, type MyEntry } from "@/lib/data/athlete";
 import { requireAthlete } from "@/lib/data/session";
 import { describeResult, formatPercent, formatValue } from "@/lib/format";
-import { EMBERS, QUESTS, REJECT_REASONS, type RejectReason } from "@/lib/rules/config";
+import { BOARDS, EMBERS, QUESTS, REJECT_REASONS, SPORT_LABELS, type RejectReason, type Sport } from "@/lib/rules/config";
 import { stravaEnabled } from "@/lib/strava/config";
 import { markSeen, tickChecklist } from "./actions";
 
 const FOUNDER_STRAVA = process.env.NEXT_PUBLIC_FOUNDER_STRAVA_NAME ?? "the founder";
+
+const SPORT_ICONS: Record<Sport, typeof RunIcon> = { run: RunIcon, bike: BikeIcon, swim: SwimIcon, hike: HikeIcon };
 
 function statusLine(e: MyEntry): string {
   const quest = QUESTS[e.quest_id].label;
@@ -95,47 +97,54 @@ export default async function QuestsPage({ searchParams }: PageProps<"/quests">)
         <ResultCard key={e.id} entry={e} />
       ))}
 
-      {/* The main action: pick a quest, then paste the link on its page */}
-      <section aria-labelledby="quests">
-        <h2 id="quests">Quests</h2>
-        <ul className="quest-cards">
-          {limits.map((l) => {
-            const quest = QUESTS[l.questId];
-            const Icon = quest.sport === "run" ? RunIcon : quest.sport === "bike" ? BikeIcon : SwimIcon;
-            const unlocked = l.effortCount >= minEfforts;
-            return (
-              <li key={l.questId}>
-                <Link href={`/quests/${l.questId}`}>
-                  <span className={`sport-badge ${quest.sport}`}>
-                    <Icon size={26} />
-                  </span>
-                  <span className="quest-text">
-                    <span className="quest-name">{quest.label}</span>
-                    <span className="muted small">
-                      {l.limit === null ? (
-                        "No limit yet: your first one sets it"
-                      ) : (
-                        <>
-                          Limit <span className="num">{formatValue(l.questId, l.limit)}</span>
-                        </>
-                      )}
-                    </span>
-                    <span className="progress" aria-label={unlocked ? "Double embers unlocked" : `${l.effortCount} of ${minEfforts} efforts to unlock double embers`}>
-                      <span className="progress-track">
-                        <span className="progress-fill" style={{ width: `${Math.min(100, (l.effortCount / minEfforts) * 100)}%` }} />
+      {/* The main action: pick a quest, then paste the link on its page. Grouped by sport. */}
+      {BOARDS.map((sport) => {
+        const group = limits.filter((l) => QUESTS[l.questId].sport === sport);
+        return (
+          <section key={sport} aria-labelledby={`quests-${sport}`}>
+            <h2 id={`quests-${sport}`}>
+              {SPORT_LABELS[sport]} <span className="muted small">{group.length} quests</span>
+            </h2>
+            <ul className="quest-cards">
+              {group.map((l) => {
+                const quest = QUESTS[l.questId];
+                const Icon = SPORT_ICONS[quest.sport];
+                const unlocked = l.effortCount >= minEfforts;
+                return (
+                  <li key={l.questId}>
+                    <Link href={`/quests/${l.questId}`}>
+                      <span className={`sport-badge ${quest.sport}`}>
+                        <Icon size={26} />
                       </span>
-                      <span className="progress-label" aria-hidden="true">
-                        {unlocked ? "2× unlocked" : `${l.effortCount}/${minEfforts}`}
+                      <span className="quest-text">
+                        <span className="quest-name">{quest.label}</span>
+                        <span className="muted small">
+                          {l.limit === null ? (
+                            "No limit yet: your first one sets it"
+                          ) : (
+                            <>
+                              Limit <span className="num">{formatValue(l.questId, l.limit)}</span>
+                            </>
+                          )}
+                        </span>
+                        <span className="progress" aria-label={unlocked ? "Double embers unlocked" : `${l.effortCount} of ${minEfforts} efforts to unlock double embers`}>
+                          <span className="progress-track">
+                            <span className="progress-fill" style={{ width: `${Math.min(100, (l.effortCount / minEfforts) * 100)}%` }} />
+                          </span>
+                          <span className="progress-label" aria-hidden="true">
+                            {unlocked ? "2× unlocked" : `${l.effortCount}/${minEfforts}`}
+                          </span>
+                        </span>
                       </span>
-                    </span>
-                  </span>
-                  <ChevronIcon className="go" />
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </section>
+                      <ChevronIcon className="go" />
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        );
+      })}
 
       <section aria-labelledby="results">
         <h2 id="results">Your activities</h2>

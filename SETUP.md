@@ -12,6 +12,7 @@ You'll end with: a Supabase project (the database and logins), a verified email 
    2. `20261031000100_founder_save.sql`
    3. `20261031000200_profile_email.sql`
    4. `20261101000000_strava.sql`
+   5. `20261103000000_more_quests.sql`
 
    Never run anything from `supabase/tests/`. Those files are only for local tests.
 3. **Copy the keys.** In **Project Settings → API**, note the **Project URL** and the **publishable key**. You'll paste them into Vercel in step 3. If you'll use automatic Strava checking (below), also copy the **secret key** (`sb_secret_...`). It's secret: paste it only into Vercel, never into the app's code or a chat.

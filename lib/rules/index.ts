@@ -52,6 +52,20 @@ export function parseDuration(h: number, m: number, s: number): InputResult {
   return { ok: true, value: total };
 }
 
+// Metres climbed, for climb quests (whole metres, sane range).
+export function parseClimb(m: number): InputResult {
+  if (!Number.isInteger(m)) return { ok: false, error: "Use a whole number of metres" };
+  if (m < INPUT_LIMITS.minClimb || m > INPUT_LIMITS.maxClimb) {
+    return { ok: false, error: `Climb must be ${INPUT_LIMITS.minClimb}-${INPUT_LIMITS.maxClimb} m` };
+  }
+  return { ok: true, value: m };
+}
+
+// The number typed for a quest that isn't timed: watts, or metres climbed.
+export function parseAmount(questId: QuestId, n: number): InputResult {
+  return QUESTS[questId].measure === "elevation" ? parseClimb(n) : parseWatts(n);
+}
+
 export function parseWatts(w: number): InputResult {
   if (!Number.isInteger(w)) return { ok: false, error: "Use a whole number of watts" };
   if (w < INPUT_LIMITS.minWatts || w > INPUT_LIMITS.maxWatts) {
@@ -62,7 +76,7 @@ export function parseWatts(w: number): InputResult {
 
 // ---------- Limits, % and embers ----------
 
-// A verified result: seconds for time quests, watts for the bike quest.
+// A verified result: seconds for time quests, watts for the power quest, metres for climbs.
 export interface VerifiedEntry {
   id: string;
   questId: QuestId;
@@ -297,14 +311,28 @@ export function questRules(questId: QuestId): { counts: string; timedOn: string;
       rejected: `Shorter than ${min} minutes, or no power data, won't be approved.`,
     };
   }
-  const meters = q.distanceMeters ?? 0;
-  const distance = q.sport === "swim" ? `${meters} m` : `${meters / 1000} km`; // matches the quest labels
-  const activity = q.sport === "run" ? "outdoor run" : "pool swim";
+  if (q.measure === "elevation") {
+    const climb = `${(q.minClimbMeters ?? 0).toLocaleString("en-GB")} m`;
+    return {
+      counts: `Any hike with ${climb} of climbing or more.`,
+      timedOn: "We use the total climb Strava measured for the hike.",
+      rejected: `Less than ${climb} up won't be approved.`,
+    };
+  }
+  const distance = distanceLabel(q.distanceMeters ?? 0, q.sport);
+  const activity = { run: q.trail ? "trail run" : "outdoor run", bike: "outdoor ride", swim: "pool swim", hike: "hike" }[q.sport];
   return {
     counts: `Any ${activity} of ${distance} or longer.`,
     timedOn: `A longer one counts as ${distance}, timed on its fastest ${distance}.`,
     rejected: `Shorter than ${distance} won't be approved.`,
   };
+}
+
+// "1 mile", "21.1 km", "400 m": matches the quest labels.
+export function distanceLabel(meters: number, sport: Sport): string {
+  if (meters === 1609) return "1 mile";
+  if (sport === "swim" && meters < 3000) return `${meters} m`;
+  return `${Math.round(meters / 100) / 10} km`;
 }
 
 export type { QuestId, Sport };
