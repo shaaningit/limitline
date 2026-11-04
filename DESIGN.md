@@ -8,19 +8,19 @@ Athletes open LIMITLINE right after a run, ride or swim, on a phone held in one 
 
 ## Logo
 
-A volt line breaking up through a dashed "limit line", next to the LIMITLINE wordmark (`components/logo.tsx`), always on matte black. It's a stand-in drawn in code until the founder's own logo file arrives; swap the SVG in that one file and every screen picks it up.
+**Break-out** (Nov 4): a flat grey line, and a volt blade breaking up out of it, so crossing the line is what lights you up. It sits beside the wordmark LIMITLINE, set in Archivo Expanded (125% width) ExtraBold with 0.04em tracking, in off-white. The mark lives in `components/logo.tsx` and `app/icon.svg` (the app icon: the mark on matte black). If a final logo file arrives, swap it in those two places.
 
 ## Color
 
-Dark only, matte: no glows, gloss or gradients. One accent, volt, used for the main button, the embers chip, badges, the +% hero number and the active tab. Text on a volt fill is always matte black.
+Dark only, matte. Glow is reserved for volt: the main button, the progress line, and the athlete in the opening graphic. One accent, volt, used for the main button, the embers chip, badges, the +% hero number and the active tab. Text on a volt fill is always matte black.
 
 | Token | Value | Use |
 |---|---|---|
-| `--ground` | `#121212` | Page background (matte black) |
-| `--surface` | `#1C1C1C` | Result card, input backgrounds |
-| `--line` | `#2E2E2E` | Dividers and input borders |
-| `--ink` | `#F2F2EE` | Body text and headings |
-| `--ink-muted` | `#A6A6A0` | Secondary text (~7.6:1 on ground) |
+| `--ground` | `#0C0C0C` | Page background (matte black) |
+| `--surface` | `#141414` | Inputs; cards use a #161616 to #111111 gradient |
+| `--line` / `--line-strong` | 8% / 14% white | Hairline dividers and borders |
+| `--ink` | `#F4F4F0` | Body text, headings, the wordmark |
+| `--ink-muted` | `#9A9A94` | Secondary text (~7:1 on ground) |
 | `--volt` | `#CEFF00` | Accent: fills, the +% number, active tab, focus ring |
 | `--on-volt` | `#121212` | Text on volt fills |
 | `--danger` | `#FF6B6B` | Errors and rejected results |
@@ -28,35 +28,38 @@ Dark only, matte: no glows, gloss or gradients. One accent, volt, used for the m
 
 The share image uses the same colors: matte black ground, volt wordmark and +%.
 
-## Feel (founder, Nov 1: "give it a Duolingo sort of feel")
+## Feel (founder, Nov 4: "premium, not childish")
 
-- **Chunky and pressable.** Buttons and quest cards have a solid bottom edge (`--line-strong`, or `--volt-deep` under volt) and sink 3px when pressed. Corners are round (`--radius` 16px, cards 20px). Button labels are bold capitals.
-- **Game stats on top.** My quests opens with a weekly streak flame (the one warm color, `#FF9F1A`) and the embers counter. A missed-week nudge appears when the streak needs an activity before Sunday.
-- **Progress you can see.** Each quest card shows a bar toward double embers (4 efforts), then "2× unlocked".
-- **Icons over words.** The bottom bar is icons only: Quests (flag on a peak), Board (trophy), Shop (bag), and Profile as the athlete's photo, or a silhouette when there's none, like Instagram. Names stay available to screen readers.
-- **The opening graphic.** The landing opens on "the march of greatness" (`lib/intro/evolution.ts`): one figure evolves as it walks, from all fours to upright to runner, leaving grey silhouettes of its earlier selves labelled 6M years ago, 3M, 2M and Today. Then it breaks through the volt "YOUR LIMIT" line, which turns solid with a burst of sparks, and stands with arms raised: "YOU". It runs about 6.6 s, tap to skip or replay, and with reduced motion it shows the finished lineup straight away. Pictogram style: round-capped strokes, film grain and a vignette.
-- **One celebration.** A new +% result pops in (0.45 s, slight overshoot). Off under reduced motion.
+Premium sports product, not a kids' game; it keeps the game mechanics (streak, embers, progress, ranks) but dresses them quietly.
+- **Buttons:** slim (52px), 14px corners, sentence case, no bottom edge. Volt for the one main action (an inner highlight and a soft volt glow); glass (4.5% white) with a hairline border for the rest; white for Google. Pressing scales to 98.5%. No capitals, no bounce.
+- **Surfaces:** hairline borders (8% white), a faint top-to-bottom gradient on cards, no drop shadows. The sport tile is a tinted volt square with a volt hairline, not a solid volt circle.
+- **Stats:** streak flame and embers as glass pills. Progress is a 4px volt line with a faint glow.
+- **Bottom bar:** glass, icons only, the active tab marked by a small volt dot. Profile is the athlete's photo or a silhouette.
+- **Board:** rank tiles; top 3 tinted volt.
+- **The opening graphic:** "the march of greatness" (`lib/intro/evolution.ts`). One figure evolves as it walks, from all fours to upright to runner, leaving grey silhouettes of its earlier selves (6M YRS AGO, 3M, 2M, TODAY). It breaks through the volt "YOUR LIMIT" line in a burst of sparks and stands with arms raised: YOU. A soft reflection on the floor, film grain and a vignette give it a cinematic finish. About 6.6 s; tap to skip or replay; reduced motion shows the finished lineup.
+- **Opening screen:** the graphic with the logo over it, then a small "RUN · RIDE · SWIM · HIKE" line, the headline "Cross your limit. / Get rewarded." (volt second line), one sentence, and the way in: Google first, then Phone and Email side by side.
+- **One celebration:** a new +% result scales in (0.5 s). Off under reduced motion.
 
 ## Type
 
-- **Display and numbers:** Barlow Condensed, 600 weight, with tabular (equal-width) digits so times and percentages line up. The share image uses a bundled `.ttf` of the same font.
-- **Body and UI:** Nunito, 500 / 700 / 800: rounded and friendly, for the Duolingo-style feel (replaced IBM Plex Sans on Nov 1).
-- Body text is at least 16px.
+- **Display, numbers and wordmark:** Archivo (variable width). Headings at 112% width Bold; big numbers ExtraBold with tabular digits; the wordmark at 125% width. Wide and athletic without shouting.
+- **Text and buttons:** Manrope, 500 to 800: clean and modern (replaced Nunito on Nov 4, which read as childish).
+- **Labels:** 11px, 700, uppercase, 0.14 to 0.18em tracking, muted.
+- Body text is at least 15-16px.
 
-| Token | Size / line height | Font | Use |
-|---|---|---|---|
-| `--text-hero` | 56px / 1.0 | Barlow Condensed | +% beyond your limit (the anchor of any screen it's on) |
-| `--text-h1` | 32px / 1.1 | Barlow Condensed | Page titles |
-| `--text-h2` | 22px / 1.2 | Barlow Condensed | Section titles |
-| `--text-body` | 16px / 1.5 | Nunito | Everything else |
-| `--text-small` | 14px / 1.4 | Nunito | Labels and hints only, never paragraphs |
+| Token | Size | Use |
+|---|---|---|
+| `--text-hero` | 56px | +% beyond your limit |
+| `--text-h1` | 30px | Page titles |
+| `--text-h2` | 18px | Section titles |
+| `--text-body` | 16px | Everything else |
+| `--text-small` | 14px | Hints and secondary lines |
 
 ## Space, shape, motion
 
 - Spacing on an 8px grid: `--space-1` 8px, `--space-2` 16px, `--space-3` 24px, `--space-4` 32px, `--space-6` 48px. A heading has more space above it than below it.
-- Corner radius: `--radius` 16px; cards 20px; pills fully round.
-- Cards are for things you tap or act on: quest cards and the result card. Plain lists stay as rows. No soft drop shadows; the only "shadow" is the solid pressable edge.
-- One motion moment: the result card counts up its +% and embers over about 0.6 s with an ease-out curve. It's switched off under `prefers-reduced-motion`. (First in the cut order if time runs short.)
+- Corners: `--radius` 14px for buttons and inputs, 18-20px for cards, fully round for pills.
+- Motion is quiet: 0.12-0.3 s ease, small scale on press, one celebration (the +% result) and the opening graphic. Everything is off under `prefers-reduced-motion`.
 
 ## Browser details
 

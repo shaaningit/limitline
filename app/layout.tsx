@@ -1,11 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Barlow_Condensed, Nunito } from "next/font/google";
+import { Archivo, Manrope } from "next/font/google";
 import "./globals.css";
 
-// DESIGN.md: Barlow Condensed for display and numbers; Nunito, a rounded friendly face, for
-// body and buttons (the Duolingo-style feel, founder Nov 1).
-const display = Barlow_Condensed({ variable: "--font-display", subsets: ["latin"], weight: ["600", "700"] });
-const body = Nunito({ variable: "--font-body", subsets: ["latin"], weight: ["500", "700", "800"] });
+// DESIGN.md (premium, Nov 4): Archivo, a wide athletic face, for headings, numbers and the
+// wordmark (its width axis gives the Expanded cut); Manrope, a clean modern face, for text.
+const display = Archivo({ variable: "--font-display", subsets: ["latin"], axes: ["wdth"] });
+const body = Manrope({ variable: "--font-body", subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "LIMITLINE",

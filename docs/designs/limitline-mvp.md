@@ -279,6 +279,7 @@ Asked for by the founder after seeing the first build. These override the earlie
 - **Duolingo-style feel:** weekly streak (consecutive Monday-to-Sunday weeks with a verified activity; `weeklyStreak` in lib/rules), chunky pressable buttons and quest cards, progress bars toward double embers, rank badges on boards, Nunito for body text. Details in DESIGN.md.
 - **Money:** brand deals, coaching and subscriptions are planned in `docs/business/revenue-plan.md`. Nothing paid during the pilot.
 - **Nov 3:** an opening graphic ("march of greatness", DESIGN.md); 14 quests (run 1 mile / 5 km / 10 km / half marathon / trail 5 km, ride 20-min power / 40 km / 100 km, swim 400 m / 1500 m / 3.8 km, hike 10 km, climb 1000 m / 2000 m) with a Hike board; ride and hike distances timed from Strava's distance stream; climbs measured in metres (higher is better). Content quests and sponsors are planned in TODOS.md and working in the mini app demo.
+- **Nov 4, premium pass:** the chunky Duolingo-style buttons read as childish, so buttons, cards and type were redone (DESIGN.md "Feel"): slim volt and glass buttons, hairlines, Archivo + Manrope. New "break-out" logo. A more cinematic opening screen with a reflection under the evolution graphic and a headline.
 - **Later (in TODOS.md):** brand quests and content challenges; a softer volt.
 
 ## Reviewer Concerns

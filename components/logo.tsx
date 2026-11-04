@@ -1,34 +1,24 @@
-// LIMITLINE logo: a volt line breaking up through the limit line, plus the wordmark.
-// Stand-in drawn in code until the founder's logo file arrives; swap the <svg> here
-// (and app/icon.svg) and every screen, the app icon and the share card follow.
+// The LIMITLINE logo (Nov 4): "break-out", a flat line and a volt blade breaking up out of it,
+// beside a wide wordmark. The same story as the opening graphic: you cross the line, you light up.
+// Swap the mark here (and in app/icon.svg) if a final logo file replaces it.
 export function LogoMark({ size = 32 }: { size?: number }) {
   return (
-    <svg
-      width={size * 1.5}
-      height={size}
-      viewBox="0 0 48 32"
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
+    <svg width={size * 1.5} height={size} viewBox="0 0 48 32" aria-hidden="true">
       {/* the limit line */}
-      <path d="M2 19H46" strokeWidth="2.5" strokeDasharray="4 4" opacity="0.6" />
-      {/* the effort breaking through it */}
-      <path d="M3 28L15 23L22 25L32 12L44 4" strokeWidth="3.5" />
-      <path d="M37 4H44V11" strokeWidth="3.5" />
+      <path d="M0 26H21.2L19.5 29.5H0Z" fill="#f4f4f0" fillOpacity="0.42" />
+      {/* breaking out of it */}
+      <path d="M22.8 29.5H30L46 1H38.8Z" fill="#ceff00" />
     </svg>
   );
 }
 
-// `stacked` puts a large mark above the wordmark (landing screen); otherwise they sit side by side.
+// `stacked` puts a large mark above the wordmark; otherwise they sit side by side.
 export function Logo({ size = 32, wordmark = true, stacked = false }: { size?: number; wordmark?: boolean; stacked?: boolean }) {
   return (
     <span className={stacked ? "logo logo-stacked" : "logo"} role="img" aria-label="LIMITLINE">
       <LogoMark size={stacked ? size * 2 : size} />
       {wordmark && (
-        <span className="logo-word" style={{ fontSize: size }} aria-hidden="true">
+        <span className="logo-word" style={{ fontSize: size * 0.85 }} aria-hidden="true">
           LIMITLINE
         </span>
       )}

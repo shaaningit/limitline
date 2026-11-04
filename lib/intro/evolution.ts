@@ -41,7 +41,7 @@ const STAGES: Stage[] = [
   // Beyond the limit: arms up
   { lean: -0.06, headK: 2, torso: 0.31, arm: 0.32, leg: 0.48, tAmp: 0.18, kBase: 0.05, kAmp: 0.1, aBase: Math.PI - 0.12, aAmp: 0, aSplit: 0.36, eBase: -0.04, eAmp: 0, bob: 0 },
 ];
-const LABELS = ["6M years ago", "3M years ago", "2M years ago", "Today", "You"];
+const LABELS = ["6M yrs ago", "3M yrs ago", "2M yrs ago", "Today", "You"];
 const KEYS = Object.keys(STAGES[0]) as (keyof Stage)[];
 
 function stageAt(s: number): Stage {
@@ -136,7 +136,8 @@ export interface IntroHandle {
 export function mountEvolutionIntro(canvas: HTMLCanvasElement, opts: { reducedMotion?: boolean } = {}): IntroHandle {
   const ctx = canvas.getContext("2d")!;
   const VOLT = "#ceff00";
-  const MUTED = "#a6a6a0";
+  const MUTED = "#8f8f89";
+  const GROUND = "#0c0c0c";
   const reduced = opts.reducedMotion ?? window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const DUR = 6600;
   // Canvas can't read CSS variables, so use the page's own body font (Nunito via next/font).
@@ -224,43 +225,63 @@ export function mountEvolutionIntro(canvas: HTMLCanvasElement, opts: { reducedMo
     ctx.stroke();
     ctx.restore();
     ctx.fillStyle = crossed ? VOLT : MUTED;
-    ctx.font = `800 ${Math.max(9, S * 0.085)}px ${family}`;
+    ctx.font = `700 ${Math.max(8, S * 0.075)}px ${family}`;
     ctx.textAlign = "center";
-    ctx.fillText("YOUR LIMIT", line, lineTop - 8);
+    ctx.letterSpacing = "2px";
+    ctx.fillText("YOUR LIMIT", line, lineTop - 10);
+    ctx.letterSpacing = "0px";
 
     for (let k = ghosts.length; k < 4; k++) {
       if (st.s >= k + 0.5 || (k === 3 && crossed)) ghosts.push({ k, x: xAtStage(k), born: t });
       else break;
     }
-    const greys = ["#3d3d3a", "#55554f", "#74746d", "#9a9a92"];
-    const labelFont = `700 ${Math.max(8, S * 0.075)}px ${family}`;
-    for (const g of ghosts) {
-      const a = clamp((t - g.born) * 6, 0, 1);
-      drawFigure(ctx, pose(stageAt(g.k), g.x, 0.9, S, G), S, greys[g.k], greys[g.k], a);
-      ctx.globalAlpha = a;
-      ctx.fillStyle = MUTED;
-      ctx.font = labelFont;
-      ctx.fillText(LABELS[g.k].toUpperCase(), g.x, G + Math.max(14, S * 0.16));
-      ctx.globalAlpha = 1;
-    }
-
+    const greys = ["#3a3a37", "#4f4f4b", "#6c6c66", "#93938c"];
     const S2 = S * (1 + 0.1 * clamp(st.s - 3, 0, 1)); // the athlete grows a little breaking through
     const P = pose(stageAt(st.s), st.x, st.s >= 3.9 ? 0.5 : (st.x / S) * 2.3, S2, G);
     const voltMix = clamp(st.s - 2.2, 0, 1);
+    const near = mix("#bdbdb5", VOLT, voltMix);
+    const far = mix("#8d8d86", "#8fb000", voltMix);
+    const ghostAlpha = (g: { born: number }) => clamp((t - g.born) * 6, 0, 1);
+
+    // Reflection on the ground, fading into the floor.
+    ctx.save();
+    ctx.translate(0, 2 * G + 3);
+    ctx.scale(1, -1);
+    for (const g of ghosts) drawFigure(ctx, pose(stageAt(g.k), g.x, 0.9, S, G), S, greys[g.k], greys[g.k], 0.16 * ghostAlpha(g));
+    drawFigure(ctx, P, S2, near, far, crossed ? 0.28 : 0.16);
+    ctx.restore();
+    const floor = ctx.createLinearGradient(0, G, 0, G + S * 0.75);
+    floor.addColorStop(0, "rgba(12,12,12,0.15)");
+    floor.addColorStop(1, GROUND);
+    ctx.fillStyle = floor;
+    ctx.fillRect(0, G + 1.5, W, H - G);
+
+    // The lineup, then the athlete.
+    for (const g of ghosts) drawFigure(ctx, pose(stageAt(g.k), g.x, 0.9, S, G), S, greys[g.k], greys[g.k], ghostAlpha(g));
     ctx.save();
     if (st.s > 3) {
       ctx.shadowColor = VOLT;
-      ctx.shadowBlur = 24 * (st.s - 3);
+      ctx.shadowBlur = 26 * (st.s - 3);
     }
-    drawFigure(ctx, P, S2, mix("#bdbdb5", VOLT, voltMix), mix("#8d8d86", "#8fb000", voltMix), 1);
+    drawFigure(ctx, P, S2, near, far, 1);
     ctx.restore();
+
+    // Labels: small, widely tracked caps.
+    ctx.textAlign = "center";
+    ctx.font = `600 ${Math.max(8, S * 0.064)}px ${family}`;
+    ctx.letterSpacing = "1px";
+    for (const g of ghosts) {
+      ctx.globalAlpha = ghostAlpha(g);
+      ctx.fillStyle = MUTED;
+      ctx.fillText(LABELS[g.k].toUpperCase(), g.x, G + Math.max(16, S * 0.18));
+    }
     if (st.s > 3.6) {
       ctx.globalAlpha = clamp((st.s - 3.6) * 2.5, 0, 1);
       ctx.fillStyle = VOLT;
-      ctx.font = labelFont.replace("700", "800");
-      ctx.fillText(LABELS[4].toUpperCase(), st.x, G + Math.max(14, S * 0.16));
-      ctx.globalAlpha = 1;
+      ctx.fillText(LABELS[4].toUpperCase(), st.x, G + Math.max(16, S * 0.18));
     }
+    ctx.globalAlpha = 1;
+    ctx.letterSpacing = "0px";
 
     for (const sp of sparks) {
       const age = ((t - sp.t0) * DUR) / 1000;

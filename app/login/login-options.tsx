@@ -9,7 +9,7 @@ import { PhoneForm } from "./phone-form";
 
 type View = "choose" | "email" | "phone";
 
-// Login choices under the logo: one tap for Google, a texted code for phone, a link for email.
+// Login choices: one tap for Google, then phone (texted code) and email (link) side by side.
 export function LoginOptions({ expired, error }: { expired: boolean; error: string | null }) {
   const [view, setView] = useState<View>(expired ? "email" : "choose");
 
@@ -36,21 +36,25 @@ export function LoginOptions({ expired, error }: { expired: boolean; error: stri
           <GoogleButton />
         </form>
       )}
-      {LOGIN_OPTIONS.phone && (
-        <button className="button button-block" type="button" onClick={() => setView("phone")}>
-          <PhoneIcon /> Continue with phone
+      {LOGIN_OPTIONS.phone ? (
+        <div className="row">
+          <button className="button" type="button" onClick={() => setView("phone")}>
+            <PhoneIcon /> Phone
+          </button>
+          <button className="button" type="button" onClick={() => setView("email")}>
+            <MailIcon /> Email
+          </button>
+        </div>
+      ) : (
+        <button
+          className={`button button-block${LOGIN_OPTIONS.google ? "" : " button-primary"}`}
+          type="button"
+          onClick={() => setView("email")}
+        >
+          <MailIcon /> Continue with email
         </button>
       )}
-      <button
-        className={`button button-block${LOGIN_OPTIONS.google || LOGIN_OPTIONS.phone ? "" : " button-primary"}`}
-        type="button"
-        onClick={() => setView("email")}
-      >
-        <MailIcon /> Continue with email
-      </button>
-      <p className="muted small" style={{ textAlign: "center", margin: "var(--space-1) 0 0" }}>
-        Invite-only pilot. Use the email the founder added.
-      </p>
+      <p className="legal">Invite-only pilot. Use the email the founder added.</p>
     </div>
   );
 }
