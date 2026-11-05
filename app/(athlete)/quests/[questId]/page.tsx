@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Reveal } from "@/components/motion";
 import { notFound } from "next/navigation";
 import { StravaConnectButton, StravaReturnMessage } from "@/components/strava-connect";
 import { getMyQuests, getMyStrava } from "@/lib/data/athlete";
@@ -29,12 +30,13 @@ export default async function QuestPage({ params, searchParams }: PageProps<"/qu
 
   return (
     <>
+      <Reveal />
       <p style={{ margin: "var(--space-2) 0 0" }}>
         <Link href="/quests" className="muted small">
           ← My quests
         </Link>
       </p>
-      <h1>{quest.label}</h1>
+      <h1 className="ltitle">{quest.label}</h1>
       <p>
         Your limit:{" "}
         {limit.limit === null ? (

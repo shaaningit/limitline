@@ -9,6 +9,8 @@ import {
   parseAmount,
   questRules,
   weeklyStreak,
+  weekdayIndex,
+  activeDaysThisWeek,
   evaluate,
   evaluateAll,
   limitBefore,
@@ -311,5 +313,18 @@ describe("more quests (Nov 3)", () => {
     expect(parseAmount("hikeUp1000", 50).ok).toBe(false);
     expect(parseAmount("hikeUp1000", 1240.5).ok).toBe(false);
     expect(parseAmount("bike20", 250)).toEqual({ ok: true, value: 250 });
+  });
+});
+
+describe("this week's active days", () => {
+  const tz = "Europe/London";
+  it("numbers days Monday = 0 in the pilot time zone", () => {
+    expect(weekdayIndex(new Date("2026-11-23T08:00:00Z"), tz)).toBe(0); // Monday
+    expect(weekdayIndex(new Date("2026-11-29T23:30:00Z"), tz)).toBe(6); // Sunday night
+  });
+  it("lists the days this week with an activity, once each, ignoring other weeks", () => {
+    const now = new Date("2026-11-26T12:00:00Z"); // Thursday
+    const dates = ["2026-11-23T07:00:00Z", "2026-11-23T18:00:00Z", "2026-11-25T07:00:00Z", "2026-11-20T07:00:00Z"].map((d) => new Date(d));
+    expect(activeDaysThisWeek(dates, now, tz)).toEqual([0, 2]);
   });
 });

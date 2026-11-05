@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Reveal } from "@/components/motion";
 import { StravaConnectButton, StravaReturnMessage } from "@/components/strava-connect";
 import { LOGIN_OPTIONS } from "@/lib/auth-options";
 import { getMyStrava } from "@/lib/data/athlete";
@@ -21,7 +22,8 @@ export default async function ProfilePage({ searchParams }: PageProps<"/profile"
 
   return (
     <>
-      <h1>{profile.display_name}</h1>
+      <Reveal />
+      <h1 className="ltitle">{profile.display_name}</h1>
       {saved === "1" && <p role="status">Saved.</p>}
       <form action={saveSettings}>
         <ul className="rows">

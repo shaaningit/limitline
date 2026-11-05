@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Reveal } from "@/components/motion";
 import { currentWeek, getBoard } from "@/lib/data/athlete";
 import { requireAthlete } from "@/lib/data/session";
 import { formatPercent } from "@/lib/format";
@@ -17,7 +18,8 @@ export default async function BoardPage({ searchParams }: PageProps<"/board">) {
 
   return (
     <>
-      <h1>This week</h1>
+      <Reveal />
+      <h1 className="ltitle">This week</h1>
       <p className="muted small">Ranked by % beyond each athlete&apos;s own limit. Resets every Monday.</p>
       <nav className="tabs" aria-label="Boards">
         {BOARDS.map((s) => (
@@ -46,7 +48,7 @@ export default async function BoardPage({ searchParams }: PageProps<"/board">) {
       ) : (
         <ol className="rows" aria-label={`${LABELS[sport]} board`}>
           {board.rows.map((row) => (
-            <li key={row.athleteId} className={row.isMe ? "me" : undefined}>
+            <li key={row.athleteId} className={row.isMe ? "me rv" : "rv"}>
               <span className="board-who">
                 <span className={`rank${row.rank <= 3 ? " top" : ""}`}>
                   <span className="visually-hidden">Rank </span>

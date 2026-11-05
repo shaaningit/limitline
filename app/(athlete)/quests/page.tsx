@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Reveal } from "@/components/motion";
 import { BikeIcon, ChevronIcon, EmberIcon, FlameIcon, HikeIcon, RunIcon, SwimIcon } from "@/components/icons";
 import { ShareButton } from "@/components/share-button";
 import { StravaConnectButton, StravaReturnMessage } from "@/components/strava-connect";
@@ -27,29 +28,57 @@ export default async function QuestsPage({ searchParams }: PageProps<"/quests">)
   const { submitted, reason, strava: stravaReturn } = await searchParams;
   const session = await requireAthlete();
   const { profile } = session;
-  const [{ entries, limits, streak, balance, unseen, minEfforts }, strava] = await Promise.all([getMyQuests(session), getMyStrava(session)]);
+  const [{ entries, limits, streak, week, balance, unseen, minEfforts }, strava] = await Promise.all([getMyQuests(session), getMyStrava(session)]);
   const offerStrava = stravaEnabled() && !strava;
   const firstRunDone = profile.checklist_followed && profile.checklist_visibility && entries.length > 0;
 
   return (
     <>
-      {/* Top stats, Duolingo-style: weekly streak and embers (opens "How embers work", 8A) */}
-      <div className="stat-bar">
-        <span
-          className={`stat-pill streak${streak.weeks > 0 ? "" : " cold"}`}
-          aria-label={`${streak.weeks}-week streak${streak.weeks > 0 && !streak.activeThisWeek ? ", log an activity this week to keep it" : ""}`}
-        >
-          <FlameIcon size={22} />
-          <span className="num" aria-hidden="true">{streak.weeks}</span>
-        </span>
-        <Link className="stat-pill embers" href="/quests/embers" aria-label={`${balance} embers. How embers work`}>
-          <EmberIcon size={22} />
-          <span className="num" aria-hidden="true">{balance}</span>
-        </Link>
-      </div>
-      <h1 style={{ marginTop: "var(--space-2)" }}>My quests</h1>
+      <Reveal />
+      <h1 className="ltitle" style={{ marginTop: "var(--space-3)" }}>
+        My quests
+      </h1>
+
+      {/* This week: streak, embers and the days you showed up, as one card with depth */}
+      <section className="today tilt rv" data-tilt="6" aria-label="This week">
+        <span className="today-orb" aria-hidden="true" />
+        <div className="today-top">
+          <span className="eyebrow">This week</span>
+          <Link href="/quests/embers" className="muted small">
+            How embers work
+          </Link>
+        </div>
+        <div className="today-main">
+          <div>
+            <span
+              className={`today-big streak${streak.weeks > 0 ? "" : " cold"}`}
+              aria-label={`${streak.weeks}-week streak${streak.weeks > 0 && !streak.activeThisWeek ? ", log an activity this week to keep it" : ""}`}
+            >
+              <FlameIcon size={30} />
+              <span aria-hidden="true">{streak.weeks}</span>
+            </span>
+            <div className="today-label">{streak.weeks === 1 ? "week" : "weeks"} in a row</div>
+          </div>
+          <div>
+            <Link className="today-big embers" href="/quests/embers" aria-label={`${balance} embers. How embers work`}>
+              <EmberIcon size={30} />
+              <span aria-hidden="true">{balance}</span>
+            </Link>
+            <div className="today-label">embers to spend</div>
+          </div>
+        </div>
+        <div className="week-days" aria-label={`Activities on ${week.activeDays.length} of 7 days this week`}>
+          {["M", "T", "W", "T", "F", "S", "S"].map((d, i) => (
+            <span key={i} className={`${week.activeDays.includes(i) ? "done" : ""} ${i === week.today ? "today-mark" : ""}`}>
+              <i />
+              {d}
+            </span>
+          ))}
+        </div>
+      </section>
+
       {streak.weeks > 0 && !streak.activeThisWeek && (
-        <p className="nudge" role="status">
+        <p className="nudge rv" role="status">
           <FlameIcon size={20} /> Keep your {streak.weeks}-week streak: log one activity before Sunday ends.
         </p>
       )}
@@ -102,7 +131,7 @@ export default async function QuestsPage({ searchParams }: PageProps<"/quests">)
         const group = limits.filter((l) => QUESTS[l.questId].sport === sport);
         return (
           <section key={sport} aria-labelledby={`quests-${sport}`}>
-            <h2 id={`quests-${sport}`}>
+            <h2 id={`quests-${sport}`} className="rv">
               {SPORT_LABELS[sport]} <span className="muted small">{group.length} quests</span>
             </h2>
             <ul className="quest-cards">
@@ -111,8 +140,8 @@ export default async function QuestsPage({ searchParams }: PageProps<"/quests">)
                 const Icon = SPORT_ICONS[quest.sport];
                 const unlocked = l.effortCount >= minEfforts;
                 return (
-                  <li key={l.questId}>
-                    <Link href={`/quests/${l.questId}`}>
+                  <li key={l.questId} className="rv">
+                    <Link href={`/quests/${l.questId}`} className="tilt" data-tilt="4">
                       <span className={`sport-badge ${quest.sport}`}>
                         <Icon size={26} />
                       </span>
@@ -213,7 +242,7 @@ function ResultCard({ entry }: { entry: MyEntry }) {
   const percent = entry.percent === null ? null : Number(entry.percent);
   const doubled = Boolean(entry.beat_limit) && Number(entry.embers) > EMBERS.base;
   return (
-    <section className="result-card" aria-label={`New result: ${QUESTS[entry.quest_id].label}`}>
+    <section className="result-card tilt rv" data-tilt="5" aria-label={`New result: ${QUESTS[entry.quest_id].label}`}>
       <p className="muted small" style={{ margin: 0 }}>
         {QUESTS[entry.quest_id].label} · {formatValue(entry.quest_id, Number(entry.value))}
       </p>

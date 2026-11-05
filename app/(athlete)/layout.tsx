@@ -2,12 +2,15 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { BottomNav } from "@/components/bottom-nav";
 import { Logo } from "@/components/logo";
+import { Motion } from "@/components/motion";
 import { avatarFromClaims } from "@/lib/avatar";
 import { createClient } from "@/lib/supabase/server";
 
 export default function AthleteLayout({ children }: LayoutProps<"/">) {
   return (
     <>
+      <div className="ambient" aria-hidden="true" />
+      <Motion />
       <header className="app-bar">
         <Link href="/quests" aria-label="LIMITLINE, go to My quests" style={{ textDecoration: "none" }}>
           <Logo size={20} />

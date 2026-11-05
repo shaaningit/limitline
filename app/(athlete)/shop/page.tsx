@@ -1,4 +1,5 @@
 import { EmberIcon } from "@/components/icons";
+import { Reveal } from "@/components/motion";
 import { getShop } from "@/lib/data/athlete";
 import { requireAthlete } from "@/lib/data/session";
 import { canRedeem } from "@/lib/rules";
@@ -19,8 +20,9 @@ export default async function ShopPage({ searchParams }: PageProps<"/shop">) {
 
   return (
     <>
+      <Reveal />
       <div className="stat-bar" style={{ justifyContent: "space-between", marginTop: "var(--space-2)" }}>
-        <h1 style={{ margin: 0 }}>Shop</h1>
+        <h1 className="ltitle" style={{ margin: 0 }}>Shop</h1>
         <span className="stat-pill embers" aria-label={`${balance} embers to spend`}>
           <EmberIcon size={22} />
           <span className="num" aria-hidden="true">{balance}</span>
@@ -42,7 +44,7 @@ export default async function ShopPage({ searchParams }: PageProps<"/shop">) {
           {items.map((item) => {
             const affordable = canRedeem(balance, item.price);
             return (
-              <li key={item.id}>
+              <li key={item.id} className="rv">
                 <span>
                   {item.name}
                   <br />

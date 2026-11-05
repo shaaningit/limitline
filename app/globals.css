@@ -737,3 +737,447 @@ input[type="radio"] {
     transition: none !important;
   }
 }
+
+/* ================= Depth and motion (founder, Nov 5: "feel like Flutter") ================= */
+
+/* Opening film: a sticky canvas stage over five screens of scroll, snapping per chapter. */
+.landing {
+  height: 100dvh;
+  min-height: 0;
+}
+.film {
+  position: relative;
+  height: 100dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scroll-snap-type: y proximity;
+  scrollbar-width: none;
+}
+.film::-webkit-scrollbar {
+  display: none;
+}
+.film-snap0 {
+  height: 0;
+  scroll-snap-align: start;
+}
+.film-snap {
+  height: 100%;
+  scroll-snap-align: start;
+}
+.film-stage {
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+  overflow: hidden;
+}
+.film-stage canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.film-top {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 20px;
+}
+.film-skip {
+  border: 1px solid var(--line-strong);
+  background: rgb(12 12 12 / 0.4);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font: inherit;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+}
+.film-dots {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  display: grid;
+  gap: 8px;
+}
+.film-dots i {
+  width: 4px;
+  height: 4px;
+  border-radius: 4px;
+  background: rgb(255 255 255 / 0.25);
+  transition:
+    height 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+    background 0.3s ease;
+}
+.film-dots i.on {
+  height: 18px;
+  background: var(--volt);
+  box-shadow: 0 0 8px var(--volt);
+}
+.chapter {
+  position: absolute;
+  inset: auto 26px calc(64px + env(safe-area-inset-bottom, 0px));
+  display: grid;
+  gap: 10px;
+  will-change: transform, opacity, filter;
+}
+.chapter-num {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.roman {
+  font-family: var(--font-display), sans-serif;
+  font-stretch: 125%;
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  color: var(--volt);
+}
+.chapter-rule {
+  height: 1px;
+  width: 36px;
+  background: var(--volt-line);
+}
+.chapter h2 {
+  font-family: var(--font-display), sans-serif;
+  font-stretch: 112%;
+  font-weight: 800;
+  font-size: clamp(30px, 9vw, 38px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.chapter h2 .volt {
+  color: var(--volt);
+}
+.chapter p {
+  margin: 0;
+  color: #bdbdb7;
+  font-size: 15px;
+  max-width: 34ch;
+}
+.chapter blockquote {
+  margin: 0;
+  font-family: var(--font-display), sans-serif;
+  font-weight: 600;
+  font-style: italic;
+  font-size: clamp(25px, 7.4vw, 30px);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+.chapter cite {
+  font-style: normal;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.chapter-final {
+  inset: auto 0 0;
+  padding: 0 24px calc(26px + env(safe-area-inset-bottom, 0px));
+  gap: 14px;
+}
+.chapter-brand {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  text-align: center;
+  margin-bottom: 6px;
+}
+.chapter-final .wordmark {
+  font-family: var(--font-display), sans-serif;
+  font-weight: 800;
+  line-height: 1;
+  font-size: 40px;
+  color: var(--ink);
+  letter-spacing: 0.04em;
+  font-stretch: 125%;
+}
+.film-hint {
+  position: absolute;
+  left: 50%;
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  color: var(--ink-muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+.film-hint-line {
+  width: 1px;
+  height: 26px;
+  background: linear-gradient(var(--volt), transparent);
+  transform-origin: top;
+  animation: drip 1.6s ease-in-out infinite;
+}
+@keyframes drip {
+  0% {
+    transform: scaleY(0);
+    opacity: 1;
+  }
+  60% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleY(1);
+    opacity: 0;
+  }
+}
+
+/* Ambient light behind the app, drifting slower than the content (parallax). */
+.ambient {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+.ambient::before,
+.ambient::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.55;
+}
+.ambient::before {
+  width: 360px;
+  height: 360px;
+  left: -150px;
+  top: calc(-120px - var(--sy, 0) * 0.15px);
+  background: radial-gradient(circle, rgb(206 255 0 / 0.16), transparent 70%);
+  animation: drift 18s ease-in-out infinite alternate;
+}
+.ambient::after {
+  width: 320px;
+  height: 320px;
+  right: -160px;
+  top: calc(280px - var(--sy, 0) * 0.3px);
+  background: radial-gradient(circle, rgb(255 159 26 / 0.08), transparent 70%);
+  animation: drift 22s ease-in-out infinite alternate-reverse;
+}
+@keyframes drift {
+  from {
+    transform: translate(0, 0);
+  }
+  to {
+    transform: translate(40px, 30px);
+  }
+}
+
+/* Glass header that firms up as you scroll; big titles shrink away beneath it. */
+.app-bar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: rgb(12 12 12 / calc(var(--hp, 0) * 0.72));
+  -webkit-backdrop-filter: blur(calc(var(--hp, 0) * 18px));
+  backdrop-filter: blur(calc(var(--hp, 0) * 18px));
+  border-bottom-color: rgb(255 255 255 / calc(var(--hp, 0) * 0.08));
+}
+.ltitle {
+  transform-origin: left bottom;
+  transform: translateY(calc(var(--hp, 0) * -6px)) scale(calc(1 - var(--hp, 0) * 0.18));
+  opacity: calc(1 - var(--hp, 0) * 0.9);
+}
+
+/* Spring into place as it scrolls into view. */
+.rv {
+  opacity: 0;
+  transform: translateY(22px) scale(0.98);
+}
+.rv.in {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.5s ease var(--d, 0ms),
+    transform 0.7s cubic-bezier(0.2, 0.9, 0.25, 1.12) var(--d, 0ms);
+}
+
+/* 3D tilt toward your finger, with a light sheen. */
+.tilt {
+  position: relative;
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform 0.6s cubic-bezier(0.2, 0.9, 0.25, 1.12);
+}
+.tilt.live {
+  transition: transform 0.08s linear;
+}
+.tilt::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 0%), rgb(255 255 255 / 0.09), transparent 60%);
+  opacity: var(--sheen, 0);
+  transition: opacity 0.4s ease;
+}
+
+/* This week: the depth card at the top of My quests. */
+.today {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  padding: 18px 18px 16px;
+  margin: 6px 0 14px;
+  border: 1px solid var(--line-strong);
+  background:
+    radial-gradient(120% 120% at 0% 0%, rgb(206 255 0 / 0.14), transparent 50%),
+    radial-gradient(90% 90% at 100% 100%, rgb(255 159 26 / 0.1), transparent 55%),
+    linear-gradient(160deg, #191919, #0f0f0f);
+  box-shadow:
+    0 30px 60px -30px rgb(0 0 0 / 0.9),
+    inset 0 1px 0 rgb(255 255 255 / 0.06);
+}
+.today-orb {
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  right: -50px;
+  top: -60px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, rgb(206 255 0 / 0.35), rgb(206 255 0 / 0) 65%);
+  pointer-events: none;
+}
+.today-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  position: relative;
+}
+.today-main {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  position: relative;
+}
+.today-big {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display), sans-serif;
+  font-stretch: 112%;
+  font-weight: 800;
+  font-size: 46px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  text-decoration: none;
+}
+.today-big:visited {
+  color: var(--ink);
+}
+.today-big.streak svg {
+  color: var(--flame);
+  filter: drop-shadow(0 0 10px rgb(255 159 26 / 0.6));
+}
+.today-big.streak.cold svg {
+  color: var(--ink-muted);
+  filter: none;
+}
+.today-big.embers svg {
+  color: var(--volt);
+  filter: drop-shadow(0 0 10px rgb(206 255 0 / 0.5));
+}
+.today-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink-muted);
+  letter-spacing: 0.04em;
+  margin-top: 4px;
+}
+.week-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  margin-top: 16px;
+  position: relative;
+}
+.week-days span {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--ink-muted);
+  letter-spacing: 0.06em;
+}
+.week-days i {
+  width: 100%;
+  height: 6px;
+  border-radius: 6px;
+  background: rgb(255 255 255 / 0.08);
+}
+.week-days .done i {
+  background: var(--volt);
+  box-shadow: 0 0 10px rgb(206 255 0 / 0.6);
+}
+.week-days .today-mark {
+  color: var(--volt);
+}
+.week-days .today-mark:not(.done) i {
+  background: rgb(255 255 255 / 0.22);
+}
+
+/* Bottom bar: a soft pill that springs to the active tab. */
+.bottom-nav {
+  --i: 0;
+}
+.nav-ind {
+  position: absolute;
+  top: 8px;
+  bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  left: max(calc((100% - 480px) / 2 + 10px), 10px);
+  width: calc((min(100%, 480px) - 20px) / 4);
+  transform: translateX(calc(var(--i) * 100%));
+  transition: transform 0.55s cubic-bezier(0.34, 1.4, 0.5, 1);
+  pointer-events: none;
+}
+.nav-ind::before {
+  content: "";
+  position: absolute;
+  inset: 0 6px;
+  border-radius: 14px;
+  background: rgb(255 255 255 / 0.05);
+  border: 1px solid rgb(255 255 255 / 0.07);
+}
+.nav-ind::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 4px;
+  width: 16px;
+  height: 3px;
+  margin-left: -8px;
+  border-radius: 3px;
+  background: var(--volt);
+  box-shadow: 0 0 10px var(--volt);
+}
+.bottom-nav a[aria-current="page"]::after {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rv {
+    opacity: 1;
+    transform: none;
+  }
+}

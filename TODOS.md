@@ -40,6 +40,13 @@ Still to do:
 **To build:** `sponsors` (name, logo, agreement date) and `sponsor_id` on quests, challenges and shop items, plus an end date and prize text.
 **Effort:** S-M  **Priority:** P2, after the first brand says yes
 
+## Design
+
+### Bring the rest of the mini app's motion into the real app
+
+**What:** the mini app demo (`docs/demo/limitline-mini.html`) also has: a podium for the top 3 on the board, a 2-column shop with tilting product cards, confetti and count-up numbers on a beaten limit, carousels that scale cards toward the centre, and quest cards that fly into the quest page (View Transitions). The real app has the opening film, reveals, tilt, glass header, parallax light, rubber band, the tab indicator and the "This week" card.
+**Priority:** P2
+
 ## Brand and money
 
 Full plan and order: `docs/business/revenue-plan.md` (brand deals first, coaching second, subscriptions last; nothing paid during the pilot).

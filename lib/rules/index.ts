@@ -275,6 +275,18 @@ export function embersExplainer(): string[] {
   ];
 }
 
+// Day of the week in the pilot time zone, Monday = 0 ... Sunday = 6 (for the "This week" card).
+export function weekdayIndex(at: Date, timeZone: string): number {
+  return WEEKDAYS.indexOf(localDateParts(at, timeZone).weekday);
+}
+
+// The days this week (Monday = 0) with at least one verified activity.
+export function activeDaysThisWeek(activityDates: Date[], now: Date, timeZone: string): number[] {
+  const week = weekStart(now, timeZone);
+  const days = new Set(activityDates.filter((d) => weekStart(d, timeZone) === week).map((d) => weekdayIndex(d, timeZone)));
+  return [...days].sort((a, b) => a - b);
+}
+
 // ---------- Weekly streak (Duolingo-style, founder Nov 1) ----------
 
 export interface Streak {

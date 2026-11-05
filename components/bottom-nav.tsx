@@ -16,8 +16,10 @@ const TABS = [
 export function BottomNav({ avatarUrl }: { avatarUrl: string | null }) {
   const pathname = usePathname();
   const profileActive = pathname.startsWith("/profile");
+  const index = profileActive ? 3 : Math.max(0, TABS.findIndex((t) => pathname.startsWith(t.href)));
   return (
-    <nav className="bottom-nav" aria-label="Main">
+    <nav className="bottom-nav" aria-label="Main" style={{ "--i": index } as React.CSSProperties}>
+      <span className="nav-ind" aria-hidden="true" />
       <ul>
         {TABS.map(({ href, label, Icon }) => {
           const active = pathname.startsWith(href);
