@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LIMITLINE Reel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..900&display=swap" rel="stylesheet">
+<style>html,body{margin:0;background:#050505}canvas{display:block}</style>
+</head><body><canvas id="c" width="1080" height="1920"></canvas>
+<script src="reel.js"></script>
+<script>
+const ctx = document.getElementById("c").getContext("2d");
+const FF = "Archivo, Inter, sans-serif";
+window.renderAt = (t) => LimitlineReel.render(ctx, t, FF);
+window.ready = document.fonts.load('900 80px Archivo').then(() => document.fonts.ready).then(() => true);
+</script></body></html>
