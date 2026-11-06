@@ -580,4 +580,5 @@
     ctx.restore();
   }
   window.LimitlineReel = { render, W, H, DUR, CAPTIONS, TC };
+  window.Reel = { render, DUR, COVER: 6.1, CAPTIONS };
 })();

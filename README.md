@@ -5,7 +5,7 @@ Quests for amateur triathletes that reward effort beyond your **own** limit. Pic
 - Product and decisions: [`docs/designs/limitline-mvp.md`](docs/designs/limitline-mvp.md)
 - Look and feel: [`DESIGN.md`](DESIGN.md)
 - Going live (Supabase, Resend, Vercel): [`SETUP.md`](SETUP.md)
-- Ad reel (24 s vertical video, drawn in code): [`marketing/reel/`](marketing/reel/)
+- Ad reels (four vertical videos, drawn in code) and the launch plan: [`marketing/reels/`](marketing/reels/), [`marketing/CAMPAIGN.md`](marketing/CAMPAIGN.md)
 
 ## How it's put together
 

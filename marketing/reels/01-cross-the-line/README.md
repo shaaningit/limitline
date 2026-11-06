@@ -16,21 +16,12 @@ camera pushes and big word-by-word captions.
 
 ## Files
 
-- `reel.js`: the whole animation. `render(ctx, t)` draws the frame at time `t`. It uses no
-  randomness at play time, so the same time always gives the same picture.
-- `reel.html`: opens the reel in a browser. Export scripts call `window.renderAt(t)`.
-- `export.cjs`: renders all 720 frames with Playwright and pipes them into ffmpeg.
+- `reel.js`: the whole animation. `render(ctx, t)` draws the frame at time `t`, and the same time
+  always gives the same picture.
 - `sound.py`: makes the sound track from plain sine waves and noise (needs numpy).
-- `limitline-reel.mp4`: the finished video.
+- `limitline-cross-the-line.mp4`: the finished video. `cover.jpg`: a thumbnail frame.
 
-## Rebuild the video
-
-```bash
-cd marketing/reel
-python3 sound.py
-node export.cjs
-ffmpeg -y -i video.mp4 -i sound.wav -c:v copy -c:a aac -b:a 192k -shortest limitline-reel.mp4
-```
+Rebuild it with the shared tools in [`../README.md`](../README.md).
 
 ## Before posting
 

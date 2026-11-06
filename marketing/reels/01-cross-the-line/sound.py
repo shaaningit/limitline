@@ -1,5 +1,6 @@
 # Sound design for the LIMITLINE reel, synthesised from scratch (no samples).
-import numpy as np, wave
+import os, wave
+import numpy as np
 SR = 48000; DUR = 24.0; N = int(SR * DUR)
 L = np.zeros(N); R = np.zeros(N)
 rs = np.random.default_rng(7)
@@ -113,7 +114,7 @@ mix = np.stack([L, R], 1)
 mix /= np.max(np.abs(mix)) * 1.12
 fade = np.minimum(1, (DUR - np.arange(N) / SR) / 0.6)[:, None]
 mix = np.tanh(mix * 1.3) / np.tanh(1.3) * fade * 0.9
-with wave.open("sound.wav", "wb") as w:
+with wave.open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "sound.wav"), "wb") as w:
     w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR)
     w.writeframes((mix * 32767).astype("<i2").tobytes())
 print("ok")
