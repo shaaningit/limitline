@@ -3,7 +3,7 @@ import os, sys
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "shared"))
 from sfx import Mix, kick, hat, clap, snap, whoosh, boom, chime, blip, tick, pad, saw_bass, note  # noqa: E402
 
-m = Mix(16.0, seed=12)
+m = Mix(17.0, seed=12)
 B = 0.45  # one beat
 # hook: three slams on the beat, ink-on-paper
 for at in (0.12, 0.57, 1.02):

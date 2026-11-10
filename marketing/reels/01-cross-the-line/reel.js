@@ -539,9 +539,10 @@
     ctx.fillText("LIMITLINE", W / 2 + 4, 1130);
     try { ctx.letterSpacing = "0px"; ctx.fontStretch = "normal"; } catch { /* older browsers */ }
     const tk = easeOut((u - 1.0) / 0.4);
-    ctx.globalAlpha = tk; ctx.font = `800 64px ${fontFamily}`; ctx.fillStyle = VOLT; ctx.fillText("Cross your limit.", W / 2, 1250);
-    const lk = easeOut((u - 1.3) / 0.4);
-    ctx.globalAlpha = lk; ctx.font = `600 36px ${fontFamily}`; ctx.fillStyle = "rgba(244,244,240,0.65)"; ctx.fillText("Run · Ride · Swim · Hike  —  link in bio", W / 2, 1340);
+    ctx.globalAlpha = tk; ctx.font = `800 64px ${fontFamily}`; ctx.fillStyle = INK; ctx.fillText("Beat your limit.", W / 2, 1245);
+    ctx.globalAlpha = easeOut((u - 1.25) / 0.4); ctx.fillStyle = VOLT; ctx.shadowColor = "rgba(206,255,0,0.5)"; ctx.shadowBlur = 24; ctx.fillText("Get rewarded.", W / 2, 1325); ctx.shadowBlur = 0;
+    const lk = easeOut((u - 1.45) / 0.4);
+    ctx.globalAlpha = lk; ctx.font = `600 36px ${fontFamily}`; ctx.fillStyle = "rgba(244,244,240,0.65)"; ctx.fillText("Run · Ride · Swim · Hike  —  link in bio", W / 2, 1420);
     ctx.restore();
   }
 

@@ -110,6 +110,9 @@
     ctx.restore();
   }
 
+  // The promise every athlete-facing ad ends on.
+  const PROMISE = ["Beat your limit.", "Get rewarded."];
+
   // Dark end card: the mark draws itself, then the wordmark, a tagline and a call to action.
   const endSparks = (() => { const r = rng(33); return Array.from({ length: 40 }, () => ({ a: -Math.PI / 2 + (r() - 0.5) * 2.2, v: 300 + r() * 700, r: 2 + r() * 5 })); })();
   function endCard(ctx, u, ff, o = {}) {
@@ -134,13 +137,23 @@
     ctx.globalAlpha = wk; ctx.fillStyle = INK;
     font(ctx, 900, 118, ff, "expanded", lerp(40, 8, wk));
     ctx.fillText("LIMITLINE", W / 2 + 4, 1130);
+    // The tagline: one line in volt, or the two-line promise (white, then volt).
+    const tag = o.tagline || PROMISE;
     font(ctx, 800, 64, ff);
-    ctx.globalAlpha = easeOut((u - 1.0) / 0.4); ctx.fillStyle = VOLT; ctx.fillText(o.tagline || "Cross your limit.", W / 2, 1250);
+    let subY = 1340;
+    if (Array.isArray(tag)) {
+      ctx.globalAlpha = easeOut((u - 1.0) / 0.4); ctx.fillStyle = INK; ctx.fillText(tag[0], W / 2, 1245);
+      ctx.globalAlpha = easeOut((u - 1.25) / 0.4); ctx.fillStyle = VOLT; ctx.shadowColor = "rgba(206,255,0,0.5)"; ctx.shadowBlur = 24;
+      ctx.fillText(tag[1], W / 2, 1325); ctx.shadowBlur = 0;
+      subY = 1420;
+    } else {
+      ctx.globalAlpha = easeOut((u - 1.0) / 0.4); ctx.fillStyle = VOLT; ctx.fillText(tag, W / 2, 1250);
+    }
     font(ctx, 600, 36, ff);
-    ctx.globalAlpha = easeOut((u - 1.3) / 0.4); ctx.fillStyle = "rgba(244,244,240,0.65)";
-    ctx.fillText(o.sub || "Run · Ride · Swim · Hike  —  link in bio", W / 2, 1340);
+    ctx.globalAlpha = easeOut((u - 1.45) / 0.4); ctx.fillStyle = "rgba(244,244,240,0.65)";
+    ctx.fillText(o.sub || "Run · Ride · Swim · Hike  —  link in bio", W / 2, subY);
     ctx.restore();
   }
 
-  window.LL = { W, H, TAU, VOLT, INK, BLACK, BONE, lerp, clamp, smooth, easeOut, easeOutExpo, easeOutBack, easeInOut, rng, font, captions, finish, mark, endCard };
+  window.LL = { W, H, TAU, VOLT, INK, BLACK, BONE, lerp, clamp, smooth, easeOut, easeOutExpo, easeOutBack, easeInOut, rng, font, captions, finish, mark, endCard, PROMISE };
 })();

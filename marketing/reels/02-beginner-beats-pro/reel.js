@@ -5,7 +5,7 @@
 //   Maya 38:40 -> 36:20 = 140 / 2320 = +6.0%.  Leo 15:10 -> 15:05 = 5 / 910 = +0.5%.
 (function () {
   const { W, H, VOLT, BLACK, BONE, lerp, clamp, smooth, easeOut, easeOutExpo, easeOutBack, easeInOut, font, captions, finish } = window.LL;
-  const DUR = 16;
+  const DUR = 17;
   const GREY = "#9b9a93";
   const CAPTIONS = [
     { a: 2.55, b: 4.55, words: "On every other app the *FASTEST* time wins." },
@@ -220,7 +220,7 @@
         ctx.fillStyle = "#f4f4f0"; ctx.save(); ctx.translate(W / 2, 860); ctx.scale(lerp(1.5, 1, a), lerp(1.5, 1, a)); ctx.globalAlpha = clamp(a, 0, 1); ctx.fillText("BEAT YOUR", 0, 0); ctx.restore();
         if (b > 0) { ctx.fillStyle = VOLT; ctx.save(); ctx.translate(W / 2, 1100); ctx.scale(lerp(1.5, 1, b), lerp(1.5, 1, b)); ctx.globalAlpha = clamp(b, 0, 1); ctx.fillText("OWN LIMIT.", 0, 0); ctx.restore(); }
       } else {
-        window.LL.endCard(ctx, u - 1.0, ff, { tagline: "Effort beats talent." });
+        window.LL.endCard(ctx, u - 1.0, ff);
       }
       finish(ctx, t);
     }

@@ -1,15 +1,19 @@
 # LIMITLINE reels
 
-Four vertical videos (1080×1920, 30 fps, with sound) for Instagram Reels, TikTok and YouTube Shorts.
+Seven vertical videos (1080×1920, 30 fps, with sound) for Instagram Reels, TikTok and YouTube Shorts.
 Everything is drawn in code from shapes and gradients: no photos, stock footage or pixel art.
-Each reel uses a different style on purpose, so the launch can test which one people respond to.
+Every athlete reel sells one promise and ends on it: **Beat your limit. Get rewarded.**
+Each one uses a different style and hook, so the launch can test which one people respond to.
 
-| Reel | Length | Style | Who it's for |
+| Reel | Length | Style | Hook |
 | --- | --- | --- | --- |
-| [01 Cross the line](01-cross-the-line/) | 24 s | 3D explainer: clay mannequin, x-ray heart, muscle fibres | Curious scrollers. Science hook |
-| [02 Beginner beats a pro](02-beginner-beats-pro/) | 16 s | Light poster: huge condensed type, hard cuts on the beat | Beginners who think apps aren't for them. The most shareable hook |
-| [03 Ghost race](03-ghost-race/) | 16 s | 3D night city, chase camera, you vs you from last month | Runners who already track. First-person story |
-| [04 For brands](04-for-brands/) | 19 s | Premium glass cards floating in 3D, editorial headlines | Sponsors. Attach to brand emails, post on LinkedIn |
+| [05 Get sponsored](05-get-sponsored/) | 17.5 s | Sports campaign: spotlight, shaded jersey, slanted type | Pros get sponsors. Now you can win brand gear too |
+| [06 Pays you back](06-pays-you-back/) | 16 s | Fake screen recording of the app with TikTok caption boxes | POV: your workouts start paying you back |
+| [07 How to get gear](07-how-to-get-gear/) | 15 s | Loud volt tutorial with chunky toy-like 3D objects | How to get gear for working out, in 3 steps |
+| [02 Beginner beats a pro](02-beginner-beats-pro/) | 17 s | Light poster: huge condensed type, hard cuts | The board ranks effort, so a beginner can win |
+| [01 Cross the line](01-cross-the-line/) | 24 s | 3D explainer: clay mannequin, x-ray heart, muscle fibres | What happens when you beat your limit? |
+| [03 Ghost race](03-ghost-race/) | 16 s | 3D night city, chase camera | I raced myself from last month |
+| [04 For brands](04-for-brands/) | 19 s | Glass cards floating in 3D, editorial headlines | For sponsors: email and LinkedIn |
 
 Each folder has `limitline-<name>.mp4` (the finished video), `cover.jpg` (a thumbnail frame),
 `reel.js` (the animation) and `sound.py` (the sound track, made from sine waves and noise).

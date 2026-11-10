@@ -10,7 +10,7 @@
     { a: 2.8, b: 5.2, words: "Same route. Same legs." },
     { a: 5.35, b: 7.75, words: "The ghost is my old *LIMIT.*" },
     { a: 7.95, b: 9.9, words: "And I *PASSED* it." },
-    { a: 10.15, b: 12.45, words: "*LIMITLINE* turns your old self into your *RIVAL.*" },
+    { a: 10.15, b: 12.45, words: "Beat your old self. Get *REWARDED.*" },
   ];
 
   // ---------- The world ----------
@@ -292,7 +292,7 @@
       const out = smooth(12.75, 13.0, t);
       if (out > 0) { ctx.fillStyle = `rgba(0,0,0,${out})`; ctx.fillRect(0, 0, W, H); }
     } else {
-      endCard(ctx, t - 13.0, ff, { tagline: "Beat who you were." });
+      endCard(ctx, t - 13.0, ff);
     }
     finish(ctx, t);
     ctx.restore();
