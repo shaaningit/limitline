@@ -1,0 +1,154 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap" rel="stylesheet">
+<style>
+:root{--volt:#ceff00;--ink:#121212}
+body{margin:0;background:#0a0a0a;color:#f4f4f0;font-family:Archivo,sans-serif;padding:56px 56px 40px}
+h1{font-weight:900;font-stretch:115%;letter-spacing:.04em;font-size:40px;margin:0 0 6px}
+.sub{color:#9b9a93;font-size:18px;margin:0 0 40px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:28px}
+.card{background:#141414;border:1px solid #232323;border-radius:22px;padding:18px 18px 20px}
+.hero{background:var(--ink);border-radius:16px;aspect-ratio:1;display:grid;place-items:center;color:var(--volt);--bg:var(--ink);--shade:#8fb000}
+.hero svg{width:78%;height:78%}
+.meta{display:flex;gap:10px;align-items:baseline;margin:16px 2px 4px}
+.num{color:var(--volt);font-weight:800;font-size:14px;letter-spacing:.1em}
+.name{font-weight:900;font-size:26px;font-stretch:110%}
+p{margin:0 2px 16px;color:#b5b4ad;font-size:15px;line-height:1.4;min-height:42px}
+.sizes{display:flex;gap:10px;align-items:flex-end}
+.s{background:var(--ink);color:var(--volt);--bg:var(--ink);--shade:#8fb000;display:grid;place-items:center;border-radius:10px}
+.s svg{width:100%;height:100%}
+.s64{width:64px;height:64px} .s32{width:32px;height:32px;border-radius:7px} .s16{width:16px;height:16px;border-radius:3px}
+.inv{background:var(--volt);color:var(--ink);--bg:var(--volt);--shade:#3d4a00}
+.app{border-radius:15px;background:linear-gradient(160deg,#1d1d1d,#0c0c0c);box-shadow:inset 0 0 0 1px #2a2a2a}
+.app svg{width:72%;height:72%}
+.legend{margin-top:26px;color:#6f6e68;font-size:14px}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute">
+ <defs>
+  <!-- 1 CHECK: the L's foot snaps up into a tick. A quest, done. -->
+  <symbol id="m1" viewBox="0 0 200 200"><polygon fill="currentColor" points="50,26 84,26 84,136 128,136 150,98 182,98 150,170 50,170"/></symbol>
+  <!-- 2 CUT: a heavy L sliced on the diagonal at the corner. -->
+  <symbol id="m2" viewBox="0 0 200 200"><polygon fill="currentColor" points="50,30 86,30 86,128 50,164"/><polygon fill="currentColor" points="92,136 162,136 162,172 56,172"/></symbol>
+  <!-- 3 SPRINT: an italic L with speed slits through the stem. -->
+  <symbol id="m3" viewBox="0 0 200 200">
+   <polygon fill="currentColor" points="78,30 114,30 90,134 156,134 148,170 42,170"/>
+   <g fill="var(--bg)"><rect x="40" y="58" width="74" height="8"/><rect x="34" y="80" width="74" height="8"/><rect x="28" y="102" width="74" height="8"/></g>
+   <g fill="currentColor"><rect x="20" y="58" width="22" height="8" rx="4"/><rect x="10" y="80" width="26" height="8" rx="4"/><rect x="4" y="102" width="22" height="8" rx="4"/></g>
+  </symbol>
+  <!-- 4 ROUTE: one continuous route line, start ring to finish dot. -->
+  <symbol id="m4" viewBox="0 0 200 200">
+   <path d="M64,66 V134 Q64,156 86,156 H146" fill="none" stroke="currentColor" stroke-width="24" stroke-linecap="round"/>
+   <circle cx="64" cy="44" r="16" fill="none" stroke="currentColor" stroke-width="10"/>
+   <circle cx="166" cy="156" r="14" fill="currentColor"/>
+  </symbol>
+  <!-- 5 FRAME: a camera viewfinder corner with a record dot. Train it, post it. -->
+  <symbol id="m5" viewBox="0 0 200 200"><path fill="currentColor" d="M44,40 H78 V130 H158 V164 H74 Q44,164 44,134 Z"/><circle cx="132" cy="72" r="15" fill="currentColor"/></symbol>
+  <!-- 6 TILE: the L cut out of a solid square. Built to be an app icon. -->
+  <symbol id="m6" viewBox="0 0 200 200"><rect x="30" y="30" width="140" height="140" rx="34" fill="currentColor"/><polygon fill="var(--bg)" points="74,52 102,52 102,120 140,120 132,148 74,148"/></symbol>
+  <!-- 7 STEP: the foot climbs in steps. Every quest, a level up. -->
+  <symbol id="m7" viewBox="0 0 200 200"><polygon fill="currentColor" points="46,30 78,30 78,140 106,140 106,118 134,118 134,96 164,96 164,172 46,172"/></symbol>
+  <!-- 8 FOLD: a band folded at the corner, lit like paper. -->
+  <symbol id="m8" viewBox="0 0 200 200"><polygon fill="currentColor" points="52,30 88,30 88,136 52,172"/><polygon fill="var(--shade)" points="52,172 88,136 168,136 168,172"/><polygon fill="rgba(255,255,255,0.18)" points="52,30 62,30 62,162 52,172"/></symbol>
+ </defs>
+</svg>
+
+<h1>LIMITLINE · L MARK</h1>
+<p class="sub">Eight directions for a single L. Each shown large, then at 64, 32 and 16 px, reversed on volt, and as an app icon.</p>
+<div class="grid">
+<div class="card">
+ <div class="hero"><svg viewBox="0 0 200 200"><use href="#m1"/></svg></div>
+ <div class="meta"><span class="num">01</span><span class="name">Check</span></div>
+ <p>The foot snaps up into a tick: a quest, done. Reads as L and as a checkmark.</p>
+ <div class="sizes">
+  <div class="s s64"><svg viewBox="0 0 200 200"><use href="#m1"/></svg></div>
+  <div class="s s32"><svg viewBox="0 0 200 200"><use href="#m1"/></svg></div>
+  <div class="s s16"><svg viewBox="0 0 200 200"><use href="#m1"/></svg></div>
+  <div class="s s64 inv"><svg viewBox="0 0 200 200"><use href="#m1"/></svg></div>
+  <div class="s s64 app"><svg viewBox="0 0 200 200"><use href="#m1"/></svg></div>
+ </div>
+</div>
+<div class="card">
+ <div class="hero"><svg viewBox="0 0 200 200"><use href="#m2"/></svg></div>
+ <div class="meta"><span class="num">02</span><span class="name">Cut</span></div>
+ <p>Heavy L sliced on the diagonal. Sharp, technical, sportswear energy.</p>
+ <div class="sizes">
+  <div class="s s64"><svg viewBox="0 0 200 200"><use href="#m2"/></svg></div>
+  <div class="s s32"><svg viewBox="0 0 200 200"><use href="#m2"/></svg></div>
+  <div class="s s16"><svg viewBox="0 0 200 200"><use href="#m2"/></svg></div>
+  <div class="s s64 inv"><svg viewBox="0 0 200 200"><use href="#m2"/></svg></div>
+  <div class="s s64 app"><svg viewBox="0 0 200 200"><use href="#m2"/></svg></div>
+ </div>
+</div>
+<div class="card">
+ <div class="hero"><svg viewBox="0 0 200 200"><use href="#m3"/></svg></div>
+ <div class="meta"><span class="num">03</span><span class="name">Sprint</span></div>
+ <p>Italic L with speed slits. Pure motion, closest to a running brand.</p>
+ <div class="sizes">
+  <div class="s s64"><svg viewBox="0 0 200 200"><use href="#m3"/></svg></div>
+  <div class="s s32"><svg viewBox="0 0 200 200"><use href="#m3"/></svg></div>
+  <div class="s s16"><svg viewBox="0 0 200 200"><use href="#m3"/></svg></div>
+  <div class="s s64 inv"><svg viewBox="0 0 200 200"><use href="#m3"/></svg></div>
+  <div class="s s64 app"><svg viewBox="0 0 200 200"><use href="#m3"/></svg></div>
+ </div>
+</div>
+<div class="card">
+ <div class="hero"><svg viewBox="0 0 200 200"><use href="#m4"/></svg></div>
+ <div class="meta"><span class="num">04</span><span class="name">Route</span></div>
+ <p>One continuous route line, start ring to finish dot. Calm, outdoorsy.</p>
+ <div class="sizes">
+  <div class="s s64"><svg viewBox="0 0 200 200"><use href="#m4"/></svg></div>
+  <div class="s s32"><svg viewBox="0 0 200 200"><use href="#m4"/></svg></div>
+  <div class="s s16"><svg viewBox="0 0 200 200"><use href="#m4"/></svg></div>
+  <div class="s s64 inv"><svg viewBox="0 0 200 200"><use href="#m4"/></svg></div>
+  <div class="s s64 app"><svg viewBox="0 0 200 200"><use href="#m4"/></svg></div>
+ </div>
+</div>
+<div class="card">
+ <div class="hero"><svg viewBox="0 0 200 200"><use href="#m5"/></svg></div>
+ <div class="meta"><span class="num">05</span><span class="name">Frame</span></div>
+ <p>A camera viewfinder corner with a record dot. Train it, post it.</p>
+ <div class="sizes">
+  <div class="s s64"><svg viewBox="0 0 200 200"><use href="#m5"/></svg></div>
+  <div class="s s32"><svg viewBox="0 0 200 200"><use href="#m5"/></svg></div>
+  <div class="s s16"><svg viewBox="0 0 200 200"><use href="#m5"/></svg></div>
+  <div class="s s64 inv"><svg viewBox="0 0 200 200"><use href="#m5"/></svg></div>
+  <div class="s s64 app"><svg viewBox="0 0 200 200"><use href="#m5"/></svg></div>
+ </div>
+</div>
+<div class="card">
+ <div class="hero"><svg viewBox="0 0 200 200"><use href="#m6"/></svg></div>
+ <div class="meta"><span class="num">06</span><span class="name">Tile</span></div>
+ <p>The L cut out of a solid square. Made to be an app icon first.</p>
+ <div class="sizes">
+  <div class="s s64"><svg viewBox="0 0 200 200"><use href="#m6"/></svg></div>
+  <div class="s s32"><svg viewBox="0 0 200 200"><use href="#m6"/></svg></div>
+  <div class="s s16"><svg viewBox="0 0 200 200"><use href="#m6"/></svg></div>
+  <div class="s s64 inv"><svg viewBox="0 0 200 200"><use href="#m6"/></svg></div>
+  <div class="s s64 app"><svg viewBox="0 0 200 200"><use href="#m6"/></svg></div>
+ </div>
+</div>
+<div class="card">
+ <div class="hero"><svg viewBox="0 0 200 200"><use href="#m7"/></svg></div>
+ <div class="meta"><span class="num">07</span><span class="name">Step</span></div>
+ <p>The foot climbs in steps. Every quest is a level up.</p>
+ <div class="sizes">
+  <div class="s s64"><svg viewBox="0 0 200 200"><use href="#m7"/></svg></div>
+  <div class="s s32"><svg viewBox="0 0 200 200"><use href="#m7"/></svg></div>
+  <div class="s s16"><svg viewBox="0 0 200 200"><use href="#m7"/></svg></div>
+  <div class="s s64 inv"><svg viewBox="0 0 200 200"><use href="#m7"/></svg></div>
+  <div class="s s64 app"><svg viewBox="0 0 200 200"><use href="#m7"/></svg></div>
+ </div>
+</div>
+<div class="card">
+ <div class="hero"><svg viewBox="0 0 200 200"><use href="#m8"/></svg></div>
+ <div class="meta"><span class="num">08</span><span class="name">Fold</span></div>
+ <p>A band folded at the corner, lit like paper. Premium, quiet.</p>
+ <div class="sizes">
+  <div class="s s64"><svg viewBox="0 0 200 200"><use href="#m8"/></svg></div>
+  <div class="s s32"><svg viewBox="0 0 200 200"><use href="#m8"/></svg></div>
+  <div class="s s16"><svg viewBox="0 0 200 200"><use href="#m8"/></svg></div>
+  <div class="s s64 inv"><svg viewBox="0 0 200 200"><use href="#m8"/></svg></div>
+  <div class="s s64 app"><svg viewBox="0 0 200 200"><use href="#m8"/></svg></div>
+ </div>
+</div></div>
+<p class="legend">Volt #CEFF00 on matte black #121212. All but Fold are a single colour, so they work on kit, stickers and embroidery.</p>
+</body></html>

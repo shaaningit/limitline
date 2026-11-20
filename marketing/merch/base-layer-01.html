@@ -1,0 +1,141 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap" rel="stylesheet">
+<style>
+:root{--volt:#ceff00;--ink:#121212}
+body{margin:0;background:#0a0a0a;color:#f4f4f0;font-family:Archivo,sans-serif;padding:52px 56px 44px}
+h1{font-weight:900;font-stretch:115%;letter-spacing:.04em;font-size:38px;margin:0 0 4px}
+.sub{color:#9b9a93;font-size:18px;margin:0 0 30px}
+.hero{background:radial-gradient(120% 90% at 50% 40%,#1c1c1c,#0f0f0f);border:1px solid #232323;border-radius:24px;padding:10px 10px 0}
+.hero svg{display:block;width:100%}
+.row{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:24px}
+.cw{background:#141414;border:1px solid #232323;border-radius:20px;padding:12px 12px 16px}
+.cw svg{display:block;width:100%;background:radial-gradient(90% 80% at 50% 45%,#202020,#121212);border-radius:14px}
+.cw h3{margin:14px 6px 2px;font-size:22px;font-weight:900;font-stretch:110%}
+.cw p{margin:0 6px;color:#9b9a93;font-size:15px}
+.sw{display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:-2px;margin-right:4px;border:1px solid #444}
+.spec{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:24px;color:#b5b4ad;font-size:15px;line-height:1.45}
+.spec b{display:block;color:#f4f4f0;font-size:13px;letter-spacing:.12em;margin-bottom:4px}
+/* colourways */
+.stealth{--body:#141414;--seam:#3a3a3a;--logo:#ceff00;--accent:#ceff00;--collar:#0c0c0c;--txt:#8a8a84}
+.volt{--body:#c8f700;--seam:#7f9c00;--logo:#121212;--accent:#121212;--collar:#a9d000;--txt:#3d4a00}
+.bone{--body:#e6e5de;--seam:#b9b8b0;--logo:#121212;--accent:#9fc800;--collar:#cfcec6;--txt:#6f6e68}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute"><defs>
+ <!-- the Sprint mark (200 box); slits take the fabric colour -->
+ <symbol id="sprint" viewBox="0 0 200 200">
+  <polygon fill="var(--logo)" points="78,30 114,30 90,134 156,134 148,170 42,170"/>
+  <g fill="var(--body)"><rect x="40" y="58" width="74" height="8"/><rect x="34" y="80" width="74" height="8"/><rect x="28" y="102" width="74" height="8"/></g>
+  <g fill="var(--logo)"><rect x="20" y="58" width="22" height="8" rx="4"/><rect x="10" y="80" width="26" height="8" rx="4"/><rect x="4" y="102" width="22" height="8" rx="4"/></g>
+ </symbol>
+ <path id="fbody" d="M250,96 Q210,104 178,120 L88,468 L128,482 L204,220 Q222,320 216,400 L212,548 Q300,558 388,548 L384,400 Q378,320 396,220 L472,482 L512,468 L422,120 Q390,104 350,96 Q300,114 250,96 Z"/>
+ <path id="bbody" d="M250,96 Q210,104 178,120 L88,468 L128,482 L204,220 Q222,320 216,400 L212,548 Q300,558 388,548 L384,400 Q378,320 396,220 L472,482 L512,468 L422,120 Q390,104 350,96 Q300,102 250,96 Z"/>
+ <linearGradient id="shadeH" x1="0" x2="1">
+  <stop offset="0" stop-color="#000" stop-opacity=".55"/><stop offset=".2" stop-color="#000" stop-opacity=".15"/>
+  <stop offset=".42" stop-color="#fff" stop-opacity=".07"/><stop offset=".6" stop-color="#000" stop-opacity="0"/>
+  <stop offset=".82" stop-color="#000" stop-opacity=".18"/><stop offset="1" stop-color="#000" stop-opacity=".55"/>
+ </linearGradient>
+ <linearGradient id="shadeV" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0" stop-color="#fff" stop-opacity=".08"/><stop offset=".5" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".3"/>
+ </linearGradient>
+ <radialGradient id="pec" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff" stop-opacity=".13"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+ <pattern id="mesh" width="7" height="7" patternUnits="userSpaceOnUse"><circle cx="3.5" cy="3.5" r="1.3" fill="rgba(128,128,128,.45)"/></pattern>
+
+ <!-- FRONT -->
+ <symbol id="front" viewBox="0 0 600 700">
+  <ellipse cx="300" cy="588" rx="190" ry="16" fill="#000" opacity=".45"/>
+  <use href="#fbody" fill="var(--body)"/>
+  <!-- side mesh panels -->
+  <path d="M204,220 Q222,320 216,400 L212,548 L240,550 L242,400 Q248,320 230,232 Z" fill="url(#mesh)"/>
+  <path d="M396,220 Q378,320 384,400 L388,548 L360,550 L358,400 Q352,320 370,232 Z" fill="url(#mesh)"/>
+  <!-- muscle-mapped seams (flatlock) -->
+  <g fill="none" stroke="var(--seam)" stroke-width="1.6" stroke-dasharray="4 3">
+   <path d="M262,100 Q246,170 204,222"/><path d="M338,100 Q354,170 396,222"/>
+   <path d="M230,232 Q262,262 300,262 Q338,262 370,232"/>
+   <path d="M242,400 Q300,416 358,400"/>
+   <path d="M196,250 L118,476"/><path d="M404,250 L482,476"/>
+  </g>
+  <!-- chest sheen and shading -->
+  <ellipse cx="258" cy="200" rx="60" ry="46" fill="url(#pec)"/><ellipse cx="342" cy="200" rx="60" ry="46" fill="url(#pec)"/>
+  <use href="#fbody" fill="url(#shadeH)"/><use href="#fbody" fill="url(#shadeV)"/>
+  <!-- mock neck -->
+  <path d="M254,98 L259,64 Q300,58 341,64 L346,98 Q300,112 254,98 Z" fill="var(--collar)"/>
+  <ellipse cx="300" cy="64" rx="41" ry="7" fill="#000" opacity=".55"/>
+  <path d="M256,90 Q300,104 344,90" fill="none" stroke="var(--seam)" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <!-- thumbhole cuffs -->
+  <path d="M88,468 L128,482 L124,494 L84,480 Z" fill="var(--collar)"/><path d="M512,468 L472,482 L476,494 L516,480 Z" fill="var(--collar)"/>
+  <!-- chest mark (wearer's left) -->
+  <use href="#sprint" x="330" y="150" width="62" height="62" style="color:var(--logo)"/>
+  <!-- reflective speed slits on the wearer's left forearm -->
+  <g fill="var(--accent)"><polygon points="452,374 488,374 486,381 450,381"/><polygon points="456,388 492,388 490,395 454,395"/><polygon points="460,402 496,402 494,409 458,409"/></g>
+  <!-- wordmark down the wearer's right sleeve -->
+  <text transform="translate(162,170) rotate(104.5)" fill="var(--logo)" font-family="Archivo" font-weight="900" font-size="17" letter-spacing="5" style="font-stretch:125%">LIMITLINE</text>
+ </symbol>
+
+ <!-- BACK -->
+ <symbol id="back" viewBox="0 0 600 700">
+  <ellipse cx="300" cy="588" rx="190" ry="16" fill="#000" opacity=".45"/>
+  <use href="#bbody" fill="var(--body)"/>
+  <!-- spine mesh panel -->
+  <path d="M286,150 L314,150 L310,546 L290,546 Z" fill="url(#mesh)"/>
+  <g fill="none" stroke="var(--seam)" stroke-width="1.6" stroke-dasharray="4 3">
+   <path d="M262,98 Q246,170 204,222"/><path d="M338,98 Q354,170 396,222"/>
+   <path d="M286,150 L290,546"/><path d="M314,150 L310,546"/>
+   <path d="M214,300 Q250,340 286,330"/><path d="M386,300 Q350,340 314,330"/>
+   <path d="M196,250 L118,476"/><path d="M404,250 L482,476"/>
+  </g>
+  <ellipse cx="250" cy="250" rx="62" ry="70" fill="url(#pec)"/><ellipse cx="350" cy="250" rx="62" ry="70" fill="url(#pec)"/>
+  <use href="#bbody" fill="url(#shadeH)"/><use href="#bbody" fill="url(#shadeV)"/>
+  <path d="M254,98 L259,62 Q300,56 341,62 L346,98 Q300,104 254,98 Z" fill="var(--collar)"/>
+  <!-- small wordmark under the collar, big mark between the shoulders, motto at the hem -->
+  <text x="300" y="128" text-anchor="middle" fill="var(--logo)" font-family="Archivo" font-weight="900" font-size="14" letter-spacing="5" style="font-stretch:125%">LIMITLINE</text>
+  <use href="#sprint" x="218" y="166" width="164" height="164"/>
+  <text x="300" y="526" text-anchor="middle" fill="var(--txt)" font-family="Archivo" font-weight="800" font-size="12" letter-spacing="6">CROSS YOUR LIMIT</text>
+  <path d="M88,468 L128,482 L124,494 L84,480 Z" fill="var(--collar)"/><path d="M512,468 L472,482 L476,494 L516,480 Z" fill="var(--collar)"/>
+ </symbol>
+</defs></svg>
+
+<h1>LIMITLINE · BASE LAYER 01</h1>
+<p class="sub">Long-sleeve compression top with the Sprint mark. Front and back, then three colourways.</p>
+
+<div class="hero stealth">
+<svg viewBox="0 0 1500 680">
+ <use href="#front" x="100" y="0" width="620" height="720"/>
+ <use href="#back" x="780" y="0" width="620" height="720"/>
+ <g font-family="Archivo" font-size="15" fill="#c9c8c0">
+  <text x="410" y="660" text-anchor="middle" font-weight="800" letter-spacing="4" fill="#6f6e68">FRONT</text>
+  <text x="1090" y="660" text-anchor="middle" font-weight="800" letter-spacing="4" fill="#6f6e68">BACK</text>
+  <!-- callouts -->
+  <g stroke="#ceff00" stroke-width="1.2" fill="none">
+   <path d="M480,170 L560,120 H640"/><path d="M406,72 L470,40 H640"/><path d="M581,402 L620,430 H660"/>
+   <path d="M352,238 L250,300 H70"/><path d="M335,400 L230,480 H70"/>
+   <path d="M1100,190 L1240,120 H1420"/><path d="M1090,470 L1240,520 H1420"/><path d="M1142,339 L1210,370 H1420"/>
+  </g>
+  <g fill="#ceff00"><circle cx="480" cy="170" r="4"/><circle cx="406" cy="72" r="4"/><circle cx="581" cy="402" r="4"/><circle cx="352" cy="238" r="4"/><circle cx="335" cy="400" r="4"/><circle cx="1100" cy="190" r="4"/><circle cx="1090" cy="470" r="4"/><circle cx="1142" cy="339" r="4"/></g>
+  <text x="645" y="116" font-weight="800" fill="#f4f4f0">Sprint mark</text><text x="645" y="136">left chest, 6 cm</text>
+  <text x="645" y="36" font-weight="800" fill="#f4f4f0">Mock neck</text><text x="645" y="56">no-chafe, taped seam</text>
+  <text x="665" y="426" font-weight="800" fill="#f4f4f0">Reflective slits</text><text x="665" y="446">forearm, seen by cars</text>
+  <text x="70" y="294" font-weight="800" fill="#f4f4f0">Wordmark</text><text x="70" y="314">down the right sleeve</text>
+  <text x="70" y="474" font-weight="800" fill="#f4f4f0">Mesh side panels</text><text x="70" y="494">vent heat where you sweat</text>
+  <text x="1260" y="116" font-weight="800" fill="#f4f4f0">Big Sprint mark</text><text x="1260" y="136">between the shoulders</text>
+  <text x="1260" y="516" font-weight="800" fill="#f4f4f0">Spine mesh</text><text x="1260" y="536">airflow down the back</text>
+    <text x="1260" y="366" font-weight="800" fill="#f4f4f0">Flatlock seams</text><text x="1260" y="386">mapped to the muscles</text>
+ </g>
+</svg>
+</div>
+
+<div class="row">
+ <div class="cw stealth"><svg viewBox="0 20 600 600"><use href="#front" width="600" height="700"/></svg>
+  <h3>Stealth</h3><p><span class="sw" style="background:#141414"></span>matte black, volt mark. The everyday one.</p></div>
+ <div class="cw volt"><svg viewBox="0 20 600 600"><use href="#front" width="600" height="700"/></svg>
+  <h3>Volt</h3><p><span class="sw" style="background:#c8f700"></span>full volt, black mark. Seen on dark early runs.</p></div>
+ <div class="cw bone"><svg viewBox="0 20 600 600"><use href="#front" width="600" height="700"/></svg>
+  <h3>Bone</h3><p><span class="sw" style="background:#e6e5de"></span>off-white, black mark, volt slits. Summer.</p></div>
+</div>
+
+<div class="spec">
+ <div><b>FABRIC</b>Compression knit, about 78% nylon, 22% elastane. Four-way stretch, quick-dry.</div>
+ <div><b>FIT</b>Second skin. Long sleeves with thumbholes so they stay put under a wetsuit or jersey.</div>
+ <div><b>PRINT</b>Mark and wordmark in soft silicone print. Forearm slits in reflective ink.</div>
+ <div><b>USE</b>Run, ride, swim warm-ups and cold hikes. Doubles as a quest reward in the shop.</div>
+</div>
+</body></html>

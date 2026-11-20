@@ -1,0 +1,8 @@
+<!-- LIMITLINE "Sprint" mark: an italic L with speed slits. Volt on matte black.
+     For a light background, change both fills: the mark to #121212 and the slits to the background colour. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <rect width="200" height="200" fill="#121212"/>
+  <polygon fill="#CEFF00" points="78,30 114,30 90,134 156,134 148,170 42,170"/>
+  <g fill="#121212"><rect x="40" y="58" width="74" height="8"/><rect x="34" y="80" width="74" height="8"/><rect x="28" y="102" width="74" height="8"/></g>
+  <g fill="#CEFF00"><rect x="20" y="58" width="22" height="8" rx="4"/><rect x="10" y="80" width="26" height="8" rx="4"/><rect x="4" y="102" width="22" height="8" rx="4"/></g>
+</svg>
