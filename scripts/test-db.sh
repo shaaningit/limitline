@@ -26,3 +26,4 @@ for migration in "$ROOT"/supabase/migrations/*.sql; do
   "${PSQL[@]}" < "$migration"
 done
 "${PSQL[@]}" < "$ROOT/supabase/tests/access_rules.sql"
+"${PSQL[@]}" < "$ROOT/supabase/tests/waitlist.sql"

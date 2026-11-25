@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 // Runs before each page: refreshes the Supabase session cookie and sends
 // logged-out visitors to /login. Pages still check access themselves (lib/data/session.ts).
-const PUBLIC_PATHS = ["/login", "/auth/confirm", "/auth/callback"];
+const PUBLIC_PATHS = ["/login", "/auth/confirm", "/auth/callback", "/waitlist"];
 
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });

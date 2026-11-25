@@ -25,3 +25,34 @@ export function Logo({ size = 32, wordmark = true, stacked = false }: { size?: n
     </span>
   );
 }
+
+// The "Sprint" mark (Nov 20, the founder's pick): an italic L with speed slits.
+// Used on the public waitlist page first; the rest of the app still shows the break-out mark.
+export function SprintMark({ size = 32 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 200 200" aria-hidden="true">
+      <polygon fill="#ceff00" points="78,30 114,30 90,134 156,134 148,170 42,170" />
+      <g fill="var(--ground)">
+        <rect x="40" y="58" width="74" height="8" />
+        <rect x="34" y="80" width="74" height="8" />
+        <rect x="28" y="102" width="74" height="8" />
+      </g>
+      <g fill="#ceff00">
+        <rect x="20" y="58" width="22" height="8" rx="4" />
+        <rect x="10" y="80" width="26" height="8" rx="4" />
+        <rect x="4" y="102" width="22" height="8" rx="4" />
+      </g>
+    </svg>
+  );
+}
+
+export function SprintLogo({ size = 32 }: { size?: number }) {
+  return (
+    <span className="logo" role="img" aria-label="LIMITLINE">
+      <SprintMark size={size * 1.4} />
+      <span className="logo-word" style={{ fontSize: size * 0.85 }} aria-hidden="true">
+        LIMITLINE
+      </span>
+    </span>
+  );
+}

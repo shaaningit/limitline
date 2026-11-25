@@ -90,6 +90,21 @@ Free plan limits: 100 emails a day, 3,000 a month. That's plenty for 10 athletes
 - [ ] Enter seed limits for each athlete in **Admin → Athletes & seeds** (their best from the last 8 weeks, plus how many efforts you saw).
 - [ ] Set the embers amount in `lib/rules/config.ts` (`EMBERS.base`, currently a placeholder of 10) if you want a different number, and add shop items in **Admin → Shop**.
 
+## Waitlist page for the Instagram bio (Nov 25)
+
+`/waitlist` is a public sign-up page: no login, works before the app opens. People pick
+athlete or brand, leave their email (Instagram and sport optional), and see their place in line.
+
+1. **Database:** the migration `supabase/migrations/20261125000000_waitlist.sql` creates the
+   `waitlist` table. Run it like the others (step 1). Visitors can only join through the
+   `join_waitlist` function; nobody but the founder can read the list.
+2. **Online:** it goes live with the rest of the app on Vercel (step 3). Supabase steps 1 and
+   Vercel step 3 are enough; Resend and Strava aren't needed for the waitlist.
+3. **Bio link:** `https://<your-domain>/waitlist`. To see which reel brought people, add a tag:
+   `/waitlist?ref=reel05` (letters, numbers, - and _). It's saved with each sign-up.
+4. **See who joined:** Supabase dashboard, Table editor, `waitlist`. Sort by `seq` for the order
+   people joined, or export it as CSV.
+
 ## Running it on your own computer (optional)
 
 ```bash
