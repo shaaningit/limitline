@@ -3,7 +3,7 @@
 // a pedestal under a spotlight. Then LIMITLINE: do a quest, post it, embers fly, and real gear
 // drops onto the pedestal in the badge's place. Ends on the Sprint mark and "Join the waitlist".
 (function () {
-  const { W, H, TAU, VOLT, INK, lerp, clamp, smooth, easeOut, easeOutExpo, easeOutBack, easeInOut, rng, font, captions, finish, endCard } = window.LL;
+  const { W, H, TAU, VOLT, INK, lerp, clamp, smooth, easeOutExpo, easeOutBack, easeInOut, rng, font, captions, finish, endCard } = window.LL;
   const DUR = 16;
   const FF = "Archivo, Inter, sans-serif";
   const CAPTIONS = [
@@ -91,7 +91,7 @@
   function badge(ctx, x, y, s, rot, alpha) {
     if (alpha <= 0) return;
     ctx.save(); ctx.globalAlpha = alpha; ctx.translate(x, y); ctx.rotate(rot); ctx.scale(s, s);
-    const hex = (r) => { ctx.beginPath(); for (let i = 0; i < 6; i++) { const a = -Math.PI / 2 + (i * TAU) / 6; i ? ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r) : ctx.moveTo(Math.cos(a) * r, Math.sin(a) * r); } ctx.closePath(); };
+    const hex = (r) => { ctx.beginPath(); for (let i = 0; i < 6; i++) { const a = -Math.PI / 2 + (i * TAU) / 6; if (i) ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r); else ctx.moveTo(Math.cos(a) * r, Math.sin(a) * r); } ctx.closePath(); };
     const g = ctx.createLinearGradient(-50, -50, 50, 50); g.addColorStop(0, "#e8e8e4"); g.addColorStop(0.5, "#8d8d88"); g.addColorStop(1, "#4a4a46");
     hex(52); ctx.fillStyle = g; ctx.fill();
     hex(40); ctx.fillStyle = "#2b2b2b"; ctx.fill();
