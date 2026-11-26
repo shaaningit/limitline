@@ -1,12 +1,13 @@
 # LIMITLINE reels
 
-Seven vertical videos (1080×1920, 30 fps, with sound) for Instagram Reels, TikTok and YouTube Shorts.
+Eight vertical videos (1080×1920, 30 fps, with sound) for Instagram Reels, TikTok and YouTube Shorts.
 Everything is drawn in code from shapes and gradients: no photos, stock footage or pixel art.
 Every athlete reel sells one promise and ends on it: **Beat your limit. Get rewarded.**
 Each one uses a different style and hook, so the launch can test which one people respond to.
 
 | Reel | Length | Style | Hook |
 | --- | --- | --- | --- |
+| [08 Badge vs gear](08-badge-vs-gear/) | 16 s | 3D studio: rolling odometer, a lonely badge on a pedestal, then real gear lands | Waitlist reel: "You ran 1,000 km and got a badge" |
 | [05 Get sponsored](05-get-sponsored/) | 17.5 s | Sports campaign: spotlight, shaded jersey, slanted type | Pros get sponsors. Now you can win brand gear too |
 | [06 Pays you back](06-pays-you-back/) | 16 s | Fake screen recording of the app with TikTok caption boxes | POV: your workouts start paying you back |
 | [07 How to get gear](07-how-to-get-gear/) | 15 s | Loud volt tutorial with chunky toy-like 3D objects | How to get gear for working out, in 3 steps |

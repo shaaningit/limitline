@@ -37,10 +37,10 @@
     ctx.save();
     font(ctx, 900, size, ff, o.stretch || "semi-expanded");
     ctx.textBaseline = "alphabetic";
-    const maxW = o.maxW || 900, lines = [[]];
+    const maxW = o.maxW || 900, lines = [[]], extra = size * (o.gap ?? 0);
     let lw = 0;
     for (const tk of tokens) {
-      const w = ctx.measureText(tk.w + " ").width;
+      const w = ctx.measureText(tk.w + " ").width + extra;
       if (lw + w > maxW && lines[lines.length - 1].length) { lines.push([]); lw = 0; }
       lines[lines.length - 1].push({ ...tk, width: w }); lw += w;
     }
@@ -49,14 +49,14 @@
     const space = ctx.measureText(" ").width;
     let i = 0;
     lines.forEach((line, li) => {
-      const total = line.reduce((s, x) => s + x.width, 0) - space;
+      const total = line.reduce((s, x) => s + x.width, 0) - space - extra;
       let x = (W - total) / 2;
       for (const tk of line) {
         const t0 = cap.a + i * per, k = clamp((t - t0) / 0.16, 0, 1);
         i++;
         if (k <= 0) { x += tk.width; continue; }
         const s = easeOutBack(k) * (1 - out * 0.2);
-        const wordW = tk.width - space, y = top + li * lh + lh * 0.8;
+        const wordW = tk.width - space - extra, y = top + li * lh + lh * 0.8;
         ctx.save();
         ctx.translate(x + wordW / 2, y - size * 0.35);
         ctx.scale(s, s);
@@ -113,6 +113,29 @@
   // The promise every athlete-facing ad ends on.
   const PROMISE = ["Beat your limit.", "Get rewarded."];
 
+
+  // The Sprint mark (Nov 20): an italic L with three speed slits. k builds it in (0..1).
+  function sprintMark(ctx, cx, cy, size, k, bg = "#070707") {
+    if (k <= 0) return;
+    const s = size / 200;
+    ctx.save(); ctx.translate(cx - size / 2, cy - size / 2); ctx.scale(s, s);
+    const body = easeOutBack(clamp(k / 0.6, 0, 1));
+    ctx.save(); ctx.translate(100, 100); ctx.scale(body, body); ctx.translate(-100, -100);
+    ctx.shadowColor = "rgba(206,255,0,0.45)"; ctx.shadowBlur = 18;
+    ctx.fillStyle = VOLT; ctx.beginPath();
+    [[78, 30], [114, 30], [90, 134], [156, 134], [148, 170], [42, 170]].forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)));
+    ctx.closePath(); ctx.fill(); ctx.shadowBlur = 0;
+    ctx.fillStyle = bg; for (const y of [58, 80, 102]) ctx.fillRect(28, y, 92, 8);
+    ctx.restore();
+    // speed dashes whip in from the left
+    [[20, 58, 22], [10, 80, 26], [4, 102, 22]].forEach(([x, y, w], i) => {
+      const d = easeOut(clamp((k - 0.35 - i * 0.08) / 0.35, 0, 1));
+      if (d <= 0) return;
+      ctx.fillStyle = VOLT; ctx.beginPath(); ctx.roundRect(x - (1 - d) * 120, y, w, 8, 4); ctx.fill();
+    });
+    ctx.restore();
+  }
+
   // Dark end card: the mark draws itself, then the wordmark, a tagline and a call to action.
   const endSparks = (() => { const r = rng(33); return Array.from({ length: 40 }, () => ({ a: -Math.PI / 2 + (r() - 0.5) * 2.2, v: 300 + r() * 700, r: 2 + r() * 5 })); })();
   function endCard(ctx, u, ff, o = {}) {
@@ -121,8 +144,9 @@
     halo.addColorStop(0, `rgba(206,255,0,${0.16 * smooth(0.3, 0.8, u)})`); halo.addColorStop(1, "rgba(206,255,0,0)");
     ctx.fillStyle = halo; ctx.fillRect(0, 0, W, H);
     const sc = 13, ox = W / 2 - 23 * sc, oy = 760 - 16 * sc;
-    mark(ctx, ox, oy, sc, easeOut(u / 0.35), easeOutBack((u - 0.3) / 0.35));
-    if (u > 0.55) {
+    if (o.sprint) sprintMark(ctx, W / 2, 740, 360, u / 0.7);
+    else mark(ctx, ox, oy, sc, easeOut(u / 0.35), easeOutBack((u - 0.3) / 0.35));
+    if (u > 0.55 && !o.sprint) {
       const tau = u - 0.55;
       ctx.save(); ctx.globalCompositeOperation = "lighter";
       for (const s of endSparks) {
@@ -149,11 +173,25 @@
     } else {
       ctx.globalAlpha = easeOut((u - 1.0) / 0.4); ctx.fillStyle = VOLT; ctx.fillText(tag, W / 2, 1250);
     }
-    font(ctx, 600, 36, ff);
-    ctx.globalAlpha = easeOut((u - 1.45) / 0.4); ctx.fillStyle = "rgba(244,244,240,0.65)";
-    ctx.fillText(o.sub || "Run · Ride · Swim · Hike  —  link in bio", W / 2, subY);
+    if (o.cta) {
+      // a volt pill with the call to action, popping in last
+      const ck = easeOutBack((u - 1.5) / 0.4);
+      if (ck > 0) {
+        ctx.save(); ctx.globalAlpha = clamp(ck, 0, 1); ctx.translate(W / 2, subY + 20); ctx.scale(clamp(ck, 0, 1.1), clamp(ck, 0, 1.1));
+        font(ctx, 900, 40, ff, "semi-expanded", 3);
+        const w = ctx.measureText(o.cta).width + 110;
+        ctx.fillStyle = VOLT; ctx.shadowColor = "rgba(206,255,0,0.5)"; ctx.shadowBlur = 30;
+        ctx.beginPath(); ctx.roundRect(-w / 2, -50, w, 100, 50); ctx.fill(); ctx.shadowBlur = 0;
+        ctx.fillStyle = "#0b0b0b"; ctx.fillText(o.cta, 0, 14);
+        ctx.restore();
+      }
+    } else {
+      font(ctx, 600, 36, ff);
+      ctx.globalAlpha = easeOut((u - 1.45) / 0.4); ctx.fillStyle = "rgba(244,244,240,0.65)";
+      ctx.fillText(o.sub || "Run · Ride · Swim · Hike  —  link in bio", W / 2, subY);
+    }
     ctx.restore();
   }
 
-  window.LL = { W, H, TAU, VOLT, INK, BLACK, BONE, lerp, clamp, smooth, easeOut, easeOutExpo, easeOutBack, easeInOut, rng, font, captions, finish, mark, endCard, PROMISE };
+  window.LL = { W, H, TAU, VOLT, INK, BLACK, BONE, lerp, clamp, smooth, easeOut, easeOutExpo, easeOutBack, easeInOut, rng, font, captions, finish, mark, sprintMark, endCard, PROMISE };
 })();

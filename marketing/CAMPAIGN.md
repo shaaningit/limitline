@@ -25,6 +25,13 @@ with the reward.
 
 From campaign to campaign, change the **hook**, not the promise.
 
+## Waitlist first (Nov 26)
+
+Until the app opens, every post points to the waitlist page (`/waitlist`, see SETUP.md). Put
+`yourdomain/waitlist?ref=<reel>` in the bio and change the tag with each post, so the sign-ups
+show which reel works. Reel 08 (badge vs gear) is the first one made for this: it ends on
+"Train. Post. Get rewarded." and a "Join the waitlist" button.
+
 ## The reels
 
 The videos are in [`reels/`](reels/).

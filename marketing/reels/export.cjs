@@ -29,7 +29,7 @@ const fs = require("fs"), path = require("path");
     ff.stdin.end(); await new Promise((r) => ff.on("close", r));
     const wav = path.join(out, "sound.wav");
     if (fs.existsSync(wav)) {
-      execFileSync("ffmpeg", ["-loglevel", "error", "-y", "-i", video, "-i", wav, "-c:v", "copy", "-af", "loudnorm=I=-14:TP=-1.5:LRA=11", "-ar", "48000", "-c:a", "aac", "-b:a", "192k", "-shortest", "-movflags", "+faststart", path.join(out, `limitline-${dir.replace(/^\d+-/, "")}.mp4`)]);
+      execFileSync("ffmpeg", ["-loglevel", "error", "-y", "-i", video, "-i", wav, "-c:v", "copy", "-af", "loudnorm=I=-14:TP=-1.5:LRA=11,alimiter=limit=0.84:level=false", "-ar", "48000", "-c:a", "aac", "-b:a", "192k", "-shortest", "-movflags", "+faststart", path.join(out, `limitline-${dir.replace(/^\d+-/, "")}.mp4`)]);
     }
   }
   console.log(errs.join("\n") || "no page errors");
